@@ -243,6 +243,8 @@ users can copy previously described hierarchies to similar spaces in the sheets,
 eliminating the need to select every cell and hierarchy repeatedly.  
 Users do not require any programming knowledge to extract the data from the spreadsheet files.
  
+
+Previous work by Alexander Aue, Norbert Röder, and Andrea Ackermann introduced a tool that facilitates data extraction from Excel files. While effective, this solution faced performance issues and inaccuracies in rendering cell dimensions, limiting its usability with large and complex datasets. In this paper, we build upon their foundational work by releasing the software under the open-source GNU Public License Version 3 (GPLv3) and introducing several key enhancements. These improvements include implementing incremental loading of worksheets to enhance performance, accurately rendering row heights and column widths by parsing XML data, and optimizing the rendering engine to handle large datasets efficiently. Additionally, we have integrated the selection hierarchy and worksheet view into a unified interface to improve user experience. These contributions collectively address the limitations of the existing solution, making data extraction from complex spreadsheets more efficient and user-friendly.
  
 
 \begin{table*}[h]
@@ -266,98 +268,162 @@ Users do not require any programming knowledge to extract the data from the spre
   \label{tab:approaches}
 \end{table*}
 
-
 \section{Related Work}
 
-This chapter will first describe
-the similar approaches of data extraction
-from spreadsheets without programming 
-that are found in scientific literature.
+The tool developed by Alexander Auer, Norbert Röder, and Andrea Ackermann represents a significant step towards facilitating data extraction from Excel spreadsheets. Their approach utilizes the Dart `excel` package to open `.xlsx` files, enabling users to select cells containing data and metadata to define the data hierarchy. However, this method encounters performance bottlenecks as the package requires loading the entire `.xlsx` file into memory before processing, leading to slow response times, especially when opening large files.
 
+Moreover, their solution calculates row heights and column widths based solely on cell content, disregarding the actual dimensions specified in the Excel file. This results in discrepancies between the tool's rendering and the original spreadsheet. Additionally, the tool renders all cells regardless of their visibility within the viewport, causing significant performance degradation when handling worksheets with numerous cells.
 
+In contrast, our enhanced tool introduces incremental loading of worksheets, parsing and rendering only the active worksheet on demand. This approach significantly reduces initial loading times and memory usage. Furthermore, by accurately parsing the XML data to extract predefined row heights and column widths, our tool ensures a faithful visual representation of the original spreadsheet. These advancements not only improve performance but also enhance user experience by providing a more accurate and responsive interface.
+The extraction of relational data from semi-structured documents, particularly spreadsheets, has garnered significant attention due to the ubiquitous use of spreadsheets across diverse domains such as business, government, and scientific research. Several frameworks and tools have been developed to address the inherent challenges of converting these flexible and often ad-hoc spreadsheet formats into normalized relational forms suitable for data analysis and integration. Notable among these are **DeExcelerator**, **XLIndy**, **FLASHRELATE**, **Senbazuru**, and **TableSense**.
 
-\section{Spreadsheet Data Extractor}
+\subsection{DeExcelerator: A Framework for Extracting Relational Data from Partially Structured Documents}
 
+Eberius et al.~\cite{eberius2013deexcelerator} introduced \textbf{DeExcelerator}, a pioneering framework aimed at transforming partially structured documents, including spreadsheets, into first normal form relational tables without necessitating user interaction. DeExcelerator employs a pipeline of heuristic-based extraction phases to address common normalization challenges such as table detection, metadata extraction, layout normalization, header recognition, type inference, value extrapolation, and the removal of dependent rows and columns. By systematically cleaning and normalizing data through these phases, DeExcelerator facilitates the seamless integration of spreadsheet data into relational database management systems (RDBMS).
 
+While DeExcelerator effectively automates the normalization process, its reliance on predefined heuristic rules may limit its adaptability to highly heterogeneous or unconventional spreadsheet formats. Moreover, the framework primarily focuses on syntactic normalization, addressing layout and formatting issues without delving into the semantic interpretation of the data. This limitation underscores the necessity for more flexible and intelligent approaches capable of handling a broader spectrum of spreadsheet designs and user-specific customizations.
 
+\subsection{XLIndy: Interactive Recognition and Information Extraction in Spreadsheets}
 
-Our program's closest research counterparts
-are the projects, Senbazuru,  and FlashRelate,
-both of which share the goal of extracting relational data from spreadsheets with a graphical user Interface.
-\cite{chen2013senbazuru},\cite{barowy2015flashrelate},\cite{koci2019xlindy} 
+Building upon the foundational work in spreadsheet data extraction, Koci et al.~\cite{koci2019xlindy} developed \textbf{XLIndy}, an interactive Microsoft Excel add-in equipped with a machine learning back-end implemented in Python. XLIndy addresses the inherent challenges posed by spreadsheets being partially structured and laden with implicit visual and textual information, which impede automatic analysis and information extraction. Unlike DeExcelerator’s fully automated heuristic approach, XLIndy integrates machine learning techniques for layout inference and table recognition, enabling a more adaptable and accurate extraction process.
 
+XLIndy's interactive interface allows users to visually inspect extraction results, adjust configurations, and compare different extraction runs, facilitating iterative fine-tuning. Additionally, users can manually revise predicted layouts and tables, saving these revisions as annotations to improve classifier performance through (re-)training. This user-centric approach enhances the tool’s flexibility, allowing it to accommodate diverse spreadsheet formats and user-specific requirements more effectively than purely heuristic-based systems. Furthermore, XLIndy supports the extraction of data into standard formats such as CSV and JSON, streamlining the integration of spreadsheet data into various information systems.
 
+\subsection{FLASHRELATE: Extracting Relational Data from Semi-Structured Spreadsheets Using Examples}
 
-Senbazuru aims to automatically infer the hierarchical structure
-within spreadsheets through the creation of a classifier
-that identifies data frames in the document,
-along with another classifier that infers the intended hierarchy
-using a predefined set of features \cite{chen2013senbazuru}.
+In a complementary advancement, Barowy et al.~\cite{barowy2015flashrelate} presented \textbf{FLASHRELATE}, an approach that empowers users to extract structured relational data from semi-structured spreadsheets without requiring programming expertise. FLASHRELATE introduces a domain-specific language, \textbf{FLARE}, which extends traditional regular expressions with spatial constraints to capture the geometric relationships inherent in spreadsheet layouts. Additionally, FLASHRELATE employs an algorithm that synthesizes FLARE programs from a small number of user-provided positive and negative examples, significantly simplifying the automated data extraction process.
 
-While Senbazuru offers automated inference of the hierarchical structure,
-it may occasionally produce errors.
-In such cases, the tool allows the user to rectify these errors
-in the hierarchy by manually dragging and dropping nodes to their correct parent locations.
-Unlike Senbazuru, our program does not automatically infer the hierarchical structure.
-Instead, our program lets the user decide if the next selection is a child or a sibling of another selection.
-To speed up the process,
-selections can be duplicated and moved both horizontally and vertically.
-Thus, a hierarchy representing a column can be duplicated and shifted over another column,
-and similarly,
-a hierarchy representing a table can be duplicated and shifted over another table.
+FLASHRELATE distinguishes itself from both DeExcelerator and XLIndy by leveraging programming-by-example (PBE) techniques. While DeExcelerator relies on predefined heuristic rules and XLIndy incorporates machine learning models requiring user interaction for fine-tuning, FLASHRELATE allows non-expert users to define extraction patterns through intuitive examples. This approach lowers the barrier to entry for extracting relational data from complex spreadsheet encodings, making the tool accessible to a broader range of users.
 
+The \textbf{FLARE} language enables users to declaratively specify both cell-level and spatial constraints, effectively capturing the multidimensional and ad-hoc data encodings commonly found in spreadsheets. The FLASHRELATE algorithm efficiently synthesizes FLARE programs by searching for constraint sets that satisfy the provided examples while excluding undesired outputs. Empirical evaluations demonstrated that FLASHRELATE can accurately generate extraction programs quickly and with minimal user input, outperforming heuristic-based methods in both speed and user effort.
 
+\subsection{Senbazuru: A Prototype Spreadsheet Database Management System}
 
-FlashRelate utilizes both positive and negative output examples
-to generate a program in a domain-specific language called Flare.\cite{barowy2015flashrelate}  
-This approach enables FlashRelate
-to handle various extraction tasks
-from diverse spreadsheets,
-as long as it is possible
-to identify cells using regular expressions
-and recognize the spatial arrangement of the cells.
-In contrast to FlashRelate,
-our program necessitates the user
-to manually choose each data cell containing
-either data or metadata.
-It does not automatically identify similar cells
-based on user-provided selections.
-Instead, our program allows users to select not only individual cells
-but also sets of cells.
-Portions of the spreadsheet
-that represent relational data
-rather than hierarchical data
-can be chosen by first selecting
-the domain of the relation as a set of cells.
-Typically, the range values of the relation share the same row as the domain values.
-In a subsequent step,
-the ranges of the relation can be selected
-by duplicating the cell set of the domain
-and moving it horizontally to the desired cells containing the range values.
+Chen et al.~\cite{chen2013senbazuru} introduced \textbf{Senbazuru}, a prototype Spreadsheet Database Management System (SSDBMS) designed to extract relational information from a large corpus of spreadsheets. Senbazuru addresses the critical issue of integrating data across multiple spreadsheets, which often lack explicit relational metadata, thereby hindering the use of traditional relational tools for data integration and analysis.
 
-There are also two projects that rely on Artificial Intelligence only to identify the hierarchy of the data inside spreadsheets.
-Those projects are XLindy and TableSense.
-\cite{koci2019xlindy},\cite{dong2019tablesense}
+Senbazuru comprises three primary functional components:
 
-XLindy is not in development any more.
-Attempts were made to contact the authors to try the tool and find out if
-using it on our test dataset results in reliable output.
-Due to the fact that the project is no longer in development
-the  tool could not be obtained and tested.
+\begin{enumerate}
+    \item \textbf{Search}: Utilizing a textual search-and-rank interface, Senbazuru enables users to quickly locate relevant spreadsheets within a vast corpus. The search component indexes spreadsheets using Apache Lucene, allowing for efficient retrieval based on relevance to user queries.
+    
+    \item \textbf{Extract}: The extraction pipeline in Senbazuru consists of several stages:
+    \begin{itemize}
+        \item \textbf{Frame Finder}: Identifies data frame structures within spreadsheets using Conditional Random Fields (CRFs) to assign semantic labels to non-empty rows, effectively detecting rectangular value regions and associated attribute regions.
+        \item \textbf{Hierarchy Extractor}: Recovers attribute hierarchies for both left and top attribute regions. This stage also incorporates a user-interactive repair interface, allowing users to manually correct extraction errors, which the system then generalizes to similar instances using probabilistic methods.
+        \item \textbf{Tuple Builder and Relation Constructor}: Generates relational tuples from the extracted data frames and assembles these tuples into coherent relational tables by clustering attributes and recovering column labels using external schema repositories like Freebase and YAGO.
+    \end{itemize}
+    
+    \item \textbf{Query}: Supports basic relational operations such as selection and join on the extracted relational tables, enabling users to perform complex data analysis tasks without needing to write SQL queries.
+\end{enumerate}
 
-TableSense employs Convolutional Neural Networks
-to identify tables in spreadsheets.\cite{dong2019tablesense}  
-In their test with the WebSheet400 dataset,
-out of 400 random spreadsheets containing 795 tables,
-TableSense successfully detected 91.3\% of the tables (recall),
-and of the tables detected by TableSense, 86.5\%
-were indeed genuine tables (precision).
-However, while TableSense excels at detecting table boundaries,
-it does not identify data hierarchy or extract data from the tables it identifies.
-Our approach currently does not rely on Artificial Intelligence.
-Our project's primary focus is to empower users
-to manually select all the desired data and describe its hierarchy,
-enabling our program to automatically extract this data into a relational format.
+Senbazuru's ability to handle hierarchical spreadsheets, where attributes may span multiple rows or columns without explicit labeling, sets it apart from earlier systems like DeExcelerator and XLIndy. By employing machine learning techniques and providing user-friendly repair interfaces, Senbazuru ensures high-quality extraction and facilitates the integration of spreadsheet data into relational databases.
+
+\subsection{TableSense: Spreadsheet Table Detection with Convolutional Neural Networks}
+
+Dong et al.~\cite{dong2019tablesense} introduced \textbf{TableSense}, a novel end-to-end framework for spreadsheet table detection leveraging Convolutional Neural Networks (CNNs). Spreadsheet table detection is a critical task for enabling automated data intelligence features such as Ideas in Excel or Explore in Google Sheets. However, the diversity of table structures and layouts in spreadsheets presents significant challenges for accurate table detection.
+
+\textbf{Key Contributions of TableSense}:
+
+\begin{enumerate}
+    \item \textbf{Cell Featurization Scheme}: Unlike pixels in images, spreadsheet cells contain rich information including data types, formats, formulas, and visual styles. TableSense devises an effective cell featurization scheme that captures these diverse attributes, encoding each cell with 20 distinct features such as string content, numerical proportions, formatting details, and formula presence. This comprehensive featurization allows the CNN to learn high-level representations of spreadsheet data.
+    
+    \item \textbf{Enhanced CNN Model for Precise Boundary Detection}: Recognizing that precise table boundary detection is essential for subsequent data analysis tasks, TableSense enhances the standard CNN-based object detection frameworks. It introduces a Precise Bounding Box Regression (PBR) module that refines table boundaries at a cell level, ensuring accurate localization of table regions even in the presence of complex and cluttered spreadsheet layouts.
+    
+    \item \textbf{Active Learning-Based Smart Sampling}: Given the vast variability in spreadsheet table structures and the limited availability of labeled data, TableSense employs an active learning framework. It uses an uncertainty metric to intelligently select the most informative sheets for labeling, thereby efficiently building a robust training dataset with over 22,000 tables from more than 10,000 sheets. This approach optimizes labeling efforts and enhances the model's ability to generalize across diverse table formats.
+\end{enumerate}
+
+\textbf{Comparison with Existing Systems}:
+
+While \textbf{DeExcelerator}, \textbf{XLIndy}, \textbf{FLASHRELATE}, and \textbf{Senbazuru} focus primarily on transforming spreadsheet data into relational forms through heuristic, machine learning, and programming-by-example approaches, \textbf{TableSense} specifically targets the accurate detection of table boundaries within spreadsheets using deep learning techniques. Unlike region-growth-based methods employed in commodity spreadsheet tools, which often fail on complex table layouts, TableSense achieves superior precision and recall by leveraging CNNs tailored for the unique characteristics of spreadsheet data.
+
+Compared to \textbf{Senbazuru} and \textbf{XLIndy}, which incorporate machine learning for layout inference and hierarchical attribute extraction, TableSense offers a more specialized solution for table boundary detection. Its precise boundary regression and active learning framework ensure high accuracy even in cluttered and heterogeneous spreadsheet environments, addressing a gap not fully covered by existing tools.
+
+\subsection{Comparison Between Senbazuru and XLIndy}
+
+\textbf{Senbazuru} and \textbf{XLIndy} are both sophisticated systems designed to extract relational data from semi-structured spreadsheets, addressing the common challenge of converting the flexible and often ad-hoc formats of spreadsheets into normalized relational forms suitable for data analysis and integration. Despite their shared overarching goal, they differ in their approaches, functionalities, and intended use cases.
+
+\textbf{Similarities}:
+
+\begin{enumerate}
+    \item \textbf{Objective}: Both Senbazuru and XLIndy aim to transform semi-structured spreadsheet data into structured relational tables. This transformation facilitates the use of traditional database management and data analysis tools, enhancing the utility of spreadsheet data.
+    
+    \item \textbf{User Interaction for Error Correction}: Both systems incorporate mechanisms for user interaction to correct extraction errors. Senbazuru provides a repair interface that allows users to manually adjust attribute hierarchies, which the system then generalizes to similar cases. Similarly, XLIndy offers an interactive interface where users can visually inspect extraction results, adjust configurations, and manually revise predicted layouts and tables.
+    
+    \item \textbf{Support for Relational Operations}: After extracting relational data, both systems support relational operations. Senbazuru enables users to perform selection and join operations on the extracted data, while XLIndy allows exporting data into standard formats like CSV and JSON for further relational processing.
+\end{enumerate}
+
+\textbf{Differences}:
+
+\begin{enumerate}
+    \item \textbf{Scope and Deployment}:
+    \begin{itemize}
+        \item \textbf{Senbazuru} is designed as a \textbf{Spreadsheet Database Management System (SSDBMS)} capable of handling large corpora of spreadsheets. It includes a search component that allows users to locate relevant spreadsheets from an extensive indexed repository, making it suitable for batch processing and integration across multiple spreadsheets.
+        \item \textbf{XLIndy}, on the other hand, is an \textbf{interactive Microsoft Excel add-in} focused on processing individual spreadsheets within the Excel environment. It is tailored for users who work primarily with single spreadsheets and require real-time extraction and analysis within their familiar Excel interface.
+    \end{itemize}
+    
+    \item \textbf{Extraction Techniques}:
+    \begin{itemize}
+        \item \textbf{Senbazuru} utilizes \textbf{Conditional Random Fields (CRFs)} to identify data frames and recover attribute hierarchies within spreadsheets. This machine learning-based approach allows it to handle complex hierarchical structures and implicit relationships between data elements.
+        \item \textbf{XLIndy} leverages \textbf{machine learning techniques} for layout inference and table recognition but is implemented as a Python back-end integrated with an Excel add-in. While both systems use machine learning, Senbazuru's use of CRFs specifically targets hierarchical attribute extraction, whereas XLIndy's methods are geared towards more general layout and table recognition tasks.
+    \end{itemize}
+    
+    \item \textbf{User Interface and Accessibility}:
+    \begin{itemize}
+        \item \textbf{Senbazuru} offers a \textbf{web-based and iPad interface}, providing flexibility for users to interact with the system across different platforms. Its user interface is designed to facilitate searching, extracting, and querying large datasets from a centralized corpus.
+        \item \textbf{XLIndy} is embedded directly within the \textbf{Excel desktop application} as a custom add-in, providing a seamless experience for users already working within Excel. Its interface is optimized for interactive use on individual spreadsheets, allowing users to trigger extraction tasks and handle results without leaving the Excel environment.
+    \end{itemize}
+    
+    \item \textbf{Integration and Extensibility}:
+    \begin{itemize}
+        \item \textbf{Senbazuru} emphasizes \textbf{data integration} across multiple spreadsheets and the ability to join data from different sources, making it highly suitable for users needing to consolidate information from diverse datasets.
+        \item \textbf{XLIndy} focuses more on \textbf{data extraction and export} from single spreadsheets, with support for exporting data into formats that can be used with other tools, rather than directly facilitating joins or integrations within the system itself.
+    \end{itemize}
+    
+    \item \textbf{Repair and Learning Mechanisms}:
+    \begin{itemize}
+        \item \textbf{Senbazuru} includes advanced repair mechanisms that allow user-initiated corrections to be propagated across similar instances in the dataset, enhancing efficiency in large-scale data extraction scenarios.
+        \item \textbf{XLIndy} allows users to save revisions as annotations to improve classifier performance through (re-)training, focusing on enhancing the accuracy of extraction through iterative user feedback on a per-spreadsheet basis.
+    \end{itemize}
+\end{enumerate}
+
+\subsection{FLASHRELATE vs. Senbazuru and XLIndy}
+
+\textbf{FLASHRELATE} introduces a unique approach by leveraging programming-by-example (PBE) techniques to synthesize extraction programs from user-provided examples. Unlike \textbf{DeExcelerator}'s heuristic-based methods or \textbf{Senbazuru} and \textbf{XLIndy}'s machine learning-driven extraction, FLASHRELATE allows non-expert users to define extraction patterns through intuitive examples. This lowers the barrier to entry for extracting relational data from complex spreadsheet encodings, making it accessible to a broader range of users.
+
+While \textbf{Senbazuru} excels in large-scale data integration and handling hierarchical spreadsheet structures through machine learning and user-interactive repair interfaces, \textbf{FLASHRELATE} offers a more flexible and user-friendly solution for defining custom extraction rules without the need for extensive user intervention or programming expertise. \textbf{XLIndy}, being an Excel add-in, provides real-time extraction and export capabilities within individual spreadsheets, which complements FLASHRELATE's batch processing and program synthesis approach.
+
+\subsection{TableSense: Spreadsheet Table Detection with Convolutional Neural Networks}
+
+Dong et al.~\cite{dong2019tablesense} introduced \textbf{TableSense}, a novel end-to-end framework for spreadsheet table detection leveraging Convolutional Neural Networks (CNNs). Spreadsheet table detection is a critical task for enabling automated data intelligence features such as Ideas in Excel or Explore in Google Sheets. However, the diversity of table structures and layouts in spreadsheets presents significant challenges for accurate table detection.
+
+\textbf{Key Contributions of TableSense}:
+
+\begin{enumerate}
+    \item \textbf{Cell Featurization Scheme}: Unlike pixels in images, spreadsheet cells contain rich information including data types, formats, formulas, and visual styles. TableSense devises an effective cell featurization scheme that captures these diverse attributes, encoding each cell with 20 distinct features such as string content, numerical proportions, formatting details, and formula presence. This comprehensive featurization allows the CNN to learn high-level representations of spreadsheet data.
+    
+    \item \textbf{Enhanced CNN Model for Precise Boundary Detection}: Recognizing that precise table boundary detection is essential for subsequent data analysis tasks, TableSense enhances the standard CNN-based object detection frameworks. It introduces a Precise Bounding Box Regression (PBR) module that refines table boundaries at a cell level, ensuring accurate localization of table regions even in the presence of complex and cluttered spreadsheet layouts.
+    
+    \item \textbf{Active Learning-Based Smart Sampling}: Given the vast variability in spreadsheet table structures and the limited availability of labeled data, TableSense employs an active learning framework. It uses an uncertainty metric to intelligently select the most informative sheets for labeling, thereby efficiently building a robust training dataset with over 22,000 tables from more than 10,000 sheets. This approach optimizes labeling efforts and enhances the model's ability to generalize across diverse table formats.
+\end{enumerate}
+
+\textbf{Comparison with Existing Systems}:
+
+While \textbf{DeExcelerator}, \textbf{XLIndy}, \textbf{FLASHRELATE}, and \textbf{Senbazuru} focus primarily on transforming spreadsheet data into relational forms through heuristic, machine learning, and programming-by-example approaches, \textbf{TableSense} specifically targets the accurate detection of table boundaries within spreadsheets using deep learning techniques. Unlike region-growth-based methods employed in commodity spreadsheet tools, which often fail on complex table layouts, TableSense achieves superior precision and recall by leveraging CNNs tailored for the unique characteristics of spreadsheet data.
+
+Compared to \textbf{Senbazuru} and \textbf{XLIndy}, which incorporate machine learning for layout inference and hierarchical attribute extraction, TableSense offers a more specialized solution for table boundary detection. Its precise boundary regression and active learning framework ensure high accuracy even in cluttered and heterogeneous spreadsheet environments, addressing a gap not fully covered by existing tools.
+
+\subsection{Comparison and Positioning of Our Tool}
+
+While \textbf{DeExcelerator}, \textbf{XLIndy}, \textbf{FLASHRELATE}, \textbf{Senbazuru}, and \textbf{TableSense} each contribute uniquely to the field of spreadsheet data extraction, our proposed tool builds upon and extends their capabilities by introducing \textbf{incremental loading of Excel worksheets} and \textbf{accurate rendering of cell dimensions}. Unlike DeExcelerator, which loads entire `.xlsx` files upfront, our tool implements a custom Dart-based functionality that loads worksheets incrementally. This optimization significantly reduces initial loading times and memory consumption, enabling the tool to handle larger and more complex spreadsheets efficiently.
+
+Additionally, our tool addresses rendering inaccuracies present in both DeExcelerator and XLIndy by accurately parsing XML data to extract predefined row heights and column widths, ensuring a faithful visual representation that aligns with the original spreadsheet layout. This enhancement prevents the creation of excessively wide or tall cells caused by heuristic-based size calculations, thereby improving user experience by maintaining the integrity of the spreadsheet’s visual structure.
+
+Furthermore, our tool incorporates \textbf{viewport-based rendering}, an optimization not present in DeExcelerator, XLIndy, FLASHRELATE, Senbazuru, or TableSense, which ensures that only the visible cells within the user's current view are rendered. This approach enhances performance and responsiveness, particularly when navigating large datasets, by reducing the computational load associated with rendering off-screen cells.
+
+By combining the automated normalization strengths of DeExcelerator, the interactive and machine learning-driven capabilities of XLIndy and Senbazuru, the programming-by-example approach of FLASHRELATE, and the precise table detection of TableSense, our tool offers a more robust and user-friendly solution for extracting relational data from complex and visually intricate spreadsheets. These advancements not only improve performance and accuracy but also enhance the overall usability of the tool, making it a valuable asset for users requiring efficient and reliable data extraction from diverse spreadsheet formats.
+
+ 
+
 
 \section{Contribution}
 
@@ -365,6 +431,168 @@ Wir bauen auf der bestehenden Arbeit von Alexander Auer, Norbert Röder und Andr
 Außerdem hat die bestehende Lösung die Zellwerte aus der .xlsx-Datei ausgelesen, dabei jedoch die Breiten und Höhen der Zeilen und Spalten ignoriert und stattdessen deren Größe selbst berechnet, basierend auf dem in den Zellen enthaltenen Text. Dies führte jedoch zu sehr breiten Zellen, die in der ursprünglichen Datei tatsächlich deutlich schmaler waren. Dies lag daran, dass einige Zellen in derselben Spalte sehr langen Text enthielten, um einen Titel darin zu speichern. Durch diese übermäßig breiten Spalten wurde die Navigation durch das Arbeitsblatt erschwert.
 Im Vergleich zur ursprünglichen Lösung bietet unsere Version eine Funktionalität, die die Spalten- und Zeilenhöhen und -breiten korrekt ausliest und diese so darstellt, wie es Excel tut. So wird der Benutzer nicht von der Darstellung überrascht.
 Die bestehende Lösung hat weiterhin die Zellen gezeichnet, selbst wenn sie nicht im.Aktuellen Viewport sichtbar waren. Das Städte erhebliche Probleme da, wenn Arbeitsblätter mit sehr vielen Zellinhalten geöffnet worden. Die Performance Sankt dabei so stark herab, dass das Programm nicht mehr benutzbar war.Aus diesem Grund haben wir einen Mechanismus implementiert, dass nur zellinhalte gezeichnet werden, die auch tatsächlich sichtbar sind.
+
+
+\section{Methodology}
+
+This section outlines the technical foundation and software architecture of our enhanced tool. We detail the methods employed to achieve a realistic representation of Excel files, optimize performance when handling large datasets, and integrate an intuitive user interface that streamlines the data extraction process.
+
+\subsection{Software Architecture Overview}
+
+The tool is developed using the Flutter Software Development Kit (SDK), a cross-platform UI toolkit that allows for high-performance applications on various operating systems. Flutter provides a flexible and efficient framework for building complex user interfaces with smooth animations and responsiveness, which is essential for our application's requirements.
+
+The architecture consists of three main layers:
+
+\begin{enumerate}
+    \item \textbf{Data Parsing Layer}: Responsible for reading and interpreting Excel files, extracting cell data, styles, and structural information.
+    \item \textbf{Rendering Layer}: Handles the visual representation of the spreadsheet, including cell dimensions, styles, and layouts.
+    \item \textbf{User Interface Layer}: Provides interactive components for users to select data, define hierarchies, and manage the extraction process.
+\end{enumerate}
+
+These layers interact seamlessly to provide a cohesive user experience, enabling users to work with large and complex spreadsheets efficiently.
+
+\subsection{Data Parsing and Representation}
+
+\subsubsection{Excel File Parsing}
+
+To accurately replicate the structure and appearance of Excel files, the tool parses the underlying XML content of the \texttt{.xlsx} format, which is essentially a collection of XML files packaged in a ZIP archive. We utilize libraries compatible with Flutter to handle ZIP extraction and XML parsing.
+
+Key steps in the parsing process include:
+
+\begin{itemize}
+    \item \textbf{Workbook and Worksheet Identification}: Extracting the list of worksheets and their relationships from the \texttt{workbook.xml} file.
+    \item \textbf{Cell Data Extraction}: Parsing individual \texttt{sheetN.xml} files to read cell values, types, and references.
+    \item \textbf{Shared Strings Handling}: Accessing the \texttt{sharedStrings.xml} file to retrieve string values that are referenced by index in the cell data.
+    \item \textbf{Styles and Formatting}: Parsing the \texttt{styles.xml} file to extract information about cell styles, including fonts, fills, borders, and number formats.
+\end{itemize}
+
+\subsubsection{Calculating Cell Dimensions}
+
+Excel stores cell dimensions in units that do not directly correspond to pixels. To render cells accurately, we calculate the pixel dimensions using the following methods:
+
+\begin{itemize}
+    \item \textbf{Column Widths}: Extracted from the \texttt{<col>} elements in the worksheet XML, representing the width in units based on the average character width. We apply a scaling factor of \textbf{7} to convert these units to pixels. This factor was determined empirically to match the on-screen appearance of Excel columns.
+    \item \textbf{Row Heights}: Specified in points (1/72 of an inch) within the \texttt{<row>} elements. We multiply the height values by \textbf{4/3} to convert points to pixels, aligning with the standard screen resolution of 96 DPI (dots per inch).
+\end{itemize}
+
+These scaling factors ensure that the rendered spreadsheet in our tool mirrors the dimensions users expect from Excel, facilitating accurate data selection.
+
+\subsubsection{Rendering Cell Styles}
+
+We enhance the visual fidelity by applying cell styles during rendering:
+
+\begin{itemize}
+    \item \textbf{Background Colors}: Extracted from the \texttt{<fill>} elements in \texttt{styles.xml}, we map the style indices from the cell data to the corresponding color definitions. Colors are processed in ARGB format for accurate display.
+    \item \textbf{Borders}: We parse border definitions to render cell edges appropriately. This includes the style (e.g., solid, dashed) and color of each border side.
+    \item \textbf{Merged Cells Handling}: Merged cells are identified through the \texttt{<mergeCells>} elements. We account for merged regions by appropriately adjusting the rendering of cell spans.
+\end{itemize}
+
+\subsection{Rendering Engine}
+
+The rendering engine leverages Flutter's high-performance graphics capabilities to display the spreadsheet efficiently.
+
+\subsubsection{Viewport-Based Rendering}
+
+To manage performance with large spreadsheets, we implement a viewport-based rendering approach:
+
+\begin{itemize}
+    \item \textbf{Visible Area Calculation}: Determine the range of rows and columns currently visible in the user's viewport based on scroll position and zoom level.
+    \item \textbf{On-Demand Rendering}: Only the cells within the visible area are rendered. As the user scrolls, new cells entering the viewport are rendered, while those exiting are discarded.
+    \item \textbf{Smooth Scrolling and Zooming}: Flutter's rendering pipeline ensures that scrolling and zooming operations are smooth, even with dynamic loading of cell content.
+\end{itemize}
+
+\subsubsection{Asynchronous Data Loading}
+
+We employ asynchronous operations to prevent blocking the user interface:
+
+\begin{itemize}
+    \item \textbf{Background Parsing}: Cell data and styles are loaded in the background, allowing the UI to remain responsive.
+    \item \textbf{Progress Indicators}: Visual feedback is provided to inform users of loading states, especially when accessing new worksheets or large data ranges.
+\end{itemize}
+
+\subsection{User Interface Design}
+
+\subsubsection{Integrated Selection and Hierarchy Management}
+
+We redesigned the user interface to integrate the selection hierarchy with the worksheet view:
+
+\begin{itemize}
+    \item \textbf{Unified Workspace}: Users can select cells and manage the data hierarchy within the same view, eliminating the need to switch contexts.
+    \item \textbf{Interactive Hierarchy Panel}: A sidebar displays the hierarchical structure of selections, allowing users to drag and drop elements to adjust relationships.
+    \item \textbf{Contextual Actions}: Right-click menus and toolbars provide quick access to common actions such as duplicating selections, setting parent-child relationships, and adjusting properties.
+\end{itemize}
+
+\subsubsection{Selection Tools and Shortcuts}
+
+To facilitate efficient data selection, we introduced advanced selection tools:
+
+\begin{itemize}
+    \item \textbf{Range Selection}: Users can select multiple cells by clicking and dragging or by entering cell references manually.
+    \item \textbf{Duplication and Movement}: Selections can be duplicated and moved across the worksheet. Users specify the number of duplicates and the direction of movement, streamlining the process of selecting repetitive data structures.
+    \item \textbf{Freezing Elements}: Certain selections can be `frozen` during duplication, maintaining their position while other elements are moved. This is useful for headers or labels that remain constant.
+\end{itemize}
+
+\subsection{Performance Optimization Strategies}
+
+\subsubsection{Incremental Worksheet Loading}
+
+To reduce initial load times:
+
+\begin{itemize}
+    \item \textbf{Lazy Loading of Worksheets}: Worksheets are parsed only when the user selects them. This defers unnecessary processing and conserves resources.
+    \item \textbf{Resource Management}: Unused worksheets are unloaded from memory after a period of inactivity, preventing excessive memory consumption.
+\end{itemize}
+
+\subsubsection{Efficient Data Structures}
+
+We optimize data handling through:
+
+\begin{itemize}
+    \item \textbf{Sparse Data Representation}: Only non-empty cells are stored in memory, utilizing maps or hash tables keyed by cell references.
+    \item \textbf{Indexing Mechanisms}: Indexes are built for quick access to cell data and styles, reducing lookup times during rendering and interaction.
+\end{itemize}
+
+\subsubsection{Caching and Reuse}
+
+\begin{itemize}
+    \item \textbf{Render Cache}: Recently rendered cells are cached to minimize redraws when scrolling back and forth.
+    \item \textbf{Data Cache}: Frequently accessed data, such as styles and shared strings, are cached for quick retrieval.
+\end{itemize}
+
+\subsection{Data Extraction Process}
+
+The extraction process translates user selections into a structured data format:
+
+\begin{itemize}
+    \item \textbf{Hierarchy Flattening}: The tool traverses the selection hierarchy, combining metadata and data selections to construct records.
+    \item \textbf{Relation Mapping}: Parent-child relationships define how data fields relate, enabling the creation of relational tables.
+    \item \textbf{Data Transformation}: Cell values are extracted, and any necessary transformations (e.g., data type conversions, trimming whitespace) are applied.
+\end{itemize}
+
+\subsubsection{Export Formats}
+
+The tool supports exporting data in various formats:
+
+\begin{itemize}
+    \item \textbf{CSV Files}: Standard comma-separated values for compatibility with most data analysis software.
+    \item \textbf{JSON}: For applications requiring structured data with nested objects.
+    \item \textbf{Database Import}: Direct import into databases through connectors or by generating SQL scripts.
+\end{itemize}
+
+\subsection{Validation and Error Handling}
+
+To ensure data integrity:
+
+\begin{itemize}
+    \item \textbf{Input Validation}: The tool checks for invalid selections, such as overlapping ranges or circular hierarchies, and prompts users to correct them.
+    \item \textbf{Error Reporting}: Any issues encountered during parsing or exporting are reported with detailed messages to assist in troubleshooting.
+    \item \textbf{Undo/Redo Functionality}: Users can revert actions, encouraging experimentation without the risk of losing progress.
+\end{itemize}
+
+\subsection{Summary of Methodology}
+
+Our methodology focuses on combining technical innovations with user-centric design principles. By parsing Excel files at a granular level and accurately rendering their visual aspects, we enable users to interact with spreadsheets naturally. Performance optimizations ensure that the tool remains responsive, even with large datasets. The integrated user interface simplifies the data extraction process, making it accessible to users without programming expertise.
+
 
 
 \section{Methodology}
@@ -593,6 +821,8 @@ This relation can then be exported as a CSV file.
 
 
 \subsection{Serialisation}
+
+Ich habe eine softare entwickelt, die es ermöglicht, Daten aus Excel-Tabellen zu extrahieren. 
 
 %\begin{verbatim}
 %abstract class TaskList implements Built<TaskList, TaskListBuilder> {
