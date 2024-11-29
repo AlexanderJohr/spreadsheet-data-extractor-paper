@@ -101,28 +101,20 @@
 
 \maketitle
 
-
 \section{Introduction}
 
-Spreadsheets are ubiquitous tools used across various domains, including healthcare \cite{berndt2001healthcare}, nonprofit organizations \cite{singh2009numeric,west2008because}, finance, commerce, academia, and government \cite{dunn2010spreadsheets}. Despite their widespread use, analyzing and utilizing data stored in spreadsheets poses significant challenges due to their semi-structured nature. Data in spreadsheets are often formatted for human readability, employing layouts with empty cells, merged cells, hierarchical headers, and multiple tables, which hinder machine readability and automated data processing.
+Spreadsheets are ubiquitous tools used across various domains, including healthcare \cite{berndt2001healthcare}, nonprofit organizations \cite{singh2009numeric,west2008because}, finance, commerce, academia, and government \cite{dunn2010spreadsheets}. Despite their widespread use, analyzing and utilizing data stored in spreadsheets poses significant challenges due to their semi-structured nature. Data in spreadsheets are often formatted for human readability, employing layouts with empty cells, merged cells, hierarchical headers, and multiple tables, which hinder machine readability and automated data processing. While these unstructured formats have advantages—such as providing an easily comprehensible hierarchy of metadata for humans—they complicate automated data extraction.
 
-While unstructured data in spreadsheets have advantages—such as an easily comprehensible hierarchy of metadata for humans—the same features complicate automated data extraction.  
+Previous work by Alexander Aue, Norbert Röder, and Andrea Ackermann introduced a tool that facilitates data extraction from Excel files~\cite{alexander2024converting}. While effective, their solution faced performance issues and inaccuracies in rendering cell dimensions, limiting its usability with large and complex datasets.
 
-The objective of this work is to transform semi-structured spreadsheet data into machine-readable formats. Existing approaches often rely on heuristics, machine learning, or programming-by-example techniques, which may introduce errors or require significant Aufwand um diese Fehler zu finden und zu reparieren. To address these challenges, we present the Spreadsheet Data Extractor (SDE), a tool that enables users to define data hierarchies through cell selection without any programming knowledge.
+In this paper, we aim to transform semi-structured spreadsheet data into machine-readable formats by building upon their foundational work. We present the Spreadsheet Data Extractor (SDE), an enhanced tool that enables users to define data hierarchies through cell selection without any programming knowledge. Our enhancements address key limitations of the existing solution, making data extraction from complex spreadsheets more efficient and user-friendly.
 
 \subsection{Contributions}
 
-Our contributions are as follows:
+Our main contributions are as follows:
 
 \begin{enumerate} \item We release the SDE under the open-source GNU General Public License v3.0, promoting community access and collaboration. \item We implement incremental loading of worksheets to enhance performance, allowing the tool to handle large Excel files efficiently. \item We accurately render row heights and column widths by parsing XML data, ensuring that the spreadsheet's visual representation closely matches that of Excel. \item We optimize the rendering engine to draw only the visible cells, significantly improving performance when dealing with large datasets. \item We integrate the selection hierarchy, worksheet view, and output preview into a unified interface, streamlining the user experience. \end{enumerate}
 
-
-
-
-\section{Introduction}
- 
- 
-Previous work by Alexander Aue, Norbert Röder, and Andrea Ackermann introduced a tool that facilitates data extraction from Excel files.~\cite{alexander2024converting} While effective, this solution faced performance issues and inaccuracies in rendering cell dimensions, limiting its usability with large and complex datasets. In this paper, we build upon their foundational work by releasing the software under the open-source GNU Public License Version 3 (GPLv3) and introducing several key enhancements. These improvements include implementing incremental loading of worksheets to enhance performance, accurately rendering row heights and column widths by parsing XML data, and optimizing the rendering engine to handle large datasets efficiently. Additionally, we have integrated the selection hierarchy and worksheet view into a unified interface to improve user experience. These contributions collectively address the limitations of the existing solution, making data extraction from complex spreadsheets more efficient and user-friendly.
   
 
 \section{Related Work}
@@ -198,7 +190,7 @@ By combining the strengths of manual control with enhanced user interface featur
 
 
 
-In this section, we detail the design and implementation of the Spreadsheet Data Extractor (SDE), emphasizing its user-centric approach and performance optimizations. The SDE enables users to transform semi-structured spreadsheet data into structured, machine-readable formats without requiring programming expertise. We achieve this through an intuitive interface that allows for cell selection and hierarchy definition, incremental loading of worksheets, accurate rendering of cell dimensions, and optimized performance for handling large datasets by incrementally loading of worksheets and dadurch dass wir nur solche Zellen rndern, die in  der aktuellen ansicht auch sichtbar sind.
+In this section, we detail the design and implementation of the Spreadsheet Data Extractor (SDE), emphasizing its user-centric approach and performance optimizations. The SDE enables users to transform semi-structured spreadsheet data into structured, machine-readable formats without requiring programming expertise. We achieve this through an intuitive interface that allows for cell selection and hierarchy definition, incremental loading of worksheets, accurate rendering of cell dimensions, and optimized performance for handling large datasets by incrementally loading of worksheets and dadurch dass wir nur solche Zellen rendern, die in  der aktuellen ansicht auch sichtbar sind.
 
 \subsection{User-Centric Data Extraction}
 
@@ -216,12 +208,12 @@ To optimize the extraction process and reduce repetitive tasks, the SDE allows u
 
 \subsection{Example Workflow}
 
-Consider a spreadsheet containing statistical forecasts of future nursing staff availability in Germany \cite{destatis2024pflegekraefte}. The SDE interface consists of three main components (Figure~\ref{fig:nothing}):
+Consider a spreadsheet containing statistical forecasts of future nursing staff availability in Germany \cite{destatis2024pflegekraefte}. Figure~\ref{fig:nothing} shows the SDE interface, which consists of three main components:
 
 
 \textbf{Hierarchy Panel (Top Left):} Displays the hierarchy of cell selections, initially empty.
 
-\textbf{Spreadsheet View (Top Right):} Shows the currently opened Excel worksheet for cell selection.
+\textbf{Spreadsheet View (Top Right):} Shows the currently opened Excel file and the currently selected worksheet for cell selection.
 
 \textbf{Output Preview (Bottom):} Provides immediate feedback on the data extraction based on current selections.
 
@@ -233,12 +225,12 @@ Consider a spreadsheet containing statistical forecasts of future nursing staff 
 \end{figure}%
 
 
-\subsubsection{Step-by-Step Extraction:}
-
+ 
  
 
+\subsubsection{Selection of the first Column} 
 
-The user adds a node to the hierarchy and selects the cell containing the metadata "Nursing Staff" (Figure~\ref{fig:select_metadata}). Diese Zelle steht für eine Metainformation, welche die alle Zellen in diesem Arbeitsblatt gemeinsam haben. Daher sollte sie als erstes ausgewählt werden and should appear at the beginning of each row in the output CSV file.
+The user adds a node to the hierarchy and selects the cell containing the metadata "Nursing Staff" (Figure~\ref{fig:first_column}). Diese Zelle steht für eine Metainformation, welche die alle Zellen in diesem Arbeitsblatt gemeinsam haben. Daher sollte sie als erstes ausgewählt werden and should appear at the beginning of each row in the output CSV file.
 
  
 \begin{figure}[h]
@@ -251,28 +243,25 @@ The user adds a node to the hierarchy and selects the cell containing the metada
 
  
 
-Define Subtables:
+%Define Subtables:
 
-Within this node, the user adds a child node and selects the cell "Total" which serves both as a table header and a row label. This selection represents the first subtable.
-
-Select Row Labels:
-
-The user adds another child node and selects the range of cells containing row labels ("Total," "15-20," "20-25") by clicking the first cell and shift-clicking the last cell.
-
-Select Column Data:
-
-A child node is added under the row labels node, and the user selects the year "2024" and after that another child node is added under the year node and the user selects the corresponding data cells (e.g., "1673," "53," "154").
  
+Within this node, the user adds a child node and selects the cell "Total" which serves both as a table header and a row label. This selection represents the table header of the first subtable. The user adds another child node and selects the range of cells containing row labels ("Total," "15-20", "20-25", ...) by clicking the first cell and shift-clicking the last cell.
+A child node is added under the row labels node, and the user selects the year "2024" and after that another child node is added under the year node and the user selects the corresponding data cells (e.g., "1673," "53", "154", ...).
 Die Hierachie ist nun gefüllt mit 5 Knoten von denen jedes bis auf den letzten einen eingebetteten Kind-Knoten haben. Im bereich oben rechts werden die selektierten Zellen mit unterschiedlichen Farben für jeden Knoten angezeigt.
-
 Im unteren Bereich wird die Ausgabe angezeigt. Für jeden Knoten der als Kind eingebettet wird, erscheint in der ausgabe eine weitere Spalte. Sind in der Selektion nicht nur einzelnne Zellen angegeben, so erscheinen die werte der Liste auch in der Ausgabe als Werte in einer neuen Zeile.
 
+%Select Row Labels:
+
+
+%Select Column Data:
+
  
 
 
 
 
-Duplicate and Adjust Hierarchies:
+\subsubsection{Duplication of the Column Hierarchy} 
 
 To avoid repetitive manual entry for additional years, the user duplicates the hierarchy for "2024" and adjusts the cell selections to include data for subsequent years (e.g., "2025," "2026") using the "Move and Duplicate" feature.
 Dazu wird der Knoten der  ersten Spalte "2024" selektiert und darauf rechtsgegklickt. Ein Popup öffnet sich in dem die Aktion "move and duplicate" auftaucht, die nun geklickt werden sollte, wie in Abbildung \ref{fig:move_and_duplicate_2024} zu sehen ist.
@@ -301,10 +290,7 @@ This feature allows the user to shift cell selections horizontally or vertically
  
 Daraufhin öffnet sich in der App Bar oben rechts eine Reihe von schaltflächen, die erlauben die Zellenselektionen des Knotens sowie aller Kinderknoten zu verschieben wie in Abbildung \ref{fig:5_repetitions} zu sehen ist. Durch das drücken auf die Schaltfläche zum verschieben der Selektion um eine Einheit nach rechts, ist die nächste Spalte ausgewählt, jedoch wird würde damit auch die Selektion der ersten Spalte wieder aufgehoben, da die Selektion verschoben wurde. Damit auch die erste Spalte erhalten bleibt, kann die Checkbox "move and duplicate" aktiviert werden. Dadurch wird die verschobene Selektion zusätzlich zur ursprungsselektion erstellt. Die Änderungen werden allerdings erst übernommen wenn auf den Akzeptieren button geklickt wird. Die nächsten SPalten könnten auf die gleich Art und Weise ebenfalls selektiert werden. Doch das geht auch schneller, denn statt nur einmal die selektion zu verschieben und gleichzeitig zu duplizieren, kann auch das eingabefeld "repeat" mit so vielen Wiederholungen gefüllt werden, wie es Spalten gibt. Mit der Eingabe der Nummer 5 wird damit die Selektion der ersten Spalte 5 mal um eine Einheit nach rechts verschoben und dabei bei jeden Schritt dupliziert.
 
-
-
-Finalize Selection:
-
+ 
 The user reviews the selections in the spreadsheet view, where each selection is highlighted in a different color corresponding to its node in the hierarchy.
 Erst nachdem der Nutzer die verschobenen und duplizierten selektionen in der Worksheet ansieht überprüft hat und den Akzeptieren button geklickt hat, werden die Knoten in der Hierachie wie gewünscht angelegt. Das Ergebnis dieser Operation ist in Abbildung \ref{fig:move_accept} zu sehen.
 \begin{figure}[h]
@@ -322,18 +308,25 @@ Erst nachdem der Nutzer die verschobenen und duplizierten selektionen in der Wor
 
 
 
- 
- 
-\textbf{Cross Product Transformation:}
+
+\subsubsection{Duplicating the Table Hierarchy}
+
+The same method that worked effectively for duplicating the columns can now be applied to the subtables, as shown in Figure~\ref{fig:all_cells_selected}.
+
+\begin{figure}[h] \centering \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/all_cells_selected.png} \caption{Selection of all cells in the subtables by duplicating the hierarchy of the first table} \label{fig:all_cells_selected} \end{figure}
+
+By selecting the node with the value "Total" and clicking the "Move and Duplicate" button, we can apply the selection of the "Total" subtable to the other subtables. This involves shifting the table downward by as many rows as necessary to overlap with the subtable below.
+
+However, there is a minor issue: the child nodes of the "Total" node also include the column headers. If these column headers were repeated in the subtables below, shifting the selections downward would work without modification. Since these cells are not repeated in the subtables, we need to prevent the column headers cells from moving during the duplication process.
+
+To achieve this, we can exclude individual nodes from being moved by locking their selection. This is done by clicking the padlock icon on the corresponding nodes, which freezes their cell selection and keeps them fixed at their original position, regardless of other cells being moved.
+
+Therefore, we identify and select the nodes containing the column headers—specifically, the years 2024 to 2049—and lock their selection using the padlock button. By shifting the selection downward and duplicating it, we can easily move and duplicate the cell selections for the subtables below. By setting the number of repetitions to 2, all subtables are completely selected.
 
 
-Damit ist die erste Tabelle vollständig selektiert. Der daraus resultierende Graph ist in Abbildung \ref{fig:crossBefore} zu sehen. Zur vereinfachung ist das Beispiel auf die ersten 3 Spalten und die ersten 3 Zeilen der Tabelle beschränkt.
+\subsection{Cross Product Transformation}
 
-Once the hierarchy is defined, the SDE applies a cross product operation to generate a relational format from the selection graph. This involves:
-
-Node Duplication: Nodes with multiple edges (e.g., the row labels "Total," "15-20," "20-25") are duplicated so that each path in the graph represents a unique data row.
-
-Value Replication: Nodes with single values (e.g., the year "2024") are replicated to match the number values of the associated node , ensuring alignment in the output.
+The graph resulting from the selected hierarchy is shown in Figure~\ref{fig:crossBefore}. To simplify the explanation, the example is limited to the first three columns and the first three rows of the first sub-table.
 
 \begin{figure}[h]
   \centering
@@ -343,15 +336,17 @@ Value Replication: Nodes with single values (e.g., the year "2024") are replicat
 \end{figure}%
 
 
+Once the hierarchy is defined, the \textbf{Structured Data Engine (SDE)} applies a cross-product transformation to generate a relational format from the selection graph. This transformation consists of two key steps:
 
+\begin{enumerate}
+    \item \textbf{Node Duplication:}  
+    Nodes with multiple incoming or outgoing edges (e.g., the row labels node with the values \textit{Total}, \textit{15-20}, \textit{20-25}) are duplicated to ensure that each edge connects to a unique instance of the node. This adjustment replaces the original many-to-one relationships with one-to-one mappings for each edge.
+    
+    \item \textbf{Value Replication:}  
+    Nodes containing single values (e.g., the year \textit{2024}) are replicated to align with the number of values associated with the connected node. This ensures a consistent structure in the relational output, maintaining alignment across all hierarchical levels. 
+\end{enumerate}
 
- 
- 
-
-
-
-
-Um aus dem Selektionsgraphen ein relationales Format zu generieren wird darauf das cross product angewendet. Was dabei genau passiert ist in Abbildung \ref{fig:cross_after} zu sehen. Dort wo der Graph mehrere Kanten hat, was in dem Beispiel für den Knoten mit der Liste der Werte "Total", "15-20", "20-25" gilt, wird der Knoten so häufig dupliziert, wie es Kanten gibt, sodass jeder Knoten nur noch eine Kante zum nächsten Knoten hat. Darüber hinaus werden Knoten, die keine Liste von Werten enthalten, sondern nur einen Wert enthalten, in eine Liste umgewandelt und ihr Wert wird so häufig dupliziert, bis die anzahl dem Verknüpften Knoten entspricht. So wird in dem Beispiel der Knoten mit dem Wert "2024" in eine Liste mit den Werten "2024", "2024", "2024" umgewandelt, damit er die gleiche Anzahl an Werten hat wie der verknüpfte Knoten mit den Werten "1673", "154", "53".
+The resulting graph after the cross-product transformation is shown in Figure~\ref{fig:cross_after}. With this transformation applied to the selected hierarchy, the SDE generates a structured output that reflects the original spreadsheet's hierarchical relationships, enabling users to analyze and integrate the data effectively.
 
 \begin{figure}[h]
   \centering
@@ -359,113 +354,11 @@ Um aus dem Selektionsgraphen ein relationales Format zu generieren wird darauf d
   \caption{}
   \label{fig:cross_after}
 \end{figure}%
-
-
-
-
-
-
-Das gleiche was für die Spalten bereits so gut funktioniert hat, kann nun auch für die Untertabellen wiederholt werden, wie in Abbildung \ref{fig:all_cells_selected} zu sehen ist.
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/all_cells_selected.png}
-  \caption{}
-  \label{fig:all_cells_selected}
-\end{figure}%
-
-Durch das Selektieren des Knotens mit dem Wert "Total" und das drücken auf die Schaltfläche "move and duplicate" kann die Selektion der Untertabelle "Total" auf die anderen Untertabellen angewendet werden. Dazu muss die Tabelle um so viele Zeilen nach unten verschoben werden, bis sie mit der untertabelle überlappt  Dabei gibt es nur ein kleines Problem. Denn zu den Unterknoten des Knotens "Total" gehören auch die Spaltenheader dazu. Würden diese Spaltenheader in der Untertabelle darunter wiederholt werden, würde das verschieben der Selektionen nach unten unverändert funktionieren. Doch dadurch, dass diese Zellen in den untertabellen nicht wiederholt werden, , muss dafür gesorgt werden, dass sich die Zellen mit den Spaltenheadern daran gehindert werden sich durch die funkion zum verschieben und kopieren mit verschoben werden. Zu diesem Zweck können einzelne Knoten von der verschiebung ausgenommen werden, dazu muss lediglich das Vorhägeschlock button geklickt werden, wodurch die Zellselektion nicht mehr in der verschiebung enthalten ist. Sie bleibt starr an ihrem ursprungsort, egal ob die anderen Zellen verschoben werden. Desshalb werden nun die Knoten mit den SPaltenheadern, also die mit  den Jahreszahlen 2024 bis 2049 identifiziert und selektiert und über den button mit dem Vorhängeschloss die Zellselektion die starr bleibt. Durch das verschieben nach unten und durch das damit verbundene duplizieren können nun sehr einfach die Zellselektionen nach unten verschoben und dupliziert werden. Durch das einsellen von 2 Wiederholungen werden alle untertabellen komplett ausgewählt.
  
-\subsection{Inkrementelles laden der Excel Dateien. }
 
 
 
-Wenn excel Dateien öffnet, dann lädt es zunächst die gesamte Datei mit allen Arbeitsblättern, bevor das erste Arbeitsblatt zur Darstellung gebracht wird. Bei Dateien, die sehr große Arbeitsblätter enthalten, kann dies einige Sekunden bis Minuten dauern. Den Benutzer, das extrahieren aus einer. Anzahl von Excel Dateien zu erleichtern, implementierten wir einen Mechanismus zum Inkrementellen Laden von Excel Arbeitsblättern
 
-
-Eine exe Datei ist ein zip Archiv, welches einer Reihe an XML Dateien enthält, die die Workshits die Formatierungen und wiederkehrende Texte beschreiben. Unsere Lösung öffnet zunächst das Archiv und extrahiert nur die Metainformationen der einzelnen darin verpackten Dateien. Dieser Schritt dauert nur wenige millisekunden, die meiste Zeit geht stattdessen dabei drauf, die einzelnen eingebetteten Dateien wie die sharedStrings.xml Datei, die styles.xml Datei oder die einzelnen sheetX.xml Dateien zu, extrahieren. Da sowohl die Formatierungen aus der styles.xml Datei, als auch die wiederkehrenden String aus der sharedStrings.xml Datei im so gut wie jedem worksheet auftauchen, extrahieren wir diese auch gleich beim öffnen der Datei. Diese beiden Dateien sind im vergleich zu den Worksheet Datei aber relativ klein und das entpacken ällt daher nicht stark ins gewicht. Die sheetX.xml Datei lassen wir aber zunächst unverpackt und speichern im Arbeitsspeicher lediglich die Verpackte Datei zwischen. Erst wenn eine beliebige Zelle in dem Worksheet von unserem Programm abgefragt wird, entweder weil der Benutzer den Worksheet durch einen Klick darauf zur anzeige gebracht hat, oder weil ein Unittest die Werte einer Excel Datei überprüft, wird im Hintergrund auch erst die Archivdatei des Arbeitsblattes extrahier. Auf diese Weise wartet der Nutzer bei öffnen einer Excel Datei nur einen Bruchteil einer Sekunde,  bevor er mit dem Programm weiterarbeiten kann wohingegen Excel bei außergewöhnlich großen Dateien einige Sekunden benötigen kann, bis das erste Arbeitsblatt angezeigt werden kann. 
-
-Öffnet der Benutzer ein anderes Arbeitsblatt, so wird auch dieses erst beim Zugriff auf das Arbeitsblatt gepasst. Diese Vorgehensweise ermöglicht es uns jede Excel Datei nahezu sofort dem Benutzer zur Anzeige zu bringen und ihm keine Wartezeiten im Öffnen der.Excel Dateien zuzumuten.
-
-
-\subsection{Darstellung der Arbeitsblätter}
-
-
-Damit der Benutzer keine Schwierigkeiten hat, sich im Worksheet zurechtzufinden, legen wir großen wert darauf, die Arbeitsblätter so anzuzeigen, dass sie der Anzeige in Excel sehr nahe kommen.
-
-\subsubsection{Anzeige der Höhe und Breite}
-
-Unsere Lösung extrahiert die Informationen über die Spaltenbreiten aus dem \textit{width} Attribut der \textit{col}-knoten und die Zeilenhöhen aus dem \textit{ht} Attribut der \textit{row} Knoten aus der sheetX.xml Dateien. Dabei ist darauf zu achten, dass in Excel die Spaltenbreiten und Zeilenhöhen in Excel Einheiten gemessen werden. Diese müssen mit einem Faktor mit multipliziert werden, um die tatsächliche Höhe oder Breite in Pixeln zu erhalten. Wichtig dabei zu betrachten ist, dass dieser Faktor für die Spaltenbreiten und die Zeilenhöhen jeweils unterschiedlich ist. Damit die Spaltenbreite genauso bereit erscheint, wie sie in Excel erscheint, muss die angegebene Einheit in der XML Datei mit dem Faktor 7 multipliziert werden. Um die tatsächliche Zeilenhöher in Pixeln zu erreichen, muss dagegen der Faktor 4/3 mit dem Wert der in der Excel Datei angegeben wird, multipliziert werden. Die Werte haben wir durch eine Reihe von Tests ermittelt, indem wir Excel Dateien mit unterschiedlich großen Zellen erstellt haben und dann in der Worksheet Datei die Werte der Spaltenbreiten und Zeilenhöhen abgelesen haben. Nachdem wir nach einer Reihe solcher tests die Werte eine schätzung der Werte ermittelt haben, haben wir die Breiten und Höhen in den Arbeitsblätter modifiziert und die Excel Datei geöffnet um die Breiten und höhen zu messen und zu verifizieren, dass unsere Schätzung korrekt war.
-
-Wie es zu den Unterschiedlichen Faktoren für die Zeilenhöhe und die Spaltenbreite kommt, konnten wir dagegen nicht durch Recherche herrausfinden. 
-
-Durch das anwenden dieser Faktoren können wir die Spaltenbreiten und Zeilenhöhen so genau wie möglich darstellen, wie sie in Excel dargestellt werden.
-
-\subsubsection{Formatierungen}
-
-Die Formatierungen der Zellen werden in der styles.xml Datei gespeichert. In dieser Datei werden die Formatierungen in Form von Stilen gespeichert, die dann in der sheetX.xml Datei referenziert werden. Dieser Index verweist auf den entsprechenden \textit{xf}-Knoten im \textit{cellStyleXfs} Knoten. Diese \textit{xf}-Knoten enthalten wiederum Indeces der Schriftart, Hintergrundfarbe und Border über die Attribute \textit{fontId}, \textit{fillId} und \textit{borderId}, welche auf die entprechenden \textit{font}-Knoten im  \textit{fonts}-Knoten, die \textit{fill}-Knoten im \textit{fills}-Knoten und die \textit{border}-Knoten im \textit{borders}-Knoten verweisen. Diese Informationen nutzen wir, um die Zellen so genau wie möglich darzustellen, wie sie in Excel dargestellt werden.   
-
-\subsubsection{Overflow}
-
-Genau wie in Excel auch achten wir darauf, dass Texte, die  nicht in die Zelle hineinpassen durch einen Overflow in die anliegenden Zellen hineinragen. Doch das geschiet nur, wenn die anliegenden Zellen nicht selbst Werte enthalten. In dem Fall, dass die anliegenden Zellen Werte enthalten, wird der Text abgeschnitten.
-Dieses verhalten armen wir nach um die visuelle representation der Excel Datei so genau wie möglich nachzubilden.
-
-Abbildung \ref{fig:overflow} zeigt, wie es aussieht, wenn man das nicht umsetzt. Der Text "Nursing Staff" ragt in die Zelle hinein, die rechts daneben liegt. In Excel würde der Text in die Zelle hineinragen, die rechts daneben liegt, wenn diese Zelle leer ist. In unserem Programm wird der Text abgeschnitten, wenn die Zelle rechts daneben einen Wert enthält.
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/overflow.png}
-  \caption{}
-  \label{fig:overflow}
-\end{figure}%
-
-
-
-\subsection{Performance}
-
-Um hohe bildwiederholraten  auch bei großen Arbeitsblätter zu gewährleisten, haben wir den Spreadsheet Data extractor so optimiert, dass er nur die Zellen Zeichnet , die auch tatsächlich sichtbar sind. Zu diesem zweck nutzen wird die seit Aug 17, 2023 erstmals erschiene package two\_dimensional\_scrollables.
-\cite{flutter_packages_2024}.
-
-Da wir alle  Spaltenbreiten und Zeilen Höhen aus den xml Dateien extrahieren, können wir diese Nutzen um zu berechnen, wie hoch und wie breit jede zelle ist und indem die breiten bzw höhen aufaddiert werden können wir auch berechnen an welcher koordinate sich die Zelle befindet. Die Koordinaten und  breiten und höhen lkönnen dann genutzt werden um zu berechnen, welche Zellen aktuell sichtbar sind und alle anderen Zellen beim Zeichnen  ignorieren. Dazu wird das aktuelle Scroll Offset in der x und y Achse berücksichtigt. Durch die Höhe und breite des Panels, welches das Excel Arbeitsblatt anzeigt, wird ein viewport aufgespannt, über den berechnet werden kann, welche Zellen darin sichtbar sind und welche außerhalb dieses viewports liegen. Welche Zellen aktuell sichtbar sind Indem die Spaltenbreiten so lange addiert werden, bis  die Summe die linke Kante des Viewports erreicht. Alle Zellen links davon werden beim Zeichnen ignoriert. Weiterhin werden die Spaltenbreite Breiten weiter addiert, bis sie die rechte Kante des Viewports erreicht.Alles Zellen rechts davon werden beim Zeichnen ignoriert. Weiterhin werden die Zeilenhöhen entweder aus der Standard Höhe.Des Arbeitsblattes oder über die Benutzer definierten Höhen der Zeilen extrahiert und so lange aufaddiert, bis die Summe die obere Kante des Viewports erreicht.Alle Zellen, die oberhalb dieser Kante liegen, werden beim Zeichnen ignoriert.Die Zeilenhöhen werden weiter aufaddiert, bis sie die.Unsere Kante des Viewports erreicht.Nur diese Zellen werden gezeichnet. Alle Zellen unterhalb dieser Kante werden ignoriert.
-
-das two\_dimensional\_scrollables package bietet eine Funktion, die es erlaubt, die sichtbaren Zellen zu berechnen und nur diese zu zeichnen.
-in Dieser Funktion werden das horizontalOffset und das verticalOffset und die viewportWidth und die viewportHeight als Parameter übergeben, die die Position des Viewports in der x und y Achse beschreiben und die genutzt werden kann um daran die sichtbaren zellen zu berechnen.
-Der Algorithmus zum berechnen der sichtbaren Zellen ist in Algorithmus 1 dargestellt.
-  
-\begin{algorithm}
-  \caption{Layout Spreadsheet Cells in Grid}
-  \begin{algorithmic}[1]
-  \STATE \textbf{Initialize Indices}
-  \STATE \quad \textit{leadingColumnIndex} $\leftarrow$ column index based on \textit{horizontalOffset}
-  \STATE \quad \textit{leadingRowIndex} $\leftarrow$ row index based on the \textit{verticalOffset}
-  \STATE \quad \textit{trailingColumnIndex} $\leftarrow$ column index based on \textit{horizontalOffset} + the \textit{viewportWidth}
-  \STATE \quad \textit{trailingRowIndex} $\leftarrow$ row index based on the \textit{verticalOffset} + the \textit{viewportHeight}
-  
-  \STATE \textbf{Calculate Offsets}
-  \STATE \quad \textit{leadingColumnOffset} $\leftarrow$ sum of widths from the first column to \textit{leadingColumnIndex}
-  \STATE \quad \textit{leadingRowOffset} $\leftarrow$ sum of heights from the first row to \textit{leadingRowIndex}
-  \STATE \quad \textit{horizontalLayoutOffset} $\leftarrow$ \textit{leadingColumnOffset} $-$ \textit{horizontalOffset}
-  
-  \FOR{each \textit{columnIndex} from \textit{leadingColumnIndex} to \textit{trailingColumnIndex}}
-      \STATE \quad \textit{verticalLayoutOffset} $\leftarrow$ \textit{leadingRowOffset} $-$ \textit{verticalOffset}
-      
-      \FOR{each \textit{rowIndex} from \textit{leadingRowIndex} to \textit{trailingRowIndex}}
-          \STATE \quad \textit{child} $\leftarrow$ build the child for the \textit{columnIndex} and \textit{rowIndex} or obtain the cached one
-          \STATE \quad layout the \textit{child} using the current \textit{horizontalLayoutOffset} and \textit{verticalLayoutOffset}
-          
-          \IF{the row for \textit{rowIndex} exists in the worksheet row definitions}
-              \STATE \quad \textit{verticalLayoutOffset} $\leftarrow$ \textit{verticalLayoutOffset} + height of the row for \textit{rowIndex}
-          \ELSE
-              \STATE \quad \textit{verticalLayoutOffset} $\leftarrow$ \textit{verticalLayoutOffset} + \textit{defaultRowHeight}
-          \ENDIF
-      \ENDFOR
-      \STATE \quad \textit{columnWidth} $\leftarrow$ width of the column for \textit{columnIndex}
-      \STATE \quad \textit{horizontalLayoutOffset} $\leftarrow$ \textit{horizontalLayoutOffset} + \textit{columnWidth}
-  \ENDFOR
-  \end{algorithmic}
-  \end{algorithm}
-
- 
 
 
 
@@ -475,6 +368,144 @@ Der Algorithmus zum berechnen der sichtbaren Zellen ist in Algorithmus 1 dargest
 
  
 
+\subsection{Incremental Loading of Worksheets}
+
+Opening large Excel files traditionally involves loading the entire file and all its worksheets into memory before displaying any content. In files containing very large worksheets, this process can take several seconds to minutes, causing significant delays for users who need to access data quickly.
+
+To facilitate efficient data extraction from multiple Excel files, we implemented a mechanism for incremental loading of worksheets within the SDE.
+
+Excel files (\texttt{.xlsx} format) are ZIP archives containing a collection of XML files that describe the worksheets, styles, and shared strings. Key components include:
+
+\begin{itemize}
+    \item \textbf{\texttt{xl/sharedStrings.xml}}: Contains all the unique strings used across worksheets, reducing redundancy.
+    \item \textbf{\texttt{xl/styles.xml}}: Defines the formatting styles for cells, including fonts, colors, and borders.
+    \item \textbf{\texttt{xl/worksheets/sheetX.xml}}: Represents individual worksheets (\texttt{sheet1.xml}, \texttt{sheet2.xml}, etc.).
+\end{itemize}
+
+Our solution opens the Excel file as a ZIP archive and initially extracts only the essential metadata and shared resources required for the application to function. This initial extraction includes:
+
+\begin{enumerate}
+    \item \textbf{Metadata Extraction}:
+
+    We read the archive's directory to identify the contained files without decompressing them fully. This step is quick, taking only a few milliseconds, and provides information about the available worksheets and shared resources.
+
+    \item \textbf{Selective Extraction}:
+
+    We immediately extract \texttt{sharedStrings.xml} and \texttt{styles.xml} because these files are small and contain information necessary for rendering cell content and styles across all worksheets. These files are parsed and stored in memory for quick access during rendering.
+
+    \item \textbf{Deferred Worksheet Loading}:
+
+    The individual worksheet files (\texttt{sheetX.xml}) remain compressed and are loaded into memory in their binary unextracted form. They are not decompressed or parsed at this stage.
+
+    \item \textbf{On-Demand Parsing}:
+
+    When a user accesses a specific worksheet—either by selecting it in the interface or when a unit test requires data from it—the corresponding \texttt{sheetX.xml} file is then decompressed and parsed. This parsing occurs in the background and is triggered only by direct user action or programmatic access to the worksheet's data.
+
+    \item \textbf{Memory Release}:
+
+    After a worksheet has been decompressed and its XML parsed, we release the memory resources associated with the parsed data. This approach prevents excessive memory usage and ensures that the application remains responsive even when working with multiple large worksheets.
+\end{enumerate}
+
+By adopting this incremental loading approach, users experience minimal wait times when opening an Excel file. The initial loading is nearly instantaneous, allowing users to begin interacting with the application without delay. This contrasts with traditional methods that require loading all worksheets upfront, leading to significant wait times for large files.
+
+ 
+ 
+\subsection{Rendering of Worksheets}
+
+To ensure that users can navigate worksheets without difficulty, we prioritize displaying the worksheets in a manner that closely resembles their appearance in Excel. This involves accurately rendering cell dimensions, formatting, and text behaviors.
+
+\subsubsection{Displaying Row Heights and Column Widths}
+
+Our solution extracts information about column widths and row heights directly from the Excel file's XML structure. Specifically, we retrieve the column widths from the \textit{width} attribute of the \texttt{<col>} elements and the row heights from the \textit{ht} attribute of the \texttt{<row>} elements in the \texttt{sheetX.xml} files.
+
+In Excel, column widths and row heights are measured in units that do not directly correspond to pixels. Therefore, these values must be converted to pixel units for accurate on-screen rendering. We discovered that different scaling factors are needed for columns and rows:
+
+\begin{itemize} \item \textbf{Column Widths}: To convert the Excel column width to pixels, we multiply the width value by a factor of 7. This factor aligns the rendered column widths with their appearance in Excel.
+
+ 
+\[
+\text{Column Width in Pixels} = \text{Excel Column Width} \times 7
+\]
+
+\item \textbf{Row Heights}: For row heights, we multiply the height value by a factor of \(\frac{4}{3}\) to obtain the pixel height.
+
+\[
+\text{Row Height in Pixels} = \text{Excel Row Height} \times \frac{4}{3}
+\]
+\end{itemize}
+
+We determined these scaling factors empirically through a series of tests. We created Excel files with cells of various sizes and examined the corresponding XML files to observe the recorded width and height values. By comparing the rendered sizes in Excel with the values in the XML, we derived the appropriate scaling factors. We then verified our calculations by adjusting the width and height values in the XML files and observing the effects in Excel.
+
+Despite extensive research, we could not find official documentation explaining the rationale behind these specific scaling factors. This lack of documentation poses a challenge for accurately replicating Excel's rendering. Nevertheless, by applying these empirically derived factors, we can render the column widths and row heights to closely match Excel's display, enhancing the user's familiarity and ease of use.
+
+\subsubsection{Cell Formatting}
+
+Cell formatting plays a crucial role in accurately representing the appearance of worksheets. Formatting information is stored in the \texttt{styles.xml} file, where styles are defined and later referenced in the \texttt{sheetX.xml} files.
+
+Each cell in the worksheet references a style index through the \textit{s} attribute, which points to the corresponding \texttt{<xf>} (Extended Format) element within the \texttt{cellXfs} collection. These \texttt{<xf>} elements contain attributes such as \textit{fontId}, \textit{fillId}, and \textit{borderId}, which reference specific font, fill (background), and border definitions located in the \texttt{fonts}, \texttt{fills}, and \texttt{borders} collections, respectively. By parsing these references, we can accurately apply the appropriate fonts, background colors, and border styles to each cell.
+
+ Through meticulous parsing and application of these formatting details, we ensure that the rendered worksheet closely mirrors the original Excel file, preserving the visual cues and aesthetics that users expect.
+\subsubsection{Handling Text Overflow}
+
+In Excel, when the content of a cell exceeds its width, the text may overflow into adjacent empty cells, provided those cells do not contain any data. If adjacent cells are occupied, Excel truncates the overflowing text at the cell boundary. Replicating this behavior is essential for accurate rendering and user familiarity.
+
+We implemented text overflow handling by:
+
+To implement this, we check if the adjacent cell to the right is empty before allowing text to overflow. If the adjacent cell is empty, we extend the text rendering. If the adjacent cell contains data, we truncate the text at the boundary of the original cell.
+
+Figure \ref{fig:nothing} illustrates this behavior. The text "Supply of Nursing Staff ..." extends into the neighboring cell because it is empty. If not for this handling, the text would be truncated at the cell boundary, leading to incomplete data display as shown in Figure \ref{fig:overflow}.
+
+\begin{figure}[h] \centering \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/overflow.png} \caption{Handling of text overflow in cells with adjacent empty or occupied cells} \label{fig:overflow} \end{figure}
+
+By accurately handling text overflow, we improve readability and maintain consistency with Excel's user interface, which is crucial for users transitioning between Excel and our tool.
+
+
+\subsection{Performance Optimization}
+
+To ensure high frame rates even with large worksheets, we optimized the Spreadsheet Data Extractor to render only the cells that are currently visible to the user. Rendering the entire worksheet, especially when it contains thousands of cells, can significantly degrade performance. By focusing on the visible cells within the viewport, we reduce computational overhead and improve responsiveness.
+
+We achieve this optimization by utilizing the \texttt{two\_dimensional\_scrollables} package \cite{flutter_packages_2024}, which was first released on August 17, 2023. This package provides functionality for efficiently handling two-dimensional scrolling regions, making it suitable for rendering large grids like spreadsheets.
+
+Since we extract all column widths and row heights from the XML files, we can calculate the exact dimensions and positions of each cell. By accumulating the widths and heights, we determine the coordinates of each cell within the worksheet grid. These coordinates are essential for identifying which cells fall within the current viewport and should be rendered.
+
+We consider the current scroll offsets along the horizontal ($x$-axis) and vertical ($y$-axis) directions. The viewport is defined by the width and height of the panel displaying the Excel worksheet. To determine the visible cells, we perform the following steps:
+
+\begin{itemize} \item \textbf{Horizontal Visibility}: \begin{itemize} \item Sum the column widths until the accumulated sum reaches the left edge of the viewport. All cells to the left are ignored. \item Continue adding column widths until the sum exceeds the right edge of the viewport. Cells beyond this point are also ignored. \end{itemize} \item \textbf{Vertical Visibility}: \begin{itemize} \item Sum the row heights until the accumulated sum reaches the top edge of the viewport. All cells above are ignored. \item Continue adding row heights until the sum surpasses the bottom edge of the viewport. Cells below this point are ignored. \end{itemize} \end{itemize}
+
+By rendering only the cells within these boundaries, we significantly reduce the number of cells processed at any given time.
+
+The \texttt{two\_dimensional\_scrollables} package provides interfaces where the logic for laying out the cells can be implemented. Parameters that describe the viewport, including the horizontal and vertical offsets as well as the viewport height and width, are supplied by these interfaces.
+
+Algorithm~\ref{alg:layout_cells} outlines the method for calculating and laying out the visible cells.
+
+\begin{algorithm} \caption{Layout of Visible Spreadsheet Cells} \label{alg:layout_cells} \begin{algorithmic}[1] \STATE \textbf{Initialize Indices} \STATE \quad $\mathit{leadingColumnIndex} \leftarrow$ column index corresponding to $\mathit{horizontalOffset}$ \STATE \quad $\mathit{leadingRowIndex} \leftarrow$ row index corresponding to $\mathit{verticalOffset}$ \STATE \quad $\mathit{trailingColumnIndex} \leftarrow$ column index corresponding to $\mathit{horizontalOffset} + \mathit{viewportWidth}$ \STATE \quad $\mathit{trailingRowIndex} \leftarrow$ row index corresponding to $\mathit{verticalOffset} + \mathit{viewportHeight}$
+
+\STATE \textbf{Calculate Initial Offsets} \STATE \quad $\mathit{leadingColumnOffset} \leftarrow$ sum of widths from the first column up to $\mathit{leadingColumnIndex}$ \STATE \quad $\mathit{leadingRowOffset} \leftarrow$ sum of heights from the first row up to $\mathit{leadingRowIndex}$ \STATE \quad $\mathit{horizontalLayoutOffset} \leftarrow \mathit{leadingColumnOffset} - \mathit{horizontalOffset}$
+
+\FOR{each $\mathit{columnIndex}$ from $\mathit{leadingColumnIndex}$ to $\mathit{trailingColumnIndex}$} \STATE \quad $\mathit{verticalLayoutOffset} \leftarrow \mathit{leadingRowOffset} - \mathit{verticalOffset}$
+
+ 
+\FOR{each $\mathit{rowIndex}$ from $\mathit{leadingRowIndex}$ to $\mathit{trailingRowIndex}$}
+    \STATE \quad $\mathit{cell} \leftarrow$ build or retrieve the cell at ($\mathit{columnIndex}$, $\mathit{rowIndex}$)
+    \STATE \quad Layout $\mathit{cell}$ at position ($\mathit{horizontalLayoutOffset}$, $\mathit{verticalLayoutOffset}$)
+
+    \IF{a custom height is defined for row $\mathit{rowIndex}$}
+        \STATE \quad $\mathit{verticalLayoutOffset} \leftarrow \mathit{verticalLayoutOffset} +$ height of row $\mathit{rowIndex}$
+    \ELSE
+        \STATE \quad $\mathit{verticalLayoutOffset} \leftarrow \mathit{verticalLayoutOffset} + \mathit{defaultRowHeight}$
+    \ENDIF
+\ENDFOR
+\STATE \quad $\mathit{columnWidth} \leftarrow$ width of column $\mathit{columnIndex}$
+\STATE \quad $\mathit{horizontalLayoutOffset} \leftarrow \mathit{horizontalLayoutOffset} + \mathit{columnWidth}$
+\ENDFOR \end{algorithmic} \end{algorithm}
+
+By applying this method, we render only the cells necessary for the current view, thereby optimizing performance and ensuring smooth user interactions even with large and complex worksheets.
+
+
+
+
+
+
 
  
 
@@ -482,63 +513,69 @@ Der Algorithmus zum berechnen der sichtbaren Zellen ist in Algorithmus 1 dargest
  
 
 
-
+ 
 \section{Evaluation}
-Der Ansatzes des Spreadsheet Data Extractors aus sich auf dem Converter von Alexander Aue et al. auf dem wier aufbauen nicht verändert. Die effektivität dieses Ansatzen wurde   bereits untetsucht. Sie haben die Extraktion von Daten aus über 500 Excel Dateien evaluiert. Die Zeit, die für jede Datei benötigt wurde, wurde aus einer Stichprobe von 331 verarbeiteten Excel Dateien bestimmt, die 3.093 Arbeitsblätter umfassen. Im Durchschnitt benötigten die studentischen Hilfskräfte 15 Minuten pro Datei und 95 Sekunden pro Arbeitsblatt.
 
-Wir konzentrieren uns auf die verbesserung der Benutzererfahrung und die Optimierung der Leistung des Spreadsheet Data Extractors. Die Benutzererfahrung durch die Darstellung der Excel-Arbeitsblätter ähnlich wie sie auch in Excel dargestellt werden vereinfacht und die anzahl der nötigen klickts durch die vereinigung der Benutzeroberflächen für  die Selektionshierachie, dem Worksheet-View und der Vorschau der Ausgabe in einem View verringert. Die Leistung wurde durch das inkrementelle laden der Excel Dateien und das nur zeichnen der sichtbaren Zellen verbessert.	
+The fundamental approach of the Spreadsheet Data Extractor, based on the converter by Alexander Aue et al.~\cite{alexander2024converting}, upon which we build, remains unchanged. The effectiveness of this approach has already been investigated. Aue et al. evaluated the extraction of data from over 500 Excel files. The time required for each file was determined from a sample of 331 processed Excel files comprising 3,093 worksheets. On average, student assistants needed 15 minutes per file and 95 seconds per worksheet.
 
-\subsection{beschleunigung beim öffnen der Datei}
- Zum evaluieren der beschleunigung beim öffnen der Datei haben wir eine Reihe von Tests durchgeführt. Wir haben den gesamten Datensatz an Exceldateien von Destatis heruntergeladen und die größte Datei identifiziert. Mithilfe eines VBA Scriptes haben wir diese Exceldatei geöffnet und Werte in einem Arbeitsblatt ausgelesen. Dieser Test wurde 10 mal wiederholt und die Zeit gemessen, die benötigt wurde, um die Datei zu öffnen und die Werte auszulesen. Ein Equivalent dieses Scriptes haben wir als Unit Test geschrieben welcher dieselbe Datei mit der für den Spreadsheet Data Extrator implementierten Funktionen öffnet und dieselben Zellen aussliest Die Ergenisse dieser Laufzeiten sind in Abbildung putput zu sehen.
+Our focus is on improving the user experience and optimizing the performance of the Spreadsheet Data Extractor. We enhanced the user experience by displaying the Excel worksheets similarly to how they appear in Excel, and by reducing the number of required clicks through the integration of the selection hierarchy, worksheet view, and output preview into a single interface. Performance was improved by implementing incremental loading of Excel files and rendering only the visible cells.
+
+\subsection{Acceleration When Opening Files}
+
+To evaluate the performance improvements when opening Excel files, we conducted a series of tests using a large Excel file. We downloaded the entire collection of Excel files from the German Federal Statistical Office (Destatis)\footnote{\url{https://www.destatis.de}}, which provides extensive statistical data across various domains. From this collection, we identified the largest file~\cite{destatis_rechnungsergebnis_2024}, which has a compressed size of 87~MB and an uncompressed size of 911~MB.
+
+We performed three sets of tests to compare the performance of different methods for opening and reading data from this Excel file:
+
+\begin{enumerate} \item \textbf{VBA Script in Excel}: We wrote a VBA script that opens the Excel file and reads specific values from a worksheet. This script simulates how users might interact with the file using Excel's built-in capabilities. We ran this script 10 times, measuring the time required to open the file and read the values in each iteration.
+
+\item \textbf{Spreadsheet Data Extractor}: We developed an equivalent unit test using the functions implemented in our Spreadsheet Data Extractor to open the same file and read the same cells. This test aimed to assess the performance of our tool under the same conditions. We repeated this test 10 times, recording the runtime for each execution.
+
+\item \textbf{\texttt{excel} Package}: We tested the \texttt{excel} package used by Alexander Aue et al.~\cite{alexander2024converting}, creating a unit test that attempts to read the same cells from the file. This test was intended to benchmark the performance of the prior solution. However, due to limitations with the package, we encountered an out-of-memory exception during the second run; therefore, only the time from the first run was recorded.
+\end{enumerate}
+
+All tests were conducted on a machine with the following specifications: Intel Core i5-10210U quad-core CPU at 1.60~GHz, 16~GB RAM, and a solid-state drive (SSD), running Windows 10 Pro. The version of Microsoft Excel used was Microsoft Office LTSC Professional Plus 2021.
+
+The results of these runtime measurements are presented in Figure~\ref{fig:boxplot_run_times_to_open_worksheet}.
+
+The Spreadsheet Data Extractor opened the worksheet with a median time of 120milliseconds and an average time of 178milliseconds. The first run took 668~milliseconds, possibly because the file was not yet cached and had to be loaded from the disk.
+
+In contrast, Excel opened the worksheet with a median time of 40.281~seconds and an average time of 41.138~seconds.
+
+The Dart \texttt{excel} package used in the previous work took 13minutes and 15seconds to open the worksheet in the first run. The other nine runs could not be completed because an out-of-memory exception was thrown during the second run.
+
+These results demonstrate that the Spreadsheet Data Extractor opens worksheets over two orders of magnitude faster than Excel and nearly four orders of magnitude faster than the Dart \texttt{excel} package used in prior work.
+
+\begin{figure}[h] \centering \includegraphics[width=\textwidth]{charts/boxplot_run_times_to_open_worksheet.pdf} \caption{Boxplot of worksheet opening times comparing the Spreadsheet Data Extractor, Excel, and the Dart \texttt{excel} package} \label{fig:boxplot_run_times_to_open_worksheet} \end{figure}
  
-Der Spreadsheet Data Extractor öffnete das Arbeitsblatt im median in 120 Millisekunden, im Durchschnitt  178 Millisekunden und im ersten durchlauf 668 Millisekunden, was durduch sein kann, weil die Datei noch nicht im Cache war und erst von der Festplatte geladen werden musste.
+\section{Future Work}
 
-Excel öffnete das Arbeitsblatt im median in 40 und 281 Millisekunden, im Durchschnitt  41 Sekunden und 138 Millisekunden.
+We plan to continue improving the Spreadsheet Data Extractor by implementing new features that enhance the user experience and address current limitations. One such improvement is the correct rendering of text aligned using Excel's "Center Across Selection" horizontal alignment.
 
-Das dart package brauchte im ersten durchlauf 13 Minuten und 15 Sekunden zum öffnen des Arbeitsblattes. Die 9 anderen Durchläufe konnten nicht abgeschlossen werden da während des zweiten durchlaufs eine Out of Memory Exception geworfen wurde.
+In parallel, we intend to test the tool on additional datasets to further evaluate its effectiveness and efficiency.
 
-Damit öffnete der  Spreadsheet Data Extractor das Arbeitsblatt over two orders of magnitude faster than Excel and nearly four orders of magnitude faster than the excel package used in prior work. 
- 
-Die Ergebnisse sind in \ref{fig:boxplot_run_times_to_open_worksheet} zu sehen.
+\subsection{Implementing "Center Across Selection"}
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\textwidth]{charts/boxplot_run_times_to_open_worksheet.pdf}
-  \caption{}
-  \label{fig:boxplot_run_times_to_open_worksheet}
-\end{figure}%
+Despite our efforts to replicate the display of Excel files as accurately as possible, there are still some differences between Excel's rendering and that of our Spreadsheet Data Extractor. These discrepancies are unintentional and can be resolved with further development. One such difference is illustrated in Figure~\ref{fig:center}. In Excel, the texts "Nursing Staff" and "Year" are centered across the entire column header, whereas in our tool, they are left-aligned.
 
+Although we parse merged cells—which are commonly used in Excel to center text across multiple cells—the worksheet in question does not use merged cells for this visual representation. Instead, the first cell has a horizontal alignment that is set to \texttt{centerContinuous}. Our previous attempts to determine the cell coordinates over which this horizontal centering extends have been unsuccessful. Further testing and research are necessary to understand how such centered texts are stored in the Excel file's XML structure.
 
+\begin{figure}[h] \centering \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/center.png} \caption{Illustration of the text alignment "Center Across Selection" Excel} \label{fig:center} \end{figure}
 
-\section{Outlook}
+\subsection{Evaluation on Real-World Data}
 
-Wir haben vor den Spreadsheet Data Extractor weiter zu verbessern. Dazu gehört die Implementierung von Features, die die Benutzererfahrung weiter verbessern wie zum Beispiel die korrekte Darstellung von Texten für die in Excel das horizontale Text Alignment "Center Across Selection" verwendet wurde. 
+To date, the base version of the tool has been tested on a dataset from the Agricultural Structure Survey on land use and livestock in Germany for 2020. It would be valuable to test the new version of the tool on data from before 2020 to assess whether the improvements we have made enhance the tool's effectiveness.
 
-Paralel soll das Tool an weiteren Daten erprobt werden, um die Effektivität des Tools zu evaluieren.
-
-\subsection{Center Across Selection}
-
-AUch wenn wir uns mühe geben die Anzeige der Excel Dateien so genau wie möglich nachzubilden, gibt es immer noch einige Unterschiede zwischen der Anzeige in Excel und der Anzeige in unserem Spreadsheet Data Extractor. Die Unterschiede sind unbeabsichtigt und könnten behoben werden. Einer solcher Unterschiede ist in Abbildung \ref{fig:center} zu sehen. In Excel werden die Text "Nursing Staff" und "Year" über den gesamten Spaltenkopf hinweg zentriert angezeigt, während er in unserem Spreadsheet Data Extractor linksbündig angezeigt wird. Dieser Unterschied ist darauf zurückzuführen, dass wir zwar merged cells parsen, die für gewöhnlich für das zentrieren solcher texte über mehrere zellen hinweg verwendet werden, doch in diesem Arbeitsblatt wurden keine merged cells verwendet um diese visuelle representation herzustellen. Stattdessen hat die erste Zelle  in der styles.xml datei zugeordneten xml knoten  alignment für das attribut  horizontal den Wert centerContinuous. Bisherige Memühungen herrauszufinden über welche zellenkoordinaten sich diese horizontale zentrierung erstreckt sind jedoch bisher gescheitert. Weitere tests oder recherche ist notwendig um herrauszufinden, wie solche zentrierten Texte in der xml struktur der excel datei gespeichert sind.
-
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/center.png}
-  \caption{}
-  \label{fig:center}
-\end{figure}%
-
-\subsection{Evaluation an Real-World Daten}
-
-Bisher wurde die Basisversion des Tools an einem Datensatz des Agricultural Structure Survey on land use and livestock in Germany für 2020 erprobt. Interessant wäre nun die neue Version des Tools an den Daten vor 2020 zu testen, um zu sehen, ob die Verbesserungen, die wir vorgenommen haben, auch die Effektivität des Tools verbessern. 
-Dazu können wir auf die in den ausgabe csv Dateien dokumentierten Timestamps zurückgreifen, um sie dann bei einem erneuten test mit den neuen timestamps zu vergleichen um so herrauszufinden ob die studentischen Hilfskräfte schneller mit dem neuen Tool arbeiten können.
+We plan to utilize the timestamps documented in the output CSV files to compare them with new timestamps obtained from re-testing. This comparison will help us determine whether the student assistants can work faster with the new version of the tool.
 
 \section{Conclusion}
 
-In this paper, we presented the Spreadsheet Data Extractor, a tool that allows users to extract relational data from complex Excel files. By adopting a user-centric approach that gives users full control over data selection and metadata hierarchy definition, we provide a robust and accessible solution for data extraction. Our tool offers user-friendly features such as the ability to duplicate hierarchies of columns and tables, and to move them over similar structures for reuse, reducing the need for repetitive configurations. We also contribute our tool under the GNU General Public License v3.0, allowing the community to access, use, and improve the tool freely. By combining the strengths of manual control with enhanced user interface features and performance optimizations, our tool offers a valuable asset for efficient and reliable data extraction from diverse spreadsheet formats.
+In this paper, we presented the Spreadsheet Data Extractor, an enhanced tool that builds upon the foundational work of Alexander Aue et al.~\cite{alexander2024converting}. By improving upon their existing approach, we addressed key limitations and introduced significant enhancements to both performance and user experience.
 
+Our contributions include implementing incremental loading of worksheets, accurate rendering of cell dimensions by parsing XML data, and optimizing the rendering engine to draw only the visible cells. These improvements enable the tool to open large Excel files over two orders of magnitude faster than Microsoft Excel itself and nearly four orders of magnitude faster than the previous implementation by Aue et al. We also integrated the selection hierarchy, worksheet view, and output preview into a unified interface, streamlining the data extraction process.
 
- 
+By adopting a user-centric approach that gives users full control over data selection and metadata hierarchy definition without requiring programming knowledge, we provide a robust and accessible solution for data extraction. Our tool offers user-friendly features such as the ability to duplicate hierarchies of columns and tables and to move them over similar structures for reuse, reducing the need for repetitive configurations.
+
+By contributing our improved Spreadsheet Data Extractor under the GNU General Public License v3.0, we enable the community to access, use, and enhance the tool freely, fostering collaboration and further innovation. By combining the strengths of the original approach with our enhancements in user interface and performance optimizations, our tool significantly improves the efficiency and reliability of data extraction from diverse and complex spreadsheet formats.
  
 
 \bibliographystyle{ACM-Reference-Format}
