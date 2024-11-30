@@ -205,162 +205,68 @@ The selected cells are organized into a hierarchical tree structure, where each 
 \subsubsection{Reusability and Efficiency}
 
 To optimize the extraction process and reduce repetitive tasks, the SDE allows users to duplicate previously defined hierarchies and apply them to similar regions within the spreadsheet. This feature is particularly useful for spreadsheets with repeating structures, such as multiple tables with the same format.
+\section{Example Workflow}
 
-\subsection{Example Workflow}
+Consider a spreadsheet containing statistical forecasts of future nursing staff availability in Germany~\cite{destatis2024pflegekraefte}. Figure~\ref{fig:sde_interface} shows the SDE interface, which consists of three main components:
 
-Consider a spreadsheet containing statistical forecasts of future nursing staff availability in Germany \cite{destatis2024pflegekraefte}. Figure~\ref{fig:nothing} shows the SDE interface, which consists of three main components:
+\begin{itemize} \item \textbf{Hierarchy Panel (Top Left)}: Displays the hierarchy of cell selections, initially empty. \item \textbf{Spreadsheet View (Top Right)}: Shows the currently opened Excel file and the selected worksheet for cell selection. \item \textbf{Output Preview (Bottom)}: Provides immediate feedback on the data extraction based on current selections. \end{itemize}
 
+\begin{figure}[h] \centering \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/nothing.png} \caption{The SDE interface overview, showing the hierarchy panel, spreadsheet view, and output preview.} \label{fig:sde_interface} \end{figure}
 
-\textbf{Hierarchy Panel (Top Left):} Displays the hierarchy of cell selections, initially empty.
+\subsection{Selection of the First Column}
 
-\textbf{Spreadsheet View (Top Right):} Shows the currently opened Excel file and the currently selected worksheet for cell selection.
+The user begins by adding a node to the hierarchy and selecting the cell containing the metadata "Nursing Staff" (Figure~\ref{fig:first_column}). This cell represents metadata common to all cells in the worksheet and should appear at the beginning of each row in the output CSV file.
 
-\textbf{Output Preview (Bottom):} Provides immediate feedback on the data extraction based on current selections.
+\begin{figure}[h] \centering \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/first_column.png} \caption{Selecting the "Nursing Staff" cell to add as metadata in the hierarchy.} \label{fig:first_column} \end{figure}
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/nothing.png}
-  \caption{The SDE Interface Overview.}
-  \label{fig:nothing}
-\end{figure}%
+Within this node, the user adds a child node and selects the cell "Total", which serves both as a table header and a row label. This selection represents the header of the first subtable.
 
+Next, the user adds another child node under "Total" and selects the range of cells containing row labels ("Total," "15-20," "20-25," etc.) by clicking the first cell and shift-clicking the last cell.
 
+Under the row labels node, the user adds a child node for the year "2024" and selects the corresponding data cells (e.g., "1673," "53," "154," etc.). The hierarchy now contains five nodes, each nested within its parent node.
+
+In the spreadsheet view, the selected cells are highlighted with different colors corresponding to their nodes in the hierarchy. The output preview displays the extracted data, with each node represented as a column. If a selection includes multiple cells, the values appear as rows in the output.
  
- 
+\subsection{Duplication of the Column Hierarchy}
 
-\subsubsection{Selection of the first Column} 
+To avoid repetitive manual entry for additional years, the user utilizes the "Move and Duplicate" feature to duplicate the hierarchy for the year "2024" and adjust the cell selections to include data for subsequent years (e.g., "2025," "2026").
 
-The user adds a node to the hierarchy and selects the cell containing the metadata "Nursing Staff" (Figure~\ref{fig:first_column}). Diese Zelle steht für eine Metainformation, welche die alle Zellen in diesem Arbeitsblatt gemeinsam haben. Daher sollte sie als erstes ausgewählt werden and should appear at the beginning of each row in the output CSV file.
+The user selects the node corresponding to "2024" ,right-clicks it, and chooses "Move and Duplicate" from the context menu (Figure~\ref{fig:move_and_duplicate_2024}). This feature allows shifting cell selections horizontally or vertically and specifying the number of repetitions, streamlining the process of capturing similar data structures.
 
- 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/first_column.png}
-  \caption{}
-  \label{fig:first_column}
-\end{figure}%
+\begin{figure}[ht] \centering \begin{subfigure}[b]{0.48\linewidth} \centering \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/move_and_duplicate_2024_half.png} \caption{Accessing the "Move and Duplicate" feature for the "2024" node.} \label{fig:move_and_duplicate_2024} \end{subfigure} \hspace{0.01\linewidth} \begin{subfigure}[b]{0.48\linewidth} \centering \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/5_repetitions_half.png} \caption{Setting the number of repetitions to duplicate the selection across additional years.} \label{fig:5_repetitions} \end{subfigure} \caption{Duplicating the column hierarchy for additional years.} \label{fig:move_and_duplicate_2024_and_5_repetitions} \end{figure}
 
+After selecting "Move and Duplicate", a toolbar appears, allowing the user to shift the selection to the right by one unit. To retain the original selection while adding new ones, the user checks the "move and duplicate" option. By entering the number of repetitions—in this case, "5"—the user duplicates the selection of the "2024" column five times, shifting each new selection one column to the right.
 
- 
+The user reviews the selections in the spreadsheet view, where each selection is highlighted in a different color corresponding to its node in the hierarchy. After verifying the selections, the user clicks the "Accept" button to apply the changes. The updated hierarchy is shown in Figure~\ref{fig:move_accept}.
 
-%Define Subtables:
+\begin{figure}[h] \centering \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/move_accept.png} \caption{The hierarchy after duplicating the column selections for additional years.} \label{fig:move_accept} \end{figure}
 
- 
-Within this node, the user adds a child node and selects the cell "Total" which serves both as a table header and a row label. This selection represents the table header of the first subtable. The user adds another child node and selects the range of cells containing row labels ("Total," "15-20", "20-25", ...) by clicking the first cell and shift-clicking the last cell.
-A child node is added under the row labels node, and the user selects the year "2024" and after that another child node is added under the year node and the user selects the corresponding data cells (e.g., "1673," "53", "154", ...).
-Die Hierachie ist nun gefüllt mit 5 Knoten von denen jedes bis auf den letzten einen eingebetteten Kind-Knoten haben. Im bereich oben rechts werden die selektierten Zellen mit unterschiedlichen Farben für jeden Knoten angezeigt.
-Im unteren Bereich wird die Ausgabe angezeigt. Für jeden Knoten der als Kind eingebettet wird, erscheint in der ausgabe eine weitere Spalte. Sind in der Selektion nicht nur einzelnne Zellen angegeben, so erscheinen die werte der Liste auch in der Ausgabe als Werte in einer neuen Zeile.
+\subsection{Duplicating the Table Hierarchy}
 
-%Select Row Labels:
+The same method used for duplicating columns can be applied to the subtables, as shown in Figure~\ref{fig:all_cells_selected}. By selecting the node with the value "Total" and clicking the "Move and Duplicate" button, the user applies the selection of the "Total" subtable to the other subtables below by shifting the selection downward.
 
+However, the child nodes of the "Total" node include the column headers, which are not repeated in the subtables. To prevent these header cells from moving during duplication, the user locks their selection by clicking the padlock icon on the corresponding nodes. This action freezes their cell selections, keeping them fixed during the duplication process.
 
-%Select Column Data:
+With the header nodes locked as shown in Figure \ref{fig:all_cells_selected}, the user sets the number of repetitions to "2" to duplicate the subtable selection for the remaining subtables. The final selection covers all relevant data in the worksheet.
 
- 
+\begin{figure}[h] \centering \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/all_cells_selected.png} \caption{Selection of all cells in the subtables after duplicating the hierarchy of the first table.} \label{fig:all_cells_selected} \end{figure}
 
+\subsection{Cross-Product Transformation}
 
+The hierarchy resulting from the selected nodes is represented as a graph shown in Figure~\ref{fig:cross_before}. For simplicity, the example focuses on the first three columns and the first three rows of the first subtable.
 
+\begin{figure}[h] \centering \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/cross_before.pdf} \caption{The initial hierarchy graph before the cross-product transformation.} \label{fig:cross_before} \end{figure}
 
-\subsubsection{Duplication of the Column Hierarchy} 
+Once the hierarchy is defined, the SDE applies a cross-product transformation to generate a relational format from the selection graph. This transformation consists of two key steps:
 
-To avoid repetitive manual entry for additional years, the user duplicates the hierarchy for "2024" and adjusts the cell selections to include data for subsequent years (e.g., "2025," "2026") using the "Move and Duplicate" feature.
-Dazu wird der Knoten der  ersten Spalte "2024" selektiert und darauf rechtsgegklickt. Ein Popup öffnet sich in dem die Aktion "move and duplicate" auftaucht, die nun geklickt werden sollte, wie in Abbildung \ref{fig:move_and_duplicate_2024} zu sehen ist.
-This feature allows the user to shift cell selections horizontally or vertically and specify the number of repetitions, streamlining the process of capturing similar data structures.
+\begin{enumerate} \item \textbf{Node Duplication}: Nodes with multiple incoming or outgoing edges (e.g., the row labels node with the values \textit{Total}, \textit{15-20}, \textit{20-25}) are duplicated to ensure that each edge connects to a unique instance of the node. This adjustment replaces the original many-to-one relationships with one-to-one mappings for each edge.
 
-\begin{figure}[ht]
-  \centering
-  \begin{subfigure}[b]{0.48\linewidth}
-    \centering
-    \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/move_and_duplicate_2024_half.png}
-    \caption{}
-    \label{fig:move_and_duplicate_2024}
-  \end{subfigure}
-  \hspace{0.01\linewidth} % Space between images 
-  \begin{subfigure}[b]{0.48\linewidth}
-    \centering
-    \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/5_repetitions_half.png}
-    \caption{}
-    \label{fig:5_repetitions}
-  \end{subfigure}
-  \caption{}
-  \label{fig:move_and_duplicate_2024_and_5_repetitions}
-\end{figure}
-
-
- 
-Daraufhin öffnet sich in der App Bar oben rechts eine Reihe von schaltflächen, die erlauben die Zellenselektionen des Knotens sowie aller Kinderknoten zu verschieben wie in Abbildung \ref{fig:5_repetitions} zu sehen ist. Durch das drücken auf die Schaltfläche zum verschieben der Selektion um eine Einheit nach rechts, ist die nächste Spalte ausgewählt, jedoch wird würde damit auch die Selektion der ersten Spalte wieder aufgehoben, da die Selektion verschoben wurde. Damit auch die erste Spalte erhalten bleibt, kann die Checkbox "move and duplicate" aktiviert werden. Dadurch wird die verschobene Selektion zusätzlich zur ursprungsselektion erstellt. Die Änderungen werden allerdings erst übernommen wenn auf den Akzeptieren button geklickt wird. Die nächsten SPalten könnten auf die gleich Art und Weise ebenfalls selektiert werden. Doch das geht auch schneller, denn statt nur einmal die selektion zu verschieben und gleichzeitig zu duplizieren, kann auch das eingabefeld "repeat" mit so vielen Wiederholungen gefüllt werden, wie es Spalten gibt. Mit der Eingabe der Nummer 5 wird damit die Selektion der ersten Spalte 5 mal um eine Einheit nach rechts verschoben und dabei bei jeden Schritt dupliziert.
-
- 
-The user reviews the selections in the spreadsheet view, where each selection is highlighted in a different color corresponding to its node in the hierarchy.
-Erst nachdem der Nutzer die verschobenen und duplizierten selektionen in der Worksheet ansieht überprüft hat und den Akzeptieren button geklickt hat, werden die Knoten in der Hierachie wie gewünscht angelegt. Das Ergebnis dieser Operation ist in Abbildung \ref{fig:move_accept} zu sehen.
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/move_accept.png}
-  \caption{}
-  \label{fig:move_accept}
-\end{figure}%
-
-
-
-
-
- 
-
-
-
-
-\subsubsection{Duplicating the Table Hierarchy}
-
-The same method that worked effectively for duplicating the columns can now be applied to the subtables, as shown in Figure~\ref{fig:all_cells_selected}.
-
-\begin{figure}[h] \centering \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/all_cells_selected.png} \caption{Selection of all cells in the subtables by duplicating the hierarchy of the first table} \label{fig:all_cells_selected} \end{figure}
-
-By selecting the node with the value "Total" and clicking the "Move and Duplicate" button, we can apply the selection of the "Total" subtable to the other subtables. This involves shifting the table downward by as many rows as necessary to overlap with the subtable below.
-
-However, there is a minor issue: the child nodes of the "Total" node also include the column headers. If these column headers were repeated in the subtables below, shifting the selections downward would work without modification. Since these cells are not repeated in the subtables, we need to prevent the column headers cells from moving during the duplication process.
-
-To achieve this, we can exclude individual nodes from being moved by locking their selection. This is done by clicking the padlock icon on the corresponding nodes, which freezes their cell selection and keeps them fixed at their original position, regardless of other cells being moved.
-
-Therefore, we identify and select the nodes containing the column headers—specifically, the years 2024 to 2049—and lock their selection using the padlock button. By shifting the selection downward and duplicating it, we can easily move and duplicate the cell selections for the subtables below. By setting the number of repetitions to 2, all subtables are completely selected.
-
-
-\subsection{Cross Product Transformation}
-
-The graph resulting from the selected hierarchy is shown in Figure~\ref{fig:crossBefore}. To simplify the explanation, the example is limited to the first three columns and the first three rows of the first sub-table.
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/cross_before.pdf}
-  \caption{Illustration of the cross product transformation.}
-  \label{fig:crossBefore}
-\end{figure}%
-
-
-Once the hierarchy is defined, the \textbf{Structured Data Engine (SDE)} applies a cross-product transformation to generate a relational format from the selection graph. This transformation consists of two key steps:
-
-\begin{enumerate}
-    \item \textbf{Node Duplication:}  
-    Nodes with multiple incoming or outgoing edges (e.g., the row labels node with the values \textit{Total}, \textit{15-20}, \textit{20-25}) are duplicated to ensure that each edge connects to a unique instance of the node. This adjustment replaces the original many-to-one relationships with one-to-one mappings for each edge.
-    
-    \item \textbf{Value Replication:}  
-    Nodes containing single values (e.g., the year \textit{2024}) are replicated to align with the number of values associated with the connected node. This ensures a consistent structure in the relational output, maintaining alignment across all hierarchical levels. 
+\item \textbf{Value Replication}: Nodes containing single values (e.g., the year \textit{2024}) are replicated to align with the number of values associated with the connected node. This ensures a consistent structure in the relational output, maintaining alignment across all hierarchical levels.
 \end{enumerate}
 
-The resulting graph after the cross-product transformation is shown in Figure~\ref{fig:cross_after}. With this transformation applied to the selected hierarchy, the SDE generates a structured output that reflects the original spreadsheet's hierarchical relationships, enabling users to analyze and integrate the data effectively.
+The resulting graph after the cross-product transformation is shown in Figure~\ref{fig:cross_after}. With this transformation, the SDE generates a structured output that reflects the original spreadsheet's hierarchical relationships, enabling users to analyze and integrate the data effectively.
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/cross_after.pdf}
-  \caption{}
-  \label{fig:cross_after}
-\end{figure}%
- 
-
-
-
-
-
-
+\begin{figure}[h] \centering \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/cross_after.pdf} \caption{The hierarchy graph after applying the cross-product transformation.} \label{fig:cross_after} \end{figure}
 
 
 
@@ -453,7 +359,7 @@ We implemented text overflow handling by:
 
 To implement this, we check if the adjacent cell to the right is empty before allowing text to overflow. If the adjacent cell is empty, we extend the text rendering. If the adjacent cell contains data, we truncate the text at the boundary of the original cell.
 
-Figure \ref{fig:nothing} illustrates this behavior. The text "Supply of Nursing Staff ..." extends into the neighboring cell because it is empty. If not for this handling, the text would be truncated at the cell boundary, leading to incomplete data display as shown in Figure \ref{fig:overflow}.
+Figure \ref{fig:sde_interface} illustrates this behavior. The text "Supply of Nursing Staff ..." extends into the neighboring cell because it is empty. If not for this handling, the text would be truncated at the cell boundary, leading to incomplete data display as shown in Figure \ref{fig:overflow}.
 
 \begin{figure}[h] \centering \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/overflow.png} \caption{Handling of text overflow in cells with adjacent empty or occupied cells} \label{fig:overflow} \end{figure}
 
