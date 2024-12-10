@@ -107,10 +107,10 @@ Spreadsheets are ubiquitous tools used across various domains, including healthc
 
 The reliance on spreadsheets as ad-hoc solutions poses several limitations:
 \begin{itemize}
-    \item \textbf{Data Integrity and Consistency:} Spreadsheets are prone to errors, such as duplicate entries, inconsistent data formats, and inadvertent modifications, which can compromise data integrity.
-    \item \textbf{Scalability Issues:} As datasets grow in size and complexity, spreadsheets become less efficient for data storage and retrieval, leading to performance bottlenecks.
+    \item \textbf{Data Integrity and Consistency:} Spreadsheets are prone to errors, such as duplicate entries, inconsistent data formats, and inadvertent modifications, which can compromise data integrity.~\cite{cunha2012smellsheet, abreu2014faultysheet}
+    \item \textbf{Scalability Issues:} As datasets grow in size and complexity, spreadsheets become less efficient for data storage and retrieval, leading to performance bottlenecks.~\cite{swidan2016improving, mack2018characterizing}
     \item \textbf{Limited Query Capabilities:} Unlike databases, spreadsheets lack advanced querying and indexing features, restricting users from performing complex data analyses.
-    \item \textbf{Integration Challenges:} Integrating spreadsheet data with other systems, applications, or databases is often cumbersome and error-prone, limiting interoperability.
+    %TODO: \item \textbf{Integration Challenges:} Integrating spreadsheet data with other systems, applications, or databases is often cumbersome and error-prone, limiting interoperability.
 \end{itemize}
 
 Transitioning from these ad-hoc spreadsheet solutions to standardized database systems offers numerous benefits:
@@ -125,14 +125,14 @@ Given the abundance of existing spreadsheet data and the clear advantages of dat
 
 Previous work by Aue et al. introduced a tool that facilitates data extraction from Excel files~\cite{alexander2024converting}. While effective, their solution faced performance issues and inaccuracies in rendering cell dimensions, limiting its usability with large and complex datasets.
 
-In this paper, we aim to transform semi-structured spreadsheet data into machine-readable formats by building upon their work. We present the Spreadsheet Data Extractor (SDE), an enhanced tool that enables users to define data hierarchies through cell selection without any programming knowledge. Our enhancements address key limitations of the existing solution, making data extraction from complex spreadsheets more efficient and user-friendly.
+In this paper, we aim to transform semi-structured spreadsheet data into machine-readable formats by building upon their work. We present the Spreadsheet Data Extractor (SDE), an enhanced tool that enables users to define data hierarchies through cell selection without any programming knowledge.~\cite{spreadsheet_data_extractor} Our enhancements address key limitations of the existing solution, making data extraction from complex spreadsheets more efficient and user-friendly.
 
 \subsection{Contributions}
 
 Our main contributions are as follows:
 
 \begin{enumerate}
-    \item We release the SDE under the open-source GNU General Public License v3.0, promoting community access and collaboration.
+    \item We release the SDE under the open-source GNU General Public License v3.0, promoting community access and collaboration.~\cite{spreadsheet_data_extractor}
     \item We implement incremental loading of worksheets to enhance performance, allowing the tool to handle large Excel files efficiently.
     \item We accurately render row heights and column widths by parsing XML data, ensuring that the spreadsheet's visual representation closely matches that of Excel.
     \item We optimize the rendering engine to draw only the visible cells, significantly improving performance when dealing with large datasets.
@@ -264,7 +264,7 @@ The user adds a node to the hierarchy and selects the cell containing the metada
   \label{fig:first_column}
 \end{figure}%
 
-
+ 
  
 
 %Define Subtables:
@@ -436,7 +436,7 @@ Our solution extracts information about column widths and row heights directly f
 
 In Excel, column widths and row heights use units that do not directly map to pixels, requiring conversion for accurate on-screen rendering. Different scaling factors are needed for columns and rows. Through empirical testing, we derived the following scaling factors:
 
-\begin{itemize}
+\begin{itemize} 
   \item \textbf{Column Widths}: Multiply the \textit{width} attribute by 7.
   \item \textbf{Row Heights}: Multiply the \textit{ht} attribute by \(\frac{4}{3}\).
 \end{itemize}
@@ -444,11 +444,21 @@ Despite research, we could not find official documentation explaining the ration
 
 \subsubsection{Cell Formatting}
 
-Cell formatting plays a crucial role in accurately representing the appearance of worksheets. Formatting information is stored in the \texttt{styles.xml} file, where styles are defined and later referenced in the \texttt{sheetX.xml} files.
+Cell formatting plays a crucial role in accurately representing the appearance of worksheets. Formatting information is stored in the \texttt{styles.xml} file, where styles are defined and later referenced in the \texttt{sheetX.xml} files as shown in Figure \ref{fig:formatting}.
 
-Each cell in the worksheet references a style index through the \textit{s} attribute, which points to the corresponding \texttt{<xf>} (Extended Format) element within the \texttt{cellXfs} collection. These \texttt{<xf>} elements contain attributes such as \textit{fontId}, \textit{fillId}, and \textit{borderId}, which reference specific font, fill (background), and border definitions located in the \texttt{fonts}, \texttt{fills}, and \texttt{borders} collections, respectively. By parsing these references, we can accurately apply the appropriate fonts, background colors, and border styles to each cell.
+\begin{figure}[h] 
+  \centering 
+  \includegraphics[width=\textwidth]{xml_minted/collage.pdf} 
+  \caption{} 
+  \label{fig:formatting} 
+\end{figure}
+
+Each cell in the worksheet references a style index through the \textit{s} attribute, which points to the corresponding \texttt{<xf>} element within the \texttt{cellXfs} collection. These \texttt{<xf>} elements contain attributes such as \textit{fontId}, \textit{fillId}, and \textit{borderId}, which reference specific font, fill (background), and border definitions located in the \texttt{fonts}, \texttt{fills}, and \texttt{borders} collections, respectively. By parsing these references, we can accurately apply the appropriate fonts, background colors, and border styles to each cell.
 
 Through meticulous parsing and application of these formatting details, we ensure that the rendered worksheet closely mirrors the original Excel file, preserving the visual cues and aesthetics that users expect.
+
+ 
+
 \subsubsection{Handling Text Overflow}
 
 In Excel, when the content of a cell exceeds its width, the text may overflow into adjacent empty cells, provided those cells do not contain any data. If adjacent cells are occupied, Excel truncates the overflowing text at the cell boundary. Replicating this behavior is essential for accurate rendering and user familiarity.
@@ -573,22 +583,22 @@ These results demonstrate that the Spreadsheet Data Extractor opens worksheets o
 
 \section{Future Work}
 
-We plan to continue improving the Spreadsheet Data Extractor by implementing new features that enhance the user experience and address current limitations. One such improvement is the correct rendering of text aligned using Excel's "Center Across Selection" horizontal alignment.
-
+We plan to continue improving the Spreadsheet Data Extractor by implementing new features that enhance the user experience and address current limitations.
+%One such improvement is the correct rendering of text aligned using Excel's "Center Across Selection" horizontal alignment.
 In parallel, we intend to test the tool on additional datasets to further evaluate its effectiveness and efficiency.
 
-\subsection{Implementing "Center Across Selection"}
-
-Although we can analyze cell merging—a commonly used feature in Excel to center text across multiple cells—this worksheet does not use this visual formatting feature through cell merging. Instead, the first cell has a horizontal alignment set to \texttt{centerContinuous}. Our previous attempts to determine the cell coordinates over which this horizontal centering extends have been unsuccessful. Further testing and research are necessary to understand how such centered texts are stored in the XML structure of the Excel file.
-
-\begin{figure}[h] 
-  \centering 
-  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/center.png} 
-  \caption{Illustration of the Text Alignment "Center Across Selection" in Excel} 
-  \label{fig:center} 
-\end{figure}
-
-\subsection{Evaluation on Real-World Data}
+%\subsection{Implementing "Center Across Selection"}
+%
+%Although we can analyze cell merging—a commonly used feature in Excel to center text across multiple cells—this worksheet does not use this visual formatting feature through cell merging. Instead, the first cell has a horizontal alignment set to \texttt{centerContinuous}. Our previous attempts to determine the cell coordinates over which this horizontal centering extends have been unsuccessful. Further testing and research are necessary to understand how such centered texts are stored in the XML structure of the Excel file.
+%
+%\begin{figure}[h] 
+%  \centering 
+%  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/center.png} 
+%  \caption{Illustration of the Text Alignment "Center Across Selection" in Excel} 
+%  \label{fig:center} 
+%\end{figure}
+%
+%\subsection{Evaluation on Real-World Data}
 
 To date, the base version of the tool has been tested on a dataset from the Agricultural Structure Survey on land use and livestock in Germany for 2020. It would be valuable to test the new version of the tool on data from before 2020 to assess whether the improvements we have made enhance the tool's effectiveness.
 
@@ -596,14 +606,14 @@ We plan to utilize the timestamps documented in the output CSV files to compare 
 
 \section{Conclusion}
 
-In this paper, we presented the Spreadsheet Data Extractor, an enhanced tool that builds upon the foundational work of Alexander Aue et al.~\cite{alexander2024converting}. By improving upon their existing approach, we addressed key limitations and introduced significant enhancements to both performance and user experience.
+In this paper, we introduced the Spreadsheet Data Extractor (SDE)~\cite{spreadsheet_data_extractor}, an enhanced tool that builds upon the foundational work of Alexander Aue et al.~\cite{alexander2024converting}. By addressing key limitations of the existing solution, we implemented significant performance optimizations and usability enhancements. Specifically, SDE employs incremental loading of worksheets and optimizes rendering by processing only the visible cells, resulting in performance improvements that enable the tool to open large Excel files.
 
-Our contributions include implementing incremental loading of worksheets, accurate rendering of cell dimensions by parsing XML data, and optimizing the rendering engine to draw only the visible cells. These improvements enable the tool to open large Excel files over two orders of magnitude faster than Microsoft Excel itself and nearly four orders of magnitude faster than the previous implementation by Aue et al. We also integrated the selection hierarchy, worksheet view, and output preview into a unified interface, streamlining the data extraction process.
+We also integrated the selection hierarchy, worksheet view, and output preview into a unified interface, streamlining the data extraction process.
 
 By adopting a user-centric approach that gives users full control over data selection and metadata hierarchy definition without requiring programming knowledge, we provide a robust and accessible solution for data extraction. Our tool offers user-friendly features such as the ability to duplicate hierarchies of columns and tables and to move them over similar structures for reuse, reducing the need for repetitive configurations.
 
 By contributing our improved Spreadsheet Data Extractor under the GNU General Public License v3.0, we enable the community to access, use, and enhance the tool freely, fostering collaboration and further innovation. By combining the strengths of the original approach with our enhancements in user interface and performance optimizations, our tool significantly improves the efficiency and reliability of data extraction from diverse and complex spreadsheet formats.
- 
+  
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{sample-base}

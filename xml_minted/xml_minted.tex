@@ -8,7 +8,7 @@
 \usepackage{booktabs}
 
 %% Zu Demonstrationszwecken
-\usepackage[]{blindtext}
+\usepackage[]{blindtext}  
 
 \usepackage[newfloat]{minted}
 \setminted{fontsize=\tiny,baselinestretch=1}
@@ -37,6 +37,8 @@ numbersep=8pt, breaklines, highlightcolor=insertedCode, breakafter=_@|.}
  
 \begin{document}
 1
+
+
 \begin{minted}{xml}
 <row r="3" spans="1:7" s="2" customFormat="1" ht="25.5" customHeight="1">
   <c r="B3" s="10" t="s"><v>17</v></c>
@@ -47,9 +49,11 @@ numbersep=8pt, breaklines, highlightcolor=insertedCode, breakafter=_@|.}
        
   \begin{minted}{xml}
 <cellXfs count="19">
+  <!-- ... -->
   <xf numFmtId="0" fontId="2" fillId="2" borderId="1" xfId="1" applyFill="1" applyBorder="1" applyAlignment="1">
     <alignment horizontal="centerContinuous" vertical="center" wrapText="1"/>
   </xf>
+  <!-- ... -->
 </cellXfs>
    \end{minted}
   
@@ -57,29 +61,36 @@ numbersep=8pt, breaklines, highlightcolor=insertedCode, breakafter=_@|.}
        
   \begin{minted}{xml}
 <fills count="3">
+  <!-- ... -->
   <fill>
     <patternFill patternType="solid">
       <fgColor rgb="FFD7E1F0"/>
       <bgColor indexed="64"/>
     </patternFill>
   </fill>
+  <!-- ... -->
 </fills>
   \end{minted}
+
   3
        
   \begin{minted}{xml}
 <fonts count="13">
+  <!-- ... -->
   <font>
     <sz val="10"/>
     <name val="Arial"/>
     <family val="2"/>
   </font>
+  <!-- ... -->
 </fonts>
   \end{minted}
+  
   3
        
   \begin{minted}{xml}
 <borders count="5">
+  <!-- ... -->
   <border>
     <left style="thin">
       <color theme="0"/>
@@ -91,6 +102,7 @@ numbersep=8pt, breaklines, highlightcolor=insertedCode, breakafter=_@|.}
     </bottom>
     <diagonal/>
   </border>
+  <!-- ... -->
 </borders>
   \end{minted}
 \end{document}
