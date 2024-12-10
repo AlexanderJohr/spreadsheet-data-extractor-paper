@@ -105,7 +105,7 @@
 
 Spreadsheets are ubiquitous tools used across various domains, including healthcare \cite{berndt2001healthcare}, nonprofit organizations \cite{singh2009numeric,west2008because}, finance, commerce, academia, and government \cite{dunn2010spreadsheets}. Despite their widespread use, analyzing and utilizing data stored in spreadsheets poses significant challenges due to their semi-structured nature. Data in spreadsheets are often formatted for human readability, employing layouts with empty cells, merged cells, hierarchical headers, and multiple tables, which hinder machine readability and automated data processing. While these unstructured formats have advantages—such as providing an easily comprehensible hierarchy of metadata for humans—they complicate automated data extraction.
 
-Previous work by Alexander Aue, Norbert Röder, and Andrea Ackermann introduced a tool that facilitates data extraction from Excel files~\cite{alexander2024converting}. While effective, their solution faced performance issues and inaccuracies in rendering cell dimensions, limiting its usability with large and complex datasets.
+Previous work by Aue et al. introduced a tool that facilitates data extraction from Excel files~\cite{alexander2024converting}. While effective, their solution faced performance issues and inaccuracies in rendering cell dimensions, limiting its usability with large and complex datasets.
 
 In this paper, we aim to transform semi-structured spreadsheet data into machine-readable formats by building upon their foundational work. We present the Spreadsheet Data Extractor (SDE), an enhanced tool that enables users to define data hierarchies through cell selection without any programming knowledge. Our enhancements address key limitations of the existing solution, making data extraction from complex spreadsheets more efficient and user-friendly.
 
@@ -113,7 +113,7 @@ In this paper, we aim to transform semi-structured spreadsheet data into machine
 
 Our main contributions are as follows:
 
-\begin{enumerate} \item We release the SDE under the open-source GNU General Public License v3.0, promoting community access and collaboration. \item We implement incremental loading of worksheets to enhance performance, allowing the tool to handle large Excel files efficiently. \item We accurately render row heights and column widths by parsing XML data, ensuring that the spreadsheet's visual representation closely matches that of Excel. \item We optimize the rendering engine to draw only the visible cells, significantly improving performance when dealing with large datasets. \item We integrate the selection hierarchy, worksheet view, and output preview into a unified interface, streamlining the user experience. \end{enumerate}
+\begin{enumerate} \item We release the SDE under the open-source GNU General Public License v3.0, promoting community access and collaboration~\cite{spreadsheet_data_extractor}. \item We implement incremental loading of worksheets to enhance performance, allowing the tool to handle large Excel files efficiently. \item We accurately render row heights and column widths by parsing XML data, ensuring that the spreadsheet's visual representation closely matches that of Excel. \item We optimize the rendering engine to draw only the visible cells, significantly improving performance when dealing with large datasets. \item We integrate the selection hierarchy, worksheet view, and output preview into a unified interface, streamlining the user experience. \end{enumerate}
 
   
 
