@@ -132,7 +132,7 @@ In this paper, we aim to transform semi-structured spreadsheet data into machine
 Our main contributions are as follows:
 
 \begin{enumerate}
-    \item We release the SDE under the open-source GNU General Public License v3.0, promoting community access and collaboration.~\cite{spreadsheet_data_extractor}
+    \item We release the SDE under the open-source GNU General Public License v3.0, promoting community access and collaboration~\cite{spreadsheet_data_extractor}.
     \item We implement incremental loading of worksheets to enhance performance, allowing the tool to handle large Excel files efficiently.
     \item We accurately render row heights and column widths by parsing XML data, ensuring that the spreadsheet's visual representation closely matches that of Excel.
     \item We optimize the rendering engine to draw only the visible cells, significantly improving performance when dealing with large datasets.
@@ -267,16 +267,15 @@ The user adds a node to the hierarchy and selects the cell containing the metada
  
  
 
-%Define Subtables:
+Within this node, the user adds a child node and selects the cell \emph{"Total"}, which serves as both a table header and a row label. This selection represents the table header of the first subtable. The user adds another child node and selects the range of cells containing row labels (e.g., \emph{"Total", "15-20", "20-25"} and so forth) by clicking the first cell and shift-clicking the last cell.
 
-% IMPROVE
-Within this node, the user adds a child node and selects the cell "Total" which serves both as a table header and a row label. This selection represents the table header of the first subtable. The user adds another child node and selects the range of cells containing row labels ("Total," "15-20", "20-25", ...) by clicking the first cell and shift-clicking the last cell.
-A child node is added under the row labels node, and the user selects the year "2024" and after that another child node is added under the year node and the user selects the corresponding data cells (e.g., "1673," "53", "154", ...).
-The hierarchy is now filled with 5 nodes, each having an embedded child node except for the last one. In the upper right area, the selected cells are displayed with different colors for each node. In the lower area, the output is displayed. For each node that is embedded as a child, another column appears in the output. If multiple cells are selected, the values from the list also appear as values in a new row in the output.
-% IMPROVE
+A further child node is then placed under the row labels node, and the user selects the year \emph{"2024"}. Subsequently, an additional child node is created beneath the year node, and the user selects the corresponding data cells (e.g., \emph{"1673", "53", "154"}, etc.).
 
-\subsubsection{Duplication of the Column Hierarchy} 
+At this point, the hierarchy consists of five nodes, each—except the last one—containing an embedded child node. In the upper-right portion of the interface, the chosen cells are displayed in distinct colors corresponding to each node. The lower area shows a preview of the extracted output. For each child node, an additional column is appended to the output. When multiple cells are selected for a given node, their values appear as entries in new rows of the output, reflecting the defined hierarchical structure.
 
+\subsubsection{Duplicating the Column Hierarchy}
+
+ 
 To avoid repetitive manual entry for additional years, the user duplicates the hierarchy for "2024" and adjusts the cell selections to include data for subsequent years (e.g., "2025," "2026") using the "Move and Duplicate" feature.
 
 To do this, the user selects the node of the first column "2024" and right-clicks on it. A popup opens in which the action "move and duplicate" appears, which should then be clicked, as shown in Figure \ref{fig:move_and_duplicate_2024}.
@@ -286,19 +285,20 @@ To do this, the user selects the node of the first column "2024" and right-click
   \begin{subfigure}[b]{0.48\linewidth}
     \centering
     \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/move_and_duplicate_2024_half.png}
-    \caption{}
+    \caption{Invoking the "move and duplicate" feature on the 2024 column node.}
     \label{fig:move_and_duplicate_2024}
   \end{subfigure}
-  \hspace{0.01\linewidth} % Space between images 
+  \hspace{0.01\linewidth}
   \begin{subfigure}[b]{0.48\linewidth}
     \centering
     \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/5_repetitions_half.png}
-    \caption{}
+    \caption{Adjusting the number of repetitions to duplicate the column selection.}
     \label{fig:5_repetitions}
   \end{subfigure}
-  \caption{Move and Duplicate Feature in Action}
+  \caption{Utilizing the "Move and Duplicate" feature to replicate column hierarchies for additional years.}
   \label{fig:move_and_duplicate_2024_and_5_repetitions}
 \end{figure}
+
 
 Subsequently, a series of buttons opens in the app bar at the top right, allowing the user to move the cell selections of the node as well as all child nodes, as seen in Figure \ref{fig:5_repetitions}. By pressing the button to move the selection by one unit to the right, the next column is selected; however, this would also deselect the first column since the selection was moved. To preserve the first column, the "move and duplicate" checkbox can be activated. This creates the shifted selection in addition to the original selection. However, the changes are only applied when the accept button is clicked. The next columns could also be selected in the same way. But this can be done faster, because instead of moving the selection and duplicating it only once, the "repeat" input field can be filled with as many repetitions as there are columns. By entering the number 5, the selection of the first column is shifted 5 times by one unit to the right and duplicated at each step.
 
