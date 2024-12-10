@@ -273,9 +273,9 @@ A further child node is then placed under the row labels node, and the user sele
 
 At this point, the hierarchy consists of five nodes, each—except the last one—containing an embedded child node. In the upper-right portion of the interface, the chosen cells are displayed in distinct colors corresponding to each node. The lower area shows a preview of the extracted output. For each child node, an additional column is appended to the output. When multiple cells are selected for a given node, their values appear as entries in new rows of the output, reflecting the defined hierarchical structure.
 
+\subsubsection{Duplicating the Column Hierarchy}
 
-\subsubsection{Duplication of the Column Hierarchy} 
-
+ 
 To avoid repetitive manual entry for additional years, the user duplicates the hierarchy for "2024" and adjusts the cell selections to include data for subsequent years (e.g., "2025," "2026") using the "Move and Duplicate" feature.
 
 To do this, the user selects the node of the first column "2024" and right-clicks on it. A popup opens in which the action "move and duplicate" appears, which should then be clicked, as shown in Figure \ref{fig:move_and_duplicate_2024}.
@@ -285,19 +285,20 @@ To do this, the user selects the node of the first column "2024" and right-click
   \begin{subfigure}[b]{0.48\linewidth}
     \centering
     \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/move_and_duplicate_2024_half.png}
-    \caption{}
+    \caption{Invoking the "move and duplicate" feature on the 2024 column node.}
     \label{fig:move_and_duplicate_2024}
   \end{subfigure}
-  \hspace{0.01\linewidth} % Space between images 
+  \hspace{0.01\linewidth}
   \begin{subfigure}[b]{0.48\linewidth}
     \centering
     \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/5_repetitions_half.png}
-    \caption{}
+    \caption{Adjusting the number of repetitions to duplicate the column selection.}
     \label{fig:5_repetitions}
   \end{subfigure}
-  \caption{Move and Duplicate Feature in Action}
+  \caption{Utilizing the "Move and Duplicate" feature to replicate column hierarchies for additional years.}
   \label{fig:move_and_duplicate_2024_and_5_repetitions}
 \end{figure}
+
 
 Subsequently, a series of buttons opens in the app bar at the top right, allowing the user to move the cell selections of the node as well as all child nodes, as seen in Figure \ref{fig:5_repetitions}. By pressing the button to move the selection by one unit to the right, the next column is selected; however, this would also deselect the first column since the selection was moved. To preserve the first column, the "move and duplicate" checkbox can be activated. This creates the shifted selection in addition to the original selection. However, the changes are only applied when the accept button is clicked. The next columns could also be selected in the same way. But this can be done faster, because instead of moving the selection and duplicating it only once, the "repeat" input field can be filled with as many repetitions as there are columns. By entering the number 5, the selection of the first column is shifted 5 times by one unit to the right and duplicated at each step.
 
@@ -583,7 +584,7 @@ Although we can analyze cell merging—a commonly used feature in Excel to cente
 \begin{figure}[h] 
   \centering 
   \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/center.png} 
-  \caption{Illustration of the Text Alignment "Center Across Selection" in Excel} 
+  \caption{Illustration of the text alignment "Center Across Selection" in Excel} 
   \label{fig:center} 
 \end{figure}
 
