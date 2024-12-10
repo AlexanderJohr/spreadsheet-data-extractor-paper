@@ -103,14 +103,14 @@
 \maketitle
 \section{Introduction}
 
-Spreadsheets are ubiquitous tools used across various domains, including healthcare \cite{berndt2001healthcare}, nonprofit organizations \cite{singh2009numeric,west2008because}, finance, commerce, academia, and government \cite{dunn2010spreadsheets}. Despite their widespread use, analyzing and utilizing data stored in spreadsheets poses significant challenges for data analysis and utilization, primarily due to their semi-structured nature. Data within spreadsheets are frequently organized for human readability, featuring layouts with empty cells, merged cells, hierarchical headers, and multiple tables. While these formats enhance comprehensibility for users, they impede machine readability and automated data processing. This semi-structured organization complicates the extraction of meaningful insights, especially when attempting to integrate spreadsheet data into more robust and scalable data management systems.
+Spreadsheets are ubiquitous tools used across various domains, including healthcare \cite{berndt2001healthcare}, nonprofit organizations \cite{singh2009numeric,west2008because}, finance, commerce, academia, and government \cite{dunn2010spreadsheets}. Despite their widespread use, analyzing and utilizing data stored in spreadsheets poses significant challenges for data analysis and utilization, primarily due to their semi-structured nature. Data within spreadsheets are frequently organized for human readability~\cite{tang2023efficient}, featuring layouts with empty cells, merged cells, hierarchical headers, and multiple tables. While these formats enhance comprehensibility for users~\cite{rahman2021noah}, they impede machine readability and automated data processing. This semi-structured organization complicates the extraction of meaningful insights, especially when attempting to integrate spreadsheet data into more robust and scalable data management systems.
 
 The reliance on spreadsheets as ad-hoc solutions poses several limitations:
 \begin{itemize}
     \item \textbf{Data Integrity and Consistency:} Spreadsheets are prone to errors, such as duplicate entries, inconsistent data formats, and inadvertent modifications, which can compromise data integrity.~\cite{cunha2012smellsheet, abreu2014faultysheet}
     \item \textbf{Scalability Issues:} As datasets grow in size and complexity, spreadsheets become less efficient for data storage and retrieval, leading to performance bottlenecks.~\cite{swidan2016improving, mack2018characterizing}
     \item \textbf{Limited Query Capabilities:} Unlike databases, spreadsheets lack advanced querying and indexing features, restricting users from performing complex data analyses.
-    %TODO: \item \textbf{Integration Challenges:} Integrating spreadsheet data with other systems, applications, or databases is often cumbersome and error-prone, limiting interoperability.
+    %TODO: \item \textbf{Integration Challenges:} Integrating spreadsheet data with other systems, applications, or databases is often cumbersome and error-prone, limiting interoperability. 
 \end{itemize}
 
 Transitioning from these ad-hoc spreadsheet solutions to standardized database systems offers numerous benefits:
@@ -146,7 +146,7 @@ The extraction of relational data from semi-structured documents, particularly s
 
 \subsection{Aue et al.'s Converter}
 
-Aue et al.~\cite{alexander2024converting} developed a tool to facilitate data extraction from Excel spreadsheets by leveraging the Dart excel package \cite{excelPackage} to process .xlsx files. This tool allows users to define data hierarchies by selecting relevant cells containing data and metadata. However, the approach faced significant performance bottlenecks due to the excel package's requirement to load the entire .xlsx file into memory, resulting in slow response times, particularly for large files
+Aue et al.~\cite{alexander2024converting} developed a tool to facilitate data extraction from Excel spreadsheets by leveraging the Dart excel package~\cite{excelPackage} to process .xlsx files. This tool allows users to define data hierarchies by selecting relevant cells containing data and metadata. However, the approach faced significant performance bottlenecks due to the excel package's requirement to load the entire .xlsx file into memory, resulting in slow response times, particularly for large files.
 
 In addition to memory issues, the tool calculated row heights and column widths based solely on cell content, ignoring the dimensions specified in the original Excel file. This led to rendering discrepancies between the tool and the original spreadsheet. Furthermore, the tool rendered all cells, regardless of their visibility within the viewport, significantly degrading performance when handling worksheets with large numbers of cells.
 
@@ -553,23 +553,20 @@ Our focus is on improving the user experience and optimizing the performance of 
 To evaluate the performance improvements when opening Excel files, we conducted a series of tests using a large Excel file. We downloaded the entire collection of Excel files from the German Federal Statistical Office (Destatis)\footnote{\url{https://www.destatis.de}}, which provides extensive statistical data across various domains. From this collection, we identified the largest file~\cite{destatis_rechnungsergebnis_2024}, which has a compressed size of 87~MB and an uncompressed size of 911~MB.
 
 We performed three sets of tests to compare the performance of different methods for opening and reading data from this Excel file:
-
+ 
 \begin{enumerate}
-    \item \textbf{VBA Script in Excel}: We wrote a VBA script that opens the Excel file and reads specific values from a worksheet. This script simulates how users might interact with the file using Excel's built-in capabilities. We ran this script 10 times, measuring the time required to open the file and read the values in each iteration.
+    \item \textbf{VBA Script in Excel}: We wrote a VBA script that opens the Excel file and reads specific values from a worksheet. This script simulates how users might interact with the file using Excel's built-in capabilities.
     
-    \item \textbf{Spreadsheet Data Extractor}: We developed an equivalent unit test using the functions implemented in our Spreadsheet Data Extractor to open the same file and read the same cells. This test aimed to assess the performance of our tool under the same conditions. We repeated this test 10 times, recording the runtime for each execution.
+    \item \textbf{Spreadsheet Data Extractor}: We developed an equivalent unit test using the functions implemented in our Spreadsheet Data Extractor to open the same file and read the same cells. This test aimed to assess the performance of our tool under the same conditions.
     
-    \item \textbf{\texttt{excel} Package}: We tested the \texttt{excel} package \cite{excelPackage} used by Aue et al.~\cite{alexander2024converting}, creating a unit test that attempts to read the same cells from the file. This test was intended to benchmark the performance of the prior solution. However, due to limitations with the package, we encountered an out-of-memory exception during the second run; therefore, only the time from the first run was recorded.
+    \item \textbf{\texttt{excel} Package}: We tested the \texttt{excel} package \cite{excelPackage} used by Aue et al.~\cite{alexander2024converting}, creating a unit test that attempts to read the same cells from the file. This test was intended to benchmark the performance of the prior solution.
 \end{enumerate}
 
 All tests were conducted on a machine with the following specifications: Intel Core i5-10210U quad-core CPU at 1.60~GHz, 16~GB RAM, and a solid-state drive (SSD), running Windows 10 Pro. The version of Microsoft Excel used was Microsoft Office LTSC Professional Plus 2021.
 
-The results of these runtime measurements are presented in Figure~\ref{fig:boxplot_run_times_to_open_worksheet}.
-
+We ran the script 10 times, measuring the time required to open the file and read the values in each iteration. The results of these runtime measurements are presented in Figure~\ref{fig:boxplot_run_times_to_open_worksheet}. 
 The Spreadsheet Data Extractor opened the worksheet with a median time of 120 milliseconds and an average time of 178 milliseconds. The first run took 668~milliseconds, possibly because the file was not yet cached and had to be loaded from the disk.
-
 In contrast, Excel opened the worksheet with a median time of 40.281~seconds and an average time of 41.138~seconds.
-
 The Dart \texttt{excel} package~\cite{excelPackage} used in the previous work took 13 minutes and 15 seconds to open the worksheet in the first run. The other nine runs could not be completed because an out-of-memory exception was thrown during the second run.
 
 These results demonstrate that the Spreadsheet Data Extractor opens worksheets over two orders of magnitude faster than Excel and nearly four orders of magnitude faster than the Dart \texttt{excel} package used in prior work.
@@ -608,11 +605,9 @@ We plan to utilize the timestamps documented in the output CSV files to compare 
 
 In this paper, we introduced the Spreadsheet Data Extractor (SDE)~\cite{spreadsheet_data_extractor}, an enhanced tool that builds upon the foundational work of Alexander Aue et al.~\cite{alexander2024converting}. By addressing key limitations of the existing solution, we implemented significant performance optimizations and usability enhancements. Specifically, SDE employs incremental loading of worksheets and optimizes rendering by processing only the visible cells, resulting in performance improvements that enable the tool to open large Excel files.
 
-We also integrated the selection hierarchy, worksheet view, and output preview into a unified interface, streamlining the data extraction process.
+We also integrated the selection hierarchy, worksheet view, and output preview into a unified interface, streamlining the data extraction process.By adopting a user-centric approach that gives users full control over data selection and metadata hierarchy definition without requiring programming knowledge, we provide a robust and accessible solution for data extraction. Our tool offers user-friendly features such as the ability to duplicate hierarchies of columns and tables and to move them over similar structures for reuse, reducing the need for repetitive configurations.
 
-By adopting a user-centric approach that gives users full control over data selection and metadata hierarchy definition without requiring programming knowledge, we provide a robust and accessible solution for data extraction. Our tool offers user-friendly features such as the ability to duplicate hierarchies of columns and tables and to move them over similar structures for reuse, reducing the need for repetitive configurations.
-
-By contributing our improved Spreadsheet Data Extractor under the GNU General Public License v3.0, we enable the community to access, use, and enhance the tool freely, fostering collaboration and further innovation. By combining the strengths of the original approach with our enhancements in user interface and performance optimizations, our tool significantly improves the efficiency and reliability of data extraction from diverse and complex spreadsheet formats.
+By combining the strengths of the original approach with our enhancements in user interface and performance optimizations, our tool significantly improves the efficiency and reliability of data extraction from diverse and complex spreadsheet formats.
   
 
 \bibliographystyle{ACM-Reference-Format}
