@@ -1,5 +1,7 @@
  
-\documentclass[acmsmall,review,anonymous]{acmart}
+\documentclass[sigconf,authordraft]{acmart}
+
+
 %\documentclass[sigconf]{acmart}
 %\documentclass[manuscript, screen, review, anonymous]{acmart}
 
@@ -243,7 +245,7 @@ Consider a spreadsheet containing statistical forecasts of future nursing staff 
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/nothing.png}
+  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/nothing.png}
   \caption{The SDE Interface Overview.}
   \label{fig:nothing}
 \end{figure}%
@@ -259,7 +261,7 @@ The user adds a node to the hierarchy and selects the cell containing the metada
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/first_column.png}
+  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/first_column.png}
   \caption{Selection of the First Column Metadata}
   \label{fig:first_column}
 \end{figure}%
@@ -284,14 +286,14 @@ To do this, the user selects the node of the first column "2024" and right-click
   \centering
   \begin{subfigure}[b]{0.48\linewidth}
     \centering
-    \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/move_and_duplicate_2024_half.png}
+    \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/move_and_duplicate_2024_half.png}
     \caption{Invoking the "move and duplicate" feature on the 2024 column node.}
     \label{fig:move_and_duplicate_2024}
   \end{subfigure}
   \hspace{0.01\linewidth}
   \begin{subfigure}[b]{0.48\linewidth}
     \centering
-    \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/5_repetitions_half.png}
+    \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/5_repetitions_half.png}
     \caption{Adjusting the number of repetitions to duplicate the column selection.}
     \label{fig:5_repetitions}
   \end{subfigure}
@@ -308,7 +310,7 @@ The user reviews the selections in the spreadsheet view, where each selection is
 Erst nachdem der Nutzer die verschobenen und duplizierten selektionen in der Worksheet ansieht überprüft hat und den Akzeptieren button geklickt hat, werden die Knoten in der Hierachie wie gewünscht angelegt. Das Ergebnis dieser Operation ist in Abbildung \ref{fig:move_accept} zu sehen.
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/move_accept.png}
+  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/move_accept.png}
   \caption{Resulting Hierarchy After Move and Accept}
   \label{fig:move_accept}
 \end{figure}%
@@ -328,7 +330,7 @@ The same method that worked effectively for duplicating the columns can now be a
 
 \begin{figure}[h] 
   \centering 
-  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/all_cells_selected.png} 
+  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/all_cells_selected.png} 
   \caption{Selection of All Cells in the Subtables by Duplicating the Hierarchy of the First Table} 
   \label{fig:all_cells_selected} 
 \end{figure}
@@ -348,7 +350,7 @@ The graph resulting from the selected hierarchy is shown in Figure~\ref{fig:cros
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/cross_before.pdf}
+  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/cross_before.pdf}
   \caption{Illustration of the Cross Product Transformation Before Application}
   \label{fig:crossBefore}
 \end{figure}%
@@ -368,7 +370,7 @@ The resulting graph after the cross-product transformation is shown in Figure~\r
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/cross_after.pdf}
+  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/cross_after.pdf}
   \caption{Illustration of the Cross Product Transformation After Application}
   \label{fig:cross_after}
 \end{figure}%
@@ -448,7 +450,7 @@ Cell formatting plays a crucial role in accurately representing the appearance o
 
 \begin{figure}[h] 
   \centering 
-  \includegraphics[width=\textwidth]{xml_minted/collage.pdf} 
+  \includegraphics[width=\linewidth]{xml_minted/collage.pdf} 
   \caption{} 
   \label{fig:formatting} 
 \end{figure}
@@ -469,7 +471,7 @@ Figure \ref{fig:nothing} illustrates this behavior. The text "Supply of Nursing 
 
 \begin{figure}[h] 
   \centering 
-  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/overflow.png} 
+  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/overflow.png} 
   \caption{Falsche Darstellung ohne overflow von zellen mit angrenzenden zellen ohne inhalt} 
   \label{fig:overflow} 
 \end{figure}
@@ -573,7 +575,7 @@ These results demonstrate that the Spreadsheet Data Extractor opens worksheets o
 
 \begin{figure}[h] 
   \centering 
-  \includegraphics[width=\textwidth]{charts/boxplot_run_times_to_open_worksheet.pdf} 
+  \includegraphics[width=\linewidth]{charts/boxplot_run_times_to_open_worksheet.pdf} 
   \caption{Boxplot of Worksheet Opening Times Comparing the Spreadsheet Data Extractor, Microsoft Excel, and the Dart \texttt{excel} Package} 
   \label{fig:boxplot_run_times_to_open_worksheet} 
 \end{figure}
@@ -590,7 +592,7 @@ In parallel, we intend to test the tool on additional datasets to further evalua
 %
 %\begin{figure}[h] 
 %  \centering 
-%  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/center.png} 
+%  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/center.png} 
 %  \caption{Illustration of the Text Alignment "Center Across Selection" in Excel} 
 %  \label{fig:center} 
 %\end{figure}
