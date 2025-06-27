@@ -299,3 +299,7 @@ TSWLatexianTemp*
 # option is specified. Footnotes are the stored in a file with suffix Notes.bib.
 # Uncomment the next line to have this generated file ignored.
 #*Notes.bib
+
+# Ignore generated files from the BL proxy
+video/footage/camera_footage/BL_proxy/*
+video/footage/screenshare/BL_proxy/*
