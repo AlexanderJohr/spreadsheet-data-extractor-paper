@@ -8,6 +8,8 @@
 \usepackage{subcaption} 
 \usepackage{algorithm}
 \usepackage{algorithmic}
+\usepackage{listings}
+
 
 \AtBeginDocument{%
   \providecommand\BibTeX{{%
@@ -135,8 +137,9 @@ Our main contributions are as follows:
 
 \begin{enumerate}
     \item We release the SDE under the open-source GNU General Public License v3.0, promoting community access and collaboration~\cite{spreadsheet_data_extractor}.
-    \item We implement incremental loading of worksheets to enhance performance, allowing the tool to handle large Excel files efficiently.
-    \item We accurately render row heights and column widths by parsing XML data, ensuring that the spreadsheet's visual representation closely matches that of Excel.
+    \item We implement incremental loading of worksheets to enhance performance, allowing the tool to handle large Excel files efficiently and even outperforming Microsoft excel in terms of loading speed, opening worksheets within milliseconds were excel takes seconds to minutes to show the first sheet
+    \item We accurately render row heights and column widths by parsing the XML data contained in the Excel .xlsx archive files, ensuring that the spreadsheet's visual representation closely matches that of Excel.
+    \item We do not rely on third party libraries to parse the excel files, because such libraries often use dom parsing which is very memory inefficient, that is why we implemented our own parser which extracts the sheet information solely by regular expressions, greatly reducing memory consumption and improving performance.
     \item We optimize the rendering engine to draw only the visible cells, significantly improving performance when dealing with large datasets.
     \item We integrate the selection hierarchy, worksheet view, and output preview into a unified interface, streamlining the user experience.
 \end{enumerate}
@@ -427,6 +430,47 @@ Our solution opens the Excel file as a ZIP archive and initially extracts only t
 By adopting this incremental loading approach, users experience minimal wait times when opening an Excel file. The initial loading is nearly instantaneous, allowing users to begin interacting with the application without delay. This contrasts with traditional methods that require loading all worksheets upfront, leading to significant wait times for large files.
 
  
+\subsection{Parsing Worksheet XML with Regular Expressions}
+
+In our previous attempts to parse Excel files using third-party libraries, we encountered persistent failures when processing very large files. Libraries such as the Dart \texttt{excel} package or Python tools like Pandas and OpenPyXL typically load Excel files by relying on a DOM parser or by identifying parts of the worksheet using regular expressions and subsequently parsing these fragments with an XML parser. In contrast, the \emph{Spreadsheet Data Extractor} relies solely on regular expressions to parse the entire contents of worksheets. Rows are first identified by splitting the file content at each \texttt{<row>} element. Each resulting fragment is then processed further.
+
+For every such fragment, the content is split at each \texttt{<c>} element. The individual \texttt{<row>} and \texttt{<c>} elements are subsequently parsed using regular expressions containing multiple capture groups to extract the information required for rendering rows and cells. This approach enables the opening of files that suffer from severe file bloat---an issue that poses significant challenges for XML-based parsers. Such parsers attempt to load hundreds of thousands or even millions of cells that have no functional relevance for the visual representation or computational logic of the worksheet but were inadvertently added by users. Nevertheless, these cells are still parsed as individual XML elements and stored in memory to facilitate efficient traversal.
+
+However, the size of these files frequently exceeds the capabilities of DOM-based parsers. An XML DOM tree typically requires approximately ten times the memory of the raw string representation. Consequently, a bloated worksheet that already expands to several gigabytes when decompressed can easily exceed the available memory on a consumer-grade laptop once represented as a DOM tree. In one extreme case, an Excel file provided by the German Federal Statistical Office could not be opened with Python and Pandas even on a test system equipped with 96\,GB of RAM and several hundred gigabytes of virtual memory on an NVMe M.2 SSD. After two days without success, the attempt was aborted. By contrast, the \emph{Spreadsheet Data Extractor} is able to open the same file within milliseconds because regular-expression-based parsing is substantially more memory- and performance-efficient than DOM-based approaches.
+
+\subsubsection{Parsing of \texttt{<c>} Nodes}
+
+The parsing of individual \texttt{<c>} (cell) nodes in the \emph{Spreadsheet Data Extractor} is performed using a single regular expression that captures all relevant attributes and values required for cell representation. The following pattern is applied:
+
+
+This regular expression identifies every cell element by matching the opening \texttt{<c>} tag and its attributes. The key information is extracted via capture groups:
+
+\begin{itemize}
+  \item Groups 2 and 3 extract the column reference (letters) and row index (numbers) from the attribute \texttt{r}, enabling the mapping of a cell to its precise worksheet location.
+  \item Group 4 captures the style index (\texttt{s}), which can be used to determine cell formatting.
+  \item Group 5 extracts the cell type (\texttt{t}), for instance to distinguish between shared strings, booleans, or numbers.
+  \item Groups 6 and 7 capture either the value enclosed in a \texttt{<v>} tag or an inline string enclosed in an \texttt{<is>} tag.
+\end{itemize}
+
+\begin{lstlisting}[caption={Regex for parsing cells},label={lst:regex_cells}]
+<c\b'
+(
+  (?:[^>]*\br="([A-Z]+)(\d+)")? // Groups 2+3
+  (?:[^>]*\bs="(\d+?)")?        // Group 4
+  (?:[^>]*\bt="([^"]+)")?       // Group 5
+  [^/>]*?
+)
+(?:/>
+  |>
+  (?:[^<]*(?:
+    <v>(.*?)</v>                 // Group 6
+    |
+    <is>(.*?)</is>)              // Group 7
+  )? 
+</c>)
+\end{lstlisting}
+By using this approach, all relevant attributes and values of a cell are captured without requiring a DOM tree. This avoids the significant memory overhead that XML parsers incur when representing each cell as a distinct node. Instead, the required metadata and values are extracted directly from the raw XML string, allowing the \emph{Spreadsheet Data Extractor} to parse even extremely large worksheets efficiently in terms of both time and memory consumption.
+
 
 \subsection{Rendering of Worksheets}
 
@@ -483,7 +527,7 @@ By accurately handling text overflow, we improve readability and maintain consis
 
 To ensure high frame rates even with large worksheets, we optimized the Spreadsheet Data Extractor to render only the cells that are currently visible to the user. Rendering the entire worksheet, especially when it contains thousands of cells, can significantly degrade performance. By focusing on the visible cells within the viewport, we reduce computational overhead and improve responsiveness.
 
-We achieve this optimization by utilizing the \texttt{two\_dimensional\_scrollables} package \cite{flutter_packages_2024}. This package provides functionality for efficiently handling two-dimensional scrolling regions, making it suitable for rendering large grids like spreadsheets.
+We achieve this optimization by utilizing the \texttt{two\allowbreak\_dimensional\allowbreak\_scrollables} package \cite{flutter_packages_2024}. This package provides functionality for efficiently handling two-dimensional scrolling regions, making it suitable for rendering large grids like spreadsheets.
 
 Since we extract all column widths and row heights from the XML files, we can calculate the exact dimensions and positions of each cell. By accumulating the widths and heights, we determine the coordinates of each cell within the worksheet grid. These coordinates are essential for identifying which cells fall within the current viewport and should be rendered.
 
@@ -504,9 +548,9 @@ We consider the current scroll offsets along the horizontal ($x$-axis) and verti
 
 By rendering only the cells within these boundaries, we significantly reduce the number of cells processed at any given time.
 
-The \texttt{two\_dimensional\_scrollables} package provides interfaces where the logic for laying out the cells can be implemented. Parameters that describe the viewport, including the horizontal and vertical offsets as well as the viewport height and width, are supplied by these interfaces.
+The \texttt{two\allowbreak\_dimensional\allowbreak\_scrollables} package provides interfaces where the logic for laying out the cells can be implemented. Parameters that describe the viewport, including the horizontal and vertical offsets as well as the viewport height and width, are supplied by these interfaces.
 
-Algorithm~\ref{alg:layout_cells} outlines our implementation of the overridden \texttt{layoutChildSequence} function, which is invoked by the \texttt{two\_dimensional\_scrollables} package to calculate and arrange the visible cells within the viewport.
+Algorithm~\ref{alg:layout_cells} outlines our implementation of the overridden \texttt{layoutChildSequence} function, which is invoked by the \texttt{two\allowbreak\_dimensional\allowbreak\_scrollables} package to calculate and arrange the visible cells within the viewport.
 
 \begin{algorithm} \caption{Layout of Visible Spreadsheet Cells} \label{alg:layout_cells} \begin{algorithmic}[1] \STATE \textbf{Initialize Indices} \STATE \quad $\mathit{leadingColumnIndex} \leftarrow$ column index corresponding to $\mathit{horizontalOffset}$ \STATE \quad $\mathit{leadingRowIndex} \leftarrow$ row index corresponding to $\mathit{verticalOffset}$ \STATE \quad $\mathit{trailingColumnIndex} \leftarrow$ column index corresponding to $\mathit{horizontalOffset} + \mathit{viewportWidth}$ \STATE \quad $\mathit{trailingRowIndex} \leftarrow$ row index corresponding to $\mathit{verticalOffset} + \mathit{viewportHeight}$
 
