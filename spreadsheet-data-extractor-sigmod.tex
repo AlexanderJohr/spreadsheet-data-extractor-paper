@@ -572,7 +572,7 @@ We consider the current scroll offsets along the horizontal ($x$-axis) and verti
 
 By rendering only the cells within these boundaries, we significantly reduce the number of cells processed at any given time.
 
-The \texttt{two\allowbreak\_dimensional\allowbreak\_scrollables} package provides interfaces where the logic for laying out the cells can be implemented. Parameters that describe the viewport, including the horizontal and vertical offsets as well as the viewport height and width, are supplied by these interfaces.
+The \textit{two\allowbreak\_dimensional\allowbreak\_scrollables} package provides interfaces where the logic for laying out the cells can be implemented. Parameters that describe the viewport, including the horizontal and vertical offsets as well as the viewport height and width, are supplied by these interfaces.
 
 Algorithm~\ref{alg:layout_cells} outlines our implementation of the overridden \texttt{layoutChildSequence} function, which is invoked by the \texttt{two\allowbreak\_dimensional\allowbreak\_scrollables} package to calculate and arrange the visible cells within the viewport.
 
