@@ -574,7 +574,7 @@ By rendering only the cells within these boundaries, we significantly reduce the
 
 The \textit{two\allowbreak\_dimensional\allowbreak\_scrollables} package provides interfaces where the logic for laying out the cells can be implemented. Parameters that describe the viewport, including the horizontal and vertical offsets as well as the viewport height and width, are supplied by these interfaces.
 
-Algorithm~\ref{alg:layout_cells} outlines our implementation of the overridden \texttt{layoutChildSequence} function, which is invoked by the \texttt{two\allowbreak\_dimensional\allowbreak\_scrollables} package to calculate and arrange the visible cells within the viewport.
+Algorithm~\ref{alg:layout_cells} outlines our algorithm to arrange the visible cells within the viewport.
 
 \begin{algorithm} \caption{Layout of Visible Spreadsheet Cells} \label{alg:layout_cells} \begin{algorithmic}[1] \STATE \textbf{Initialize Indices} \STATE \quad $\mathit{leadingColumnIndex} \leftarrow$ column index corresponding to $\mathit{horizontalOffset}$ \STATE \quad $\mathit{leadingRowIndex} \leftarrow$ row index corresponding to $\mathit{verticalOffset}$ \STATE \quad $\mathit{trailingColumnIndex} \leftarrow$ column index corresponding to $\mathit{horizontalOffset} + \mathit{viewportWidth}$ \STATE \quad $\mathit{trailingRowIndex} \leftarrow$ row index corresponding to $\mathit{verticalOffset} + \mathit{viewportHeight}$
 
