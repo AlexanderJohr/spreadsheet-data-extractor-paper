@@ -147,6 +147,30 @@ Our main contributions are as follows:
 
 \section{Related Work}
 
+
+\begin{table*}[h]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|}
+      \hline
+      \textbf{Name} & \textbf{Technologies} & \textbf{Output} & \textbf{Accessibility} & \textbf{Frequency} \\ \hline
+      DeExcelerator & heuristics            & cleaned data    & partially open source  & last publication   \\
+                    &                       &                 &                & 2015               \\ \hline
+      FlashRelate   & AI               & cleaned data    & proprietary,           & last publication   \\
+                    & programming-by-example &                 & no access              & 2015               \\ \hline
+
+
+      Senbazuru     & AI               & cleaned data    & partially open source  & last commit        \\
+                    &                       &                 &                        & 2015               \\\hline
+
+      XLindy        & AI                    & cleaned data    & no access              & cancelled          \\ \hline
+      TableSense    & AI                    & diagrams        & proprietary,           & last commit        \\
+                    &                       &                 & no access              & 2021               \\ \hline
+  \end{tabular}
+  \caption{Spreadsheet Data Extractor counterparts}
+
+  \label{tab:approaches}
+\end{table*}
+
 The extraction of relational data from semi-structured documents, particularly spreadsheets, has garnered significant attention due to their ubiquitous use across domains such as business, government, and scientific research. Several frameworks and tools have been developed to address the challenges of converting flexible spreadsheet formats into normalized relational forms suitable for data analysis and integration. Notable among these are \textbf{DeExcelerator}~\cite{eberius2013deexcelerator} , \textbf{XLIndy}~\cite{koci2019xlindy}, \textbf{FLASHRELATE}~\cite{barowy2015flashrelate}, \textbf{Senbazuru}~\cite{chen2013senbazuru}, \textbf{TableSense}~\cite{dong2019tablesense}, and the approach by Aue et al.~\cite{alexander2024converting}, on which our work builds.
 
 \subsection{Aue et al.'s Converter}
