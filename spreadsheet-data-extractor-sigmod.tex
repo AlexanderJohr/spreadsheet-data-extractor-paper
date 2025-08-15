@@ -551,7 +551,7 @@ By accurately handling text overflow, we improve readability and maintain consis
 
 To ensure high frame rates even with large worksheets, we optimized the Spreadsheet Data Extractor to render only the cells that are currently visible to the user. Rendering the entire worksheet, especially when it contains thousands of cells, can significantly degrade performance. By focusing on the visible cells within the viewport, we reduce computational overhead and improve responsiveness.
 
-We achieve this optimization by utilizing the \texttt{two\allowbreak\_dimensional\allowbreak\_scrollables} package \cite{flutter_packages_2024}. This package provides functionality for efficiently handling two-dimensional scrolling regions, making it suitable for rendering large grids like spreadsheets.
+We achieve this optimization by utilizing the \textit{two\allowbreak\_dimensional\allowbreak\_scrollables} package \cite{flutter_packages_2024}. This package provides functionality for efficiently handling two-dimensional scrolling regions, making it suitable for rendering large grids like spreadsheets.
 
 Since we extract all column widths and row heights from the XML files, we can calculate the exact dimensions and positions of each cell. By accumulating the widths and heights, we determine the coordinates of each cell within the worksheet grid. These coordinates are essential for identifying which cells fall within the current viewport and should be rendered.
 
