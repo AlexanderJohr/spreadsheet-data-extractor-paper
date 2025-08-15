@@ -216,6 +216,12 @@ By combining the strengths of manual control with enhanced user interface featur
 
 \section{Methodology}
 
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/nothing.png}
+  \caption{The SDE Interface Overview.}
+  \label{fig:nothing}
+\end{figure*}%
 
 
 
@@ -223,19 +229,24 @@ In this section, we detail the design and implementation of the Spreadsheet Data
 
 \subsection{User-Centric Data Extraction}
 
-The core functionality of the SDE revolves around allowing users to select cells containing data and metadata to define a data hierarchy. This process is facilitated through a graphical interface that displays the spreadsheet and allows for intuitive selection and manipulation of the selection hierarchy.
+The core functionality of the SDE revolves around enabling users to select cells containing data and metadata to define a data hierarchy. This process is facilitated through a graphical interface that displays the spreadsheet and supports intuitive selection and manipulation of the selection hierarchy.
 
 \subsubsection{Hierarchy Definition}
 
-Users can select individual cells or ranges of cells by clicking and using shift-click for multi-selection. These selections represent either data or metadata.
+Users can select individual cells or ranges of cells by clicking and using shift-click for multi-selection. These selections represent either data or metadata. The selected cells are organised into a hierarchical tree structure, where each node represents a data element, and child nodes represent nested data or metadata. This hierarchy defines how the data will be transformed into a structured format.
 
-The selected cells are organized into a hierarchical tree structure, where each node represents a data element, and child nodes represent nested data or metadata. This hierarchy defines how the data will be transformed into a structured format.
+The interface further supports flexible hierarchy management by allowing users to drag and drop hierarchy nodes onto other nodes to realign the structure whenever a different organisation is deemed more appropriate.
+
+In addition, users can create custom nodes with user-defined text, enabling them to include metadata that is implicit in the spreadsheet but absent as explicit cell content. 
 
 \subsubsection{Reusability and Efficiency}
 
-To optimize the extraction process and reduce repetitive tasks, the SDE allows users to duplicate previously defined hierarchies and apply them to similar regions within the spreadsheet. This feature is particularly useful for spreadsheets with repeating structures, such as multiple tables with the same format.
+To optimise the extraction process and reduce repetitive tasks, the SDE allows users to duplicate previously defined hierarchies and apply them to similar regions within the spreadsheet. This feature is particularly useful for spreadsheets with repeating structures, such as multiple tables with the same format. 
+
+When duplicating and moving a cell selection hierarchy to another section of the spreadsheet, it is sometimes necessary to keep certain cells fixed while moving the rest. This scenario commonly occurs when multiple tables are vertically aligned, and the tables below do not repeat their header rows. To address this, the SDE provides a lock function while the \texttt{DuplicateAndMove} mode is active. It allows users to freeze specific cells in place while relocating the hierarchy. Cells can be locked by clicking on the lock symbol at the top-left corner of the cell or to the right of the corresponding selection in the hierarchy panel. Figure~\ref{fig:5_repetitions} illustrates this. Already locked selections are displayed accordingly and can be unlocked if needed. Locked cells remain stationary, whereas the other cells in the hierarchy are repositioned accordingly. 
 
 \subsection{Example Workflow}
+
 
 Consider a spreadsheet containing statistical forecasts of future nursing staff availability in Germany \cite{destatis2024pflegekraefte}. Figure~\ref{fig:nothing} shows the SDE interface, which consists of three main components:
 
@@ -246,12 +257,6 @@ Consider a spreadsheet containing statistical forecasts of future nursing staff 
 
 \textbf{Output Preview (Bottom):} Provides immediate feedback on the data extraction based on current selections.
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/nothing.png}
-  \caption{The SDE Interface Overview.}
-  \label{fig:nothing}
-\end{figure}%
 
 
  
@@ -283,34 +288,29 @@ At this point, the hierarchy consists of five nodes, each—except the last one�
  
 To avoid repetitive manual entry for additional years, the user duplicates the hierarchy for "2024" and adjusts the cell selections to include data for subsequent years (e.g., "2025," "2026") using the "Move and Duplicate" feature.
 
-To do this, the user selects the node of the first column "2024" and right-clicks on it. A popup opens in which the action "move and duplicate" appears, which should then be clicked, as shown in Figure \ref{fig:move_and_duplicate_2024}.
 
 \begin{figure}[ht]
   \centering
-  \begin{subfigure}[b]{0.48\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/move_and_duplicate_2024_half.png}
-    \caption{Invoking the "move and duplicate" feature on the 2024 column node.}
-    \label{fig:move_and_duplicate_2024}
-  \end{subfigure}
-  \hspace{0.01\linewidth}
-  \begin{subfigure}[b]{0.48\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/5_repetitions_half.png}
-    \caption{Adjusting the number of repetitions to duplicate the column selection.}
-    \label{fig:5_repetitions}
-  \end{subfigure}
-  \caption{Utilizing the "Move and Duplicate" feature to replicate column hierarchies for additional years.}
-  \label{fig:move_and_duplicate_2024_and_5_repetitions}
+  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/move_and_duplicate_2024_half.png}
+  \caption{Invoking the "move and duplicate" feature on the 2024 column node.}
+  \label{fig:move_and_duplicate_2024}
 \end{figure}
 
+To do this, the user selects the node of the first column "2024" and right-clicks on it. A popup opens in which the action "move and duplicate" appears, which should then be clicked, as shown in Figure \ref{fig:move_and_duplicate_2024}.
+
+
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/move_and_duplicate/duplicate_columns_lock_symbol.png}
+  \caption{Moving the hierarchy one cell to the right while adjusting the number of repetitions to duplicate the column selection.}
+  \label{fig:5_repetitions}
+\end{figure}
 
 Subsequently, a series of buttons opens in the app bar at the top right, allowing the user to move the cell selections of the node as well as all child nodes, as seen in Figure \ref{fig:5_repetitions}. By pressing the button to move the selection by one unit to the right, the next column is selected; however, this would also deselect the first column since the selection was moved. To preserve the first column, the "move and duplicate" checkbox can be activated. This creates the shifted selection in addition to the original selection. However, the changes are only applied when the accept button is clicked. The next columns could also be selected in the same way. But this can be done faster, because instead of moving the selection and duplicating it only once, the "repeat" input field can be filled with as many repetitions as there are columns. By entering the number 5, the selection of the first column is shifted 5 times by one unit to the right and duplicated at each step.
 
 The user reviews the selections in the spreadsheet view, where each selection is highlighted in a different color corresponding to its node in the hierarchy. Only after the user has reviewed the shifted and duplicated selections in the worksheet and clicked the accept button are the nodes in the hierarchy created as desired. We present the results of these runtime measurements in Figure \ref{fig:move_accept}.
 
-The user reviews the selections in the spreadsheet view, where each selection is highlighted in a different color corresponding to its node in the hierarchy.
-Erst nachdem der Nutzer die verschobenen und duplizierten selektionen in der Worksheet ansieht überprüft hat und den Akzeptieren button geklickt hat, werden die Knoten in der Hierachie wie gewünscht angelegt. Das Ergebnis dieser Operation ist in Abbildung \ref{fig:move_accept} zu sehen.
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/move_accept.png}
@@ -331,12 +331,12 @@ Erst nachdem der Nutzer die verschobenen und duplizierten selektionen in der Wor
 
 The same method that worked effectively for duplicating the columns can now be applied to the subtables, as shown in Figure~\ref{fig:all_cells_selected}.
 
-\begin{figure}[h] 
+\begin{figure*}[t] 
   \centering 
-  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/all_cells_selected.png} 
+  \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/move_and_duplicate/duplicate_tables.png} 
   \caption{Selection of All Cells in the Subtables by Duplicating the Hierarchy of the First Table} 
   \label{fig:all_cells_selected} 
-\end{figure}
+\end{figure*}
 
 By selecting the node with the value "Total" and clicking the "Move and Duplicate" button, we can apply the selection of the "Total" subtable to the other subtables. This involves shifting the table downward by as many rows as necessary to overlap with the subtable below.
 
