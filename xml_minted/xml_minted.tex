@@ -1,37 +1,26 @@
-% !TeX encoding = UTF-8
-% !TeX spellcheck = de_DE
-
 \documentclass[biblatex]{lni}
 \addbibresource{lni-paper-example-de.bib}
 
-%% Schöne Tabellen mittels \toprule, \midrule, \bottomrule
 \usepackage{booktabs}
 
-%% Zu Demonstrationszwecken
 \usepackage[]{blindtext}  
 
 \usepackage[newfloat]{minted}
 \setminted{fontsize=\tiny,baselinestretch=1}
 
 
-% Lösche rote Rahmen in minted Quelltext und nutze das Visual Studio Theme
 \usemintedstyle{vs}
 \setminted{autogobble=true,
-%fontsize=\footnotesize,
 baselinestretch=1.0, mathescape,
-%linenos, 
 numbersep=8pt, breaklines, highlightcolor=insertedCode, breakafter=_@|.}
 
 \usepackage{tcolorbox}
 
-% Define Background Color for Code Blocks
 \xdefinecolor{CodeBlockBackgroundColor}{RGB}{244,246,248}
 
-% Define Code Block
 \newtcolorbox{codeFrame}{colback=CodeBlockBackgroundColor,
   colframe=CodeBlockBackgroundColor,on line,arc=4pt,boxrule=0pt,boxsep=0pt,left=4pt,right=4pt,top=4pt,bottom=4pt}
 
-% Define that every minted environment is wrapped in a codeFrame
 \BeforeBeginEnvironment{minted}{\begin{codeFrame}}
     \AfterEndEnvironment{minted}{\end{codeFrame}}
  
