@@ -227,9 +227,9 @@ The parsing, indexing, and rendering subsystems are organized to uphold these in
 The core interaction in the \emph{SDE} lets users declare structure directly on the spreadsheet canvas and organize it into a hierarchy that drives a deterministic transformation into a relational view.
 
 \paragraph{Hierarchy Definition}
-Users select individual cells or ranges (click, Shift–click for multi-selection). Each selection denotes either data (values) or metadata (labels/headers). Selections are arranged into a hierarchical tree: each node represents a data element; child nodes represent nested data or metadata. This hierarchy specifies how the SDE broadcasts selections into rows/columns in the output.
+Users select individual cells or ranges (click, Shift-click for multi-selection). Each selection denotes either data (values) or metadata (labels/headers). Selections are arranged into a hierarchical tree: each node represents a data element; child nodes represent nested data or metadata. This hierarchy specifies how the SDE broadcasts selections into rows/columns in the output.
 
-The interface supports flexible management: users drag–and–drop nodes to reparent or reorder the hierarchy when a different organization is more appropriate. Users can also introduce \emph{custom nodes} with user-defined text to encode metadata that is implicit in the spreadsheet but absent from cell contents.
+The interface supports flexible management: users drag-and-drop nodes to reparent or reorder the hierarchy when a different organization is more appropriate. Users can also introduce \emph{custom nodes} with user-defined text to encode metadata that is implicit in the spreadsheet but absent from cell contents.
 
 \paragraph{Reusability and Efficiency}
 To reduce repetitive work on sheets with repeated layouts, users can duplicate an existing selection hierarchy and apply it to similar regions. When moving a hierarchy, some cells may need to remain fixed (e.g., vertically stacked tables where only the topmost table repeats header rows). In \texttt{DuplicateAndMove} mode, the SDE provides a \emph{lock} function: users freeze specific cells while relocating the rest of the hierarchy. Locks can be toggled via the lock icon at the top-left corner of a cell or next to the corresponding selection in the hierarchy panel; locked cells remain stationary while other selections shift accordingly (see Figure~\ref{fig:5_repetitions} in \ref{sec:example-workflow}). Already-locked selections are visually indicated and can be unlocked at any time.
@@ -785,7 +785,7 @@ Edge probes ensure any merged region intersecting the viewport but originating
 above/left is instantiated \emph{exactly once} at its origin. The interior pass
 either places unmerged cells or the unique origin cell of each merged region.
 Let $R_{\mathrm{vis}}=r_u-r_\ell+1$ and $C_{\mathrm{vis}}=c_u-c_\ell+1$.
-Passes 1–2 cost $O(R_{\mathrm{vis}}+C_{\mathrm{vis}})$; Pass 3 costs
+Passes 1-2 cost $O(R_{\mathrm{vis}}+C_{\mathrm{vis}})$; Pass 3 costs
 $O(R_{\mathrm{vis}}\,C_{\mathrm{vis}})$ and does no work outside the visible
 rectangle. The burned set is updated at most once per span per frame.
 
@@ -1047,7 +1047,7 @@ cover one or two viewport heights plus prefetch.
     \centering
     \includegraphics[width=\linewidth]{charts/parse_large_file/generate_boxplot_run_times_to_open_large_sheet.pdf}
     \caption{Large multi-worksheet workbook: opening one selected sheet (user-centred latency).}
-    \Description{Horizontal box plot with three rows labelled Spreadsheet Data Extractor, Microsoft Excel, and Dart Excel package. The x-axis is time in seconds on a logarithmic scale. SDE is near 0.6–1.1\,s, Excel around 44–51\,s, Dart around 340\,s for its single run.}
+    \Description{Horizontal box plot with three rows labelled Spreadsheet Data Extractor, Microsoft Excel, and Dart Excel package. The x-axis is time in seconds on a logarithmic scale. SDE is near 0.6-1.1\,s, Excel around 44-51\,s, Dart around 340\,s for its single run.}
     \label{fig:one-sheet-sub}
   \end{subfigure}
 
@@ -1135,7 +1135,7 @@ We quantify opening latency in two complementary scenarios: (i) a \emph{user-cen
 We evaluate three programmes: the \emph{SDE}, Microsoft Excel (automated via PowerShell/COM), and a Dart \textit{excel} package. Each condition was repeated ten times \emph{unless noted otherwise}.
 
 \paragraph{User-centred latency: opening a selected worksheet.}
-Opening a selected worksheet from a large real-world workbook~\cite{destatis_rechnungsergebnis_2024}, SDE initialises only the requested sheet and achieves a median of \textbf{0.657\,s}, compared to \textbf{45.843\,s} for Excel—a \textbf{69.8\(\times\)} speedup (Fig.~\ref{fig:one-sheet-sub}). The Dart \textit{excel} package completed only the first run at 343.568\,s; runs~2–10 terminated with out-of-memory on our test machine (\(n{=}1\)). Based on that single run, SDE is \textbf{522.9\(\times\)} faster in this scenario.
+Opening a selected worksheet from a large real-world workbook~\cite{destatis_rechnungsergebnis_2024}, SDE initialises only the requested sheet and achieves a median of \textbf{0.657\,s}, compared to \textbf{45.843\,s} for Excel—a \textbf{69.8\(\times\)} speedup (Fig.~\ref{fig:one-sheet-sub}). The Dart \textit{excel} package completed only the first run at 343.568\,s; runs~2-10 terminated with out-of-memory on our test machine (\(n{=}1\)). Based on that single run, SDE is \textbf{522.9\(\times\)} faster in this scenario.
 
 
 
@@ -1183,8 +1183,8 @@ the sheet size.
 On a sheet with $10^6$ rows and a selection covering all cells, the UI remained
 smooth during scrolling, sustaining $\approx 2$\,ms per frame (Fig.~\ref{fig:sde_profiling_scrolling}),
 which corresponds to $\approx 500$\,FPS. When dragging the scrollbar—filling the
-entire viewport at once with new content—frame times rose to about $60$–$80$\,ms
-($\approx 12$–$17$\,FPS), which remained acceptable for rapid navigation at that scale.
+entire viewport at once with new content—frame times rose to about $60$-$80$\,ms
+($\approx 12$-$17$\,FPS), which remained acceptable for rapid navigation at that scale.
 
 
 \paragraph{Benchmarking environment.}
