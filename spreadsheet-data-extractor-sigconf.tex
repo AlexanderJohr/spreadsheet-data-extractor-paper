@@ -1057,15 +1057,32 @@ cover one or two viewport heights plus prefetch.
 }
 \end{algorithm}
 
-\begin{figure*}[t] 
-  \centering 
-  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/performance/fps_scrolling.png} 
-  \caption{Performance profiling of the SDE. 
-The timeline view shows frame rendering costs (blue) and highlights the 
-maximum (54\,ms/frame) and average (18\,ms/frame) rendering time.
-} 
-  \label{fig:boxplot_run_times_to_open_worksheet} 
+
+
+\begin{figure*}[t]
+  \centering
+  \begin{subfigure}{0.98\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{charts/parse_large_file/generate_boxplot_run_times_to_open_large_sheet.pdf}
+    \caption{Large multi-worksheet workbook: opening one selected sheet (user-centred latency).}
+    \Description{Horizontal box plot with three rows labelled Spreadsheet Data Extractor, Microsoft Excel, and Dart Excel package. The x-axis is time in seconds on a logarithmic scale. SDE is near 0.6–1.1\,s, Excel around 44–51\,s, Dart around 340\,s for its single run.}
+    \label{fig:one-sheet-sub}
+  \end{subfigure}
+
+  \vspace{0.6em}
+
+  \begin{subfigure}{0.98\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{charts/parse_large_sheet/generate_boxplot_run_times_to_open_large_sheet.pdf}
+    \caption{Single-worksheet benchmark (1{,}048{,}548 rows): first vs.\ last row per programme.}
+    \Description{Grouped horizontal box plot with six rows: for each of SDE, Microsoft Excel, and a Dart Excel package, the first box shows time to parse the first rows and the second box shows time to parse the last row. SDE first-rows median \(\approx\)1.23\,s vs.\ Excel \(\approx\)52.76\,s; SDE last-row median \(\approx\)5.52\,s vs.\ Excel \(\approx\)52.23\,s.}
+    \label{fig:first-vs-last-sub}
+  \end{subfigure}
+
+  \caption{Time-to-first-visual vs.\ full-parse costs across tools. (a) shows the practical benefit of initialising only the selected sheet in a multi-worksheet file; (b) isolates algorithmic differences under identical workload. Both plots aggregate 10 runs on a \(\log_{10}\) time axis.}
+  \label{fig:eval-combined}
 \end{figure*}
+
 
 \paragraph{Invariants and correctness.}
 (1) \textbf{Monotone coverage:} every emitted block has
@@ -1114,6 +1131,16 @@ The fundamental approach of the Spreadsheet Data Extractor, based on the convert
 
 Our focus is on improving the user experience and optimizing the performance of the prior solution. We enhanced the user experience by displaying the Excel worksheets similarly to how they appear in Excel and by reducing the number of required user interactions through the integration of the selection hierarchy, worksheet view, and output preview into a single interface, thereby reducing context switching. Performance was further improved by implementing incremental loading of Excel files and rendering only the visible cells.
 
+\begin{figure*}[t] 
+  \centering 
+  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/performance/fps_scrolling.png} 
+  \caption{Performance profiling of the SDE. 
+The timeline view shows frame rendering costs (blue) and highlights the 
+maximum (54\,ms/frame) and average (18\,ms/frame) rendering time.
+} 
+  \label{fig:boxplot_run_times_to_open_worksheet} 
+\end{figure*}
+
 \subsection{Acceleration When Opening Files}
 \label{sec:evaluation-opening}
 
@@ -1124,30 +1151,6 @@ The multi-worksheet experiment reflects an important user scenario (time-to-firs
 
 \paragraph{Results (overview).}
 Figure~\ref{fig:one-sheet-sub} demonstrates the practical benefit in a multi-worksheet file: initialising only the selected sheet yields much lower time-to-first-visual. Figure~\ref{fig:first-vs-last-sub} isolates algorithmic differences under identical workload: SDE remains \(\sim\!10\times\) faster even when a full parse is enforced.
-
-\begin{figure*}[t]
-  \centering
-  \begin{subfigure}{0.98\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{charts/parse_large_file/generate_boxplot_run_times_to_open_large_sheet.pdf}
-    \caption{Large multi-worksheet workbook: opening one selected sheet (user-centred latency).}
-    \Description{Horizontal box plot with three rows labelled Spreadsheet Data Extractor, Microsoft Excel, and Dart Excel package. The x-axis is time in seconds on a logarithmic scale. SDE is near 0.6–1.1\,s, Excel around 44–51\,s, Dart around 340\,s for its single run.}
-    \label{fig:one-sheet-sub}
-  \end{subfigure}
-
-  \vspace{0.6em}
-
-  \begin{subfigure}{0.98\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{charts/parse_large_sheet/generate_boxplot_run_times_to_open_large_sheet.pdf}
-    \caption{Single-worksheet benchmark (1{,}048{,}548 rows): first vs.\ last row per programme.}
-    \Description{Grouped horizontal box plot with six rows: for each of SDE, Microsoft Excel, and a Dart Excel package, the first box shows time to parse the first rows and the second box shows time to parse the last row. SDE first-rows median \(\approx\)1.23\,s vs.\ Excel \(\approx\)52.76\,s; SDE last-row median \(\approx\)5.52\,s vs.\ Excel \(\approx\)52.23\,s.}
-    \label{fig:first-vs-last-sub}
-  \end{subfigure}
-
-  \caption{Time-to-first-visual vs.\ full-parse costs across tools. (a) shows the practical benefit of initialising only the selected sheet in a multi-worksheet file; (b) isolates algorithmic differences under identical workload. Both plots aggregate 10 runs on a \(\log_{10}\) time axis.}
-  \label{fig:eval-combined}
-\end{figure*}
 
 
 
