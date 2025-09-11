@@ -1,0 +1,38 @@
+{
+    "configurations": [
+        {
+            "name": "Generate Boxplot Run Times to Open Large Worksheet",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "charts/parse_large_sheet/generate_boxplot_run_times_to_open_large_sheet.py",
+            "python": "${workspaceFolder}/.venv/Scripts/python",
+        },
+        {
+            "name": "Generate Boxplot Run Times to Open Worksheet from Large Workbook",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "charts/parse_large_file/generate_boxplot_run_times_to_open_worksheet_from_large_workbook.py",
+            "python": "${workspaceFolder}/.venv/Scripts/python",
+        },
+        {
+            "name": "spreadsheet_data_extractor",
+            "cwd": "spreadsheet_data_extractor",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "spreadsheet_data_extractor (profile mode)",
+            "cwd": "spreadsheet_data_extractor",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "spreadsheet_data_extractor (release mode)",
+            "cwd": "spreadsheet_data_extractor",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+    ]
+}
