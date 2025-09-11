@@ -1,13 +1,9 @@
  
 \documentclass[sigconf,review,anonymous]{acmart}
-
-
 %\documentclass[sigconf]{acmart}
 %\documentclass[manuscript, screen, review, anonymous]{acmart}
 
 \usepackage{subcaption} 
-%\usepackage{algorithm}
-%\usepackage{algorithmic}
 \usepackage[ruled,vlined]{algorithm2e}
 \SetKwInput{KwIn}{Input}
 \SetKwInput{KwOut}{Output}
@@ -19,22 +15,16 @@
 \SetAlgoHangIndent{0pt}          % no extra hang indent
 \DontPrintSemicolon              % cleaner look
 
-
 \usepackage{listings}
-
 
 \AtBeginDocument{%
   \providecommand\BibTeX{{%
     Bib\TeX}}}
-
  
 \setcopyright{acmlicensed}
 \copyrightyear{2025}
 \acmYear{2025}
 \acmDOI{10.1145/XXXXXXX.XXXXXXX}
-
-
-
 
 %% These commands are for a PROCEEDINGS abstract or paper.
 \acmConference[ACM PODS '25]{2025 International Conference on Management of Data}{June 22--27, 2025}{Berlin, Germany}
@@ -44,7 +34,6 @@
 \acmSubmissionID{ }
 
 \begin{document}
-
 
 \title[Spreadsheet Data Extractor (SDE)]{Spreadsheet Data Extractor (SDE): A Performance-Optimized, User-Centric Tool for Transforming Semi-Structured Excel Spreadsheets into Relational Data}
 
@@ -112,24 +101,18 @@ Optimised for time-to-first-visual, SDE delivers about \textbf{70$\times$} speed
 \ccsdesc[300]{Human-centered computing~Graphical user interfaces}
 \ccsdesc[100]{Theory of computation~Data compression}
 
-
 \keywords{Spreadsheets, Data cleaning, Relational Data, Excel, XML, Graphical user interfaces}
-%\received{20 February 2007}
-%\received[revised]{12 March 2009}
-%\received[accepted]{5 June 2009}
 
 \maketitle
 \section{Introduction}
 
 Spreadsheets underpin workflows across healthcare~\cite{berndt2001healthcare}, nonprofit organizations~\cite{singh2009numeric,west2008because}, finance, commerce, academia, and government~\cite{dunn2010spreadsheets}. Despite their ubiquity, reliably analyzing and reusing the data they contain remains difficult for automated systems. In practice, many real-world spreadsheets are organized for human consumption~\cite{tang2023efficient} and therefore exhibit  layouts with empty cells, merged regions, hierarchical headers, and multiple stacked tables. While such conventions aid human reading~\cite{rahman2021noah}, they hinder machine readability and complicate extraction, integration, and downstream analytics.
 
-
 The reliance on spreadsheets as ad-hoc solutions poses several limitations:
 \begin{itemize}
     \item \textbf{Data Integrity and Consistency:} Spreadsheets are prone to errors, such as duplicate entries, inconsistent data formats, and inadvertent modifications, which can compromise data integrity.~\cite{cunha2012smellsheet, abreu2014faultysheet}
     \item \textbf{Scalability Issues:} As datasets grow in size and complexity, spreadsheets become less efficient for data storage and retrieval, leading to performance bottlenecks.~\cite{swidan2016improving, mack2018characterizing}
     \item \textbf{Limited Query Capabilities:} Unlike databases, spreadsheets lack advanced querying and indexing features, restricting users from performing complex data analyses.
-    %TODO: \item \textbf{Integration Challenges:} Integrating spreadsheet data with other systems, applications, or databases is often cumbersome and error-prone, limiting interoperability. 
 \end{itemize}
 
 Transitioning from these ad-hoc spreadsheet solutions to standardized database systems offers numerous benefits:
@@ -145,7 +128,6 @@ Given the abundance of spreadsheet data and the clear advantages of database sys
 Prior work introduced a tool for extracting data from Excel files~\cite{alexander2024converting}. While effective, that system exhibited performance issues on large workbooks and imprecise rendering of cell geometry, which limited usability for complex, real-world files. The user interface was also fragmented, requiring context switches between hierarchy definition and output preview.
 
 This paper presents the \emph{Spreadsheet Data Extractor (SDE)}, which transforms semi-structured spreadsheet content into machine-readable form. Users declare structure directly via cell selections—no programming required. The design addresses the above limitations and supports large, irregular spreadsheets with predictable, interactive performance.
-
 
 \subsection{Contributions}
 
@@ -183,11 +165,7 @@ This paper presents the \emph{Spreadsheet Data Extractor (SDE)}, which transform
 \end{table*}
 \section{Related Work}
 
-
 The extraction of relational data from semi-structured documents, particularly spreadsheets, has garnered significant attention due to their ubiquitous use across domains such as business, government, and scientific research. Several frameworks and tools have been developed to address the challenges of converting flexible spreadsheet formats into normalized relational forms suitable for data analysis and integration as summarized in Table~\ref{tab:approaches}.
-
-
-
 
 \subsection{Aue et al.'s Converter}
 
@@ -230,8 +208,6 @@ Senbazuru comprises three primary functional components:
 
 Senbazuru's ability to handle hierarchical spreadsheets, where attributes may span multiple rows or columns without explicit labeling, sets it apart from earlier systems like DeExcelerator and XLIndy. By employing machine learning techniques and providing user-friendly repair interfaces, Senbazuru ensures high-quality extraction and facilitates the integration of spreadsheet data into relational databases.
 
-
-
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{images/spreadsheet_data_extractor/new_version/nothing.png}
@@ -245,7 +221,6 @@ Dong et al.~\cite{dong2019tablesense} developed \textbf{TableSense}, an end-to-e
 
 While \textbf{DeExcelerator}, \textbf{XLIndy}, \textbf{FLASHRELATE}, and \textbf{Senbazuru} focus primarily on transforming spreadsheet data into relational forms through heuristic, machine learning, and programming-by-example approaches, \textbf{TableSense} specifically targets the accurate detection of table boundaries within spreadsheets using deep learning techniques. Unlike region-growth-based methods employed in commodity spreadsheet tools, which often fail on complex table layouts, TableSense achieves superior precision and recall by leveraging CNNs tailored for the unique characteristics of spreadsheet data.
 However, TableSense focuses on table detection and visualization, allowing users to generate diagrams from the detected tables but does not provide functionality for exporting the extracted data for further analysis.
-
 
 \subsection{Comparison and Positioning}
 
@@ -277,14 +252,10 @@ The interface supports flexible management: users drag–and–drop nodes to rep
 \paragraph{Reusability and Efficiency}
 To reduce repetitive work on sheets with repeated layouts, users can duplicate an existing selection hierarchy and apply it to similar regions. When moving a hierarchy, some cells may need to remain fixed (e.g., vertically stacked tables where only the topmost table repeats header rows). In \texttt{DuplicateAndMove} mode, the SDE provides a \emph{lock} function: users freeze specific cells while relocating the rest of the hierarchy. Locks can be toggled via the lock icon at the top-left corner of a cell or next to the corresponding selection in the hierarchy panel; locked cells remain stationary while other selections shift accordingly (see Figure~\ref{fig:5_repetitions} in \ref{sec:example-workflow}). Already-locked selections are visually indicated and can be unlocked at any time.
 
-
 \section{Example Workflow}
 \label{sec:example-workflow}
 
-
-
 Consider a spreadsheet containing statistical forecasts of future nursing staff availability in Germany \cite{destatis2024pflegekraefte}. Figure~\ref{fig:nothing} shows the SDE interface, which consists of three main components:
-
 
 \textbf{Hierarchy Panel (Top Left):} Displays the hierarchy of cell selections, initially empty.
 
@@ -292,10 +263,6 @@ Consider a spreadsheet containing statistical forecasts of future nursing staff 
 
 \textbf{Output Preview (Bottom):} Provides immediate feedback on the data extraction based on current selections.
 
-
-
- 
- 
 \begin{figure*}[h]
   \centering
   \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/first_column.png}
@@ -306,10 +273,6 @@ Consider a spreadsheet containing statistical forecasts of future nursing staff 
 
 The user adds a node to the hierarchy and selects the cell containing the metadata "Nursing Staff" (Figure~\ref{fig:first_column}). This cell represents metadata that is common to all cells in this worksheet. Therefore, it should be selected first and should appear at the beginning of each row in the output CSV file.
 
-
-
-
- 
  \begin{figure}[b]
   \centering
   \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/move_and_duplicate_2024_half.png}
@@ -317,23 +280,17 @@ The user adds a node to the hierarchy and selects the cell containing the metada
   \label{fig:move_and_duplicate_2024}
 \end{figure}
 
-
 Within this node, the user adds a child node and selects the cell \emph{"Total"}, which serves as both a table header and a row label. This selection represents the table header of the first subtable. The user adds another child node and selects the range of cells containing row labels (e.g., \emph{"Total", "15-20", "20-25"} and so forth) by clicking the first cell and shift-clicking the last cell.
 
 A further child node is then placed under the row labels node, and the user selects the year \emph{"2024"}. Subsequently, an additional child node is created beneath the year node, and the user selects the corresponding data cells (e.g., \emph{"1673", "53", "154"}, etc.).
 
 At this point, the hierarchy consists of five nodes, each—except the last one—containing an embedded child node. In the upper-right portion of the interface, the chosen cells are displayed in distinct colors corresponding to each node. The lower area shows a preview of the extracted output. For each child node, an additional column is appended to the output. When multiple cells are selected for a given node, their values appear as entries in new rows of the output, reflecting the defined hierarchical structure.
 
-
 \subsection{Duplicating the Column Hierarchy}
 
- 
 To avoid repetitive manual entry for additional years, the user duplicates the hierarchy for "2024" and adjusts the cell selections to include data for subsequent years (e.g., "2025," "2026") using the "Move and Duplicate" feature.
 
 To do this, the user selects the node of the first column "2024" and right-clicks on it. A popup opens in which the action "move and duplicate" appears, which should then be clicked, as shown in Figure \ref{fig:move_and_duplicate_2024}.
-
-
-
 
 \begin{figure}[b]
   \centering
@@ -349,7 +306,6 @@ To do this, the user selects the node of the first column "2024" and right-click
   \label{fig:move_accept}
 \end{figure*}
 
-
 \begin{figure}[b] 
   \centering 
   \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/move_and_duplicate/duplicate_tables_cropped_to_one_column.png} 
@@ -361,10 +317,7 @@ Subsequently, a series of buttons opens in the app bar at the top right, allowin
 
 The user reviews the selections in the spreadsheet view, where each selection is highlighted in a different color corresponding to its node in the hierarchy. Only after the user has reviewed the shifted and duplicated selections in the worksheet and clicked the "accept" button are the nodes in the hierarchy created as desired. Figure \ref{fig:move_accept} shows the resulting selection after the user approved the
 
-
 The same method that worked effectively for duplicating the columns can now be applied to the subtables, as shown in Figure~\ref{fig:all_cells_selected}.
-
-
 
 By selecting the node with the value "Total" and clicking the "Move and Duplicate" button, we can apply the selection of the "Total" subtable to the other subtables. This involves shifting the table downward by as many rows as necessary to overlap with the subtable below.
 
@@ -418,16 +371,6 @@ per cell.
   \label{fig:cross_after}
 \end{figure}
 
-
-
-
-
-
-
-
-
-
-
 \section{Interface Fidelity for Navigation}
 
 To ensure that users can navigate worksheets without difficulty, we prioritize displaying the worksheets in a manner that closely resembles their appearance in Excel. This involves accurately rendering cell dimensions, formatting, and text behaviors.
@@ -458,8 +401,6 @@ Each cell in the worksheet references a style index through the \textit{s} attri
 
 Through meticulous parsing and application of these formatting details, we ensure that the rendered worksheet closely mirrors the original Excel file, preserving the visual cues and aesthetics that users expect.
 
- 
-
 \subsubsection{Handling Text Overflow}
 
 In Excel, when the content of a cell exceeds its width, the text may overflow into adjacent empty cells, provided those cells do not contain any data. If adjacent cells are occupied, Excel truncates the overflowing text at the cell boundary. Replicating this behavior is essential for accurate rendering and user familiarity.
@@ -477,15 +418,9 @@ Figure \ref{fig:nothing} illustrates this behavior. The text "Supply of Nursing 
 
 By accurately handling text overflow, we improve readability and maintain consistency with Excel's user interface, which is crucial for users transitioning between Excel and our tool.
 
-
- 
-
 \section{Scalable Parsing, Indexing, and Rendering}
 
 This section describes how the SDE achieves interactive performance on large or bloated worksheets: (i) \emph{incremental loading} of XLSX assets, (ii) a \emph{byte-level worksheet parser} that avoids DOMs and regex, (iii) compact \emph{indexes} for merged regions and column geometry, (iv) \emph{on-demand} streaming of rows and cells, and (v) \emph{viewport-bounded} rendering.
-
-
-
 
 \subsection{Incremental Loading of Worksheets}
 
@@ -509,9 +444,7 @@ Our solution opens the Excel file as a ZIP archive and initially extracts only t
     \item \textbf{Selective Extraction}:
 
     We immediately extract \texttt{sharedStrings.xml} and \texttt{styles.xml} because these files are small and contain information necessary for rendering cell content and styles across all worksheets. These files are parsed and stored in memory for quick access during rendering.
-
     \item \textbf{Deferred Worksheet Loading}:
-
     The individual worksheet files (\texttt{sheetX.xml}) remain compressed and are loaded into memory in their binary unextracted form. They are not decompressed or parsed at this stage.
 
     \item \textbf{On-Demand Parsing}:
@@ -581,16 +514,8 @@ Entering sheet-data mode, we stream \texttt{<row ...>} tags without decoding pay
 \]
 See Alg.~\ref{alg:rows-offsets}.
 
-
 \newcommand{\XMLtag}[1]{\texttt{$<$#1$>$}}
 \newcommand{\XMLendtag}[1]{\texttt{$</$#1$>$}}
-
-
-
-
-
-
-
 
 \begin{algorithm}[t]
 \footnotesize
@@ -598,9 +523,6 @@ See Alg.~\ref{alg:rows-offsets}.
 \DontPrintSemicolon
 \SetKwProg{Fn}{Function}{:}{}
 
-% =========================
-% Main procedure
-% =========================
 \KwIn{$b$: bytes; window $[o,c)$ with
       $o$ = index after \XMLtag{sheetData\ldots},
       $c$ = index of \XMLendtag{sheetData}; default height $H_d$; pixel scale $\rho$}
@@ -636,9 +558,6 @@ See Alg.~\ref{alg:rows-offsets}.
 
 \BlankLine
 
-% =========================
-% Row <row ...> attribute parser using GetInnerAttrInterval
-% =========================
 \KwIn{$b$: bytes; $i$: index at \texttt{$<$row}; $c$: close bound (sheet end)}
 \KwOut{$(r,h,j)$: row index $r$ (or $\bot$), optional height $h$ (or $\bot$), and $j$ = first byte after \texttt{$>$}}
 
@@ -663,9 +582,6 @@ See Alg.~\ref{alg:rows-offsets}.
 
 \BlankLine
 
-% =========================
-% Generic: parse = " ... " (or ' ... ') and return inner [start,end)
-% =========================
 \KwIn{$i$: scan index after the attribute name; $n$: hard bound; $b$: bytes}
 \KwOut{$(s,e)$ inner half-open interval, or $\bot$ if not well-formed}
 
@@ -732,11 +648,6 @@ These extents parameterize the viewport and drive scrollbar sizing in the UI.
 
 \paragraph{Complexity and memory.}
 All searches are bounded by structural sentinels (\texttt{>}, next \texttt{<row}, next \texttt{<c}, or \texttt{</sheetData>}). Anchoring \texttt{</sheetData>} is \(O(N)\) with tiny constants; row streaming is \(O(R)\) with \(O(1)\) per-row offset updates; a targeted cell within a row scans only that row’s interval; merge queries run in \(O(\log M + \alpha)\) with a short local scan \(\alpha\). The representation is compact (byte slices + small numeric state), and strings are decoded only when needed.
-
- 
- 
- 
-
 \subsection{Two-Dimensional Grid Viewport Rendering}
 
 Given a (potentially very large) worksheet with variable row heights, banded column
@@ -1006,7 +917,6 @@ local in-block offset (Alg.~\ref{alg:lazy-A}, \textsc{LocateRow}). Both steps
 are $O(k)$ work to extend by $k$ newly discovered rows plus $O(\log |starts|)$
 for the lookup.
 
-
 \begin{algorithm}[t]
 \footnotesize
 \caption{Lazy row locator: driver and lookup (part A)}
@@ -1046,7 +956,6 @@ for the lookup.
 }
 \end{algorithm}
 
-
 \paragraph{Streaming next block.}
 \textsc{NextBlock} (Alg.~\ref{alg:lazy-B}) emits the next contiguous block.
 If $Q$ is empty we call \textsc{FillQueueIfEmpty} to advance to the next
@@ -1057,7 +966,6 @@ Otherwise we pop a frame. If the popped task has no children, its
 return it. If the task has children, we enqueue each child with the extended
 \texttt{path}. This BFS over the selection tree yields a deterministic,
 top-down order that matches the user’s mental model.
-
 
 \begin{algorithm}[h]
 \footnotesize
@@ -1086,7 +994,6 @@ top-down order that matches the user’s mental model.
 }
 \end{algorithm}
 
-
 \paragraph{Source advancement.}
 \textsc{FillQueueIfEmpty} (Alg.~\ref{alg:lazy-C}) advances through the
 outer hierarchy: it steps files ($fi$), sheet tasks ($sti$), then sheet pairs
@@ -1095,7 +1002,6 @@ outer hierarchy: it steps files ($fi$), sheet tasks ($sti$), then sheet pairs
 to form \textsf{RowBlock}s. If a segment has no roots, it is skipped.
 When the last file is exhausted and $Q$ remains empty, the function returns
 \textbf{false} and the stream is complete.
-
 
 \begin{algorithm}[h]
 \footnotesize
@@ -1123,7 +1029,6 @@ When the last file is exhausted and $Q$ remains empty, the function returns
 }
 \end{algorithm}
 
-
 \paragraph{Cache pruning.}
 \textsc{PruneHeadIfNeeded} (Alg.~\ref{alg:lazy-D}) trims the front of the cache
 to respect either (i) a block count cap $B_{\max}$, or (ii) a total cached
@@ -1131,8 +1036,6 @@ row cap $R_{\max}$. Trimming removes the oldest blocks and their starts while
 preserving the invariant that \texttt{starts} remains strictly increasing and
 aligned with \texttt{blocks}. In practice we choose small caps that comfortably
 cover one or two viewport heights plus prefetch.
-
-
 
 \begin{algorithm}[h]
 \footnotesize
@@ -1154,7 +1057,6 @@ cover one or two viewport heights plus prefetch.
 }
 \end{algorithm}
 
- 
 \begin{figure*}[t] 
   \centering 
   \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/performance/fps_scrolling.png} 
@@ -1204,27 +1106,7 @@ returns $\bot$; the UI interprets this as “no more data.” All pruning
 policies preserve correctness: they only remove \emph{past} blocks and never
 create gaps inside the realized suffix.
 
-
-
-
-
-
-
-
-
 By applying this method, we render only the cells necessary for the current view, thereby optimizing performance and ensuring smooth user interactions even with large and complex worksheets.
-
-
-
-
-
-
-
- 
-
-
-
-
 
 \section{Evaluation}
 
@@ -1243,8 +1125,6 @@ The multi-worksheet experiment reflects an important user scenario (time-to-firs
 \paragraph{Results (overview).}
 Figure~\ref{fig:one-sheet-sub} demonstrates the practical benefit in a multi-worksheet file: initialising only the selected sheet yields much lower time-to-first-visual. Figure~\ref{fig:first-vs-last-sub} isolates algorithmic differences under identical workload: SDE remains \(\sim\!10\times\) faster even when a full parse is enforced.
 
- 
-% requires \usepackage{subcaption}
 \begin{figure*}[t]
   \centering
   \begin{subfigure}{0.98\textwidth}
@@ -1310,27 +1190,6 @@ the sheet size.
 
 On a sheet with $10^6$ rows and a selection covering all cells, the UI remained
 smooth during scrolling, sustaining $\approx 2$\,ms per frame, which calculates to $\approx 500$\,FPS. When dragging the scrollbar which causes to fill the whole viewport at once with new content, the frame times rise to about 60 to 80 \,ms, which calculates to $\approx 16$\,FP which is still acceptable while scrolling through large datasets with $10^6$ rows.
-
-
-
-
-
-%\subsection{Implementing "Center Across Selection"}
-%
-%Although we can analyze cell merging—a commonly used feature in Excel to center text across multiple cells—this worksheet does not use this visual formatting feature through cell merging. Instead, the first cell has a horizontal alignment set to \texttt{centerContinuous}. Our previous attempts to determine the cell coordinates over which this horizontal centering extends have been unsuccessful. Further testing and research are necessary to understand how such centered texts are stored in the XML structure of the Excel file.
-%
-%\begin{figure}[h] 
-%  \centering 
-%  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/new_version/center.png} 
-%  \caption{Illustration of the Text Alignment "Center Across Selection" in Excel} 
-%  \label{fig:center} 
-%\end{figure}
-%
-%\subsection{Evaluation on Real-World Data}
-
-
-
-
 
 \section{Conclusion}
 
