@@ -303,3 +303,6 @@ TSWLatexianTemp*
 # Ignore generated files from the BL proxy
 video/footage/camera_footage/BL_proxy/*
 video/footage/screenshare/BL_proxy/*
+
+# Ignore the whole dart_tool directory
+.dart_tool/
