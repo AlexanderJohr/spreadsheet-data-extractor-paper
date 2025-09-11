@@ -1128,6 +1128,7 @@ The Spreadsheet Data Extractor (SDE) builds on the converter by Aue et al.~\cite
   \centering
   \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/performance/fps_scrolling.png}
   \caption{SDE performance profiling during scrolling. Timeline shows per-frame rendering costs (blue); average \(\approx\)18\,ms/frame and peak 54\,ms/frame.}
+  \Description{Screenshot of SDE’s performance timeline while scrolling a large worksheet. Two horizontal tracks are shown: a top “Raster” band and a lower “UI” band. Each track consists of dense blue vertical bars encoding per-frame time; most bars are short with occasional taller clusters. Track labels report average and maximum frame costs; the raster band shows the higher values, the UI band remains low. Two bright green vertical markers indicate the current cursor positions. The figure illustrates smooth scrolling with low per-frame times; numeric averages and peaks are given in the caption.}
   \label{fig:sde_profiling_scrolling}
 \end{figure*}
 
