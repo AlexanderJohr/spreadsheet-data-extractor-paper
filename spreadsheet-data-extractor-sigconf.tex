@@ -58,7 +58,7 @@
 \begin{abstract}
 Spreadsheets are widely used across domains, yet their human-oriented layouts (merged cells, hierarchical headers, multiple tables) hinder automated extraction. We present the Spreadsheet Data Extractor (SDE), a user-in-the-loop system that converts semi-structured sheets into structured outputs without programming. Users declare the structure they perceive; the engine broadcasts selections deterministically and renders results immediately. Under the hood, SDE employs incremental loading, byte-level XML streaming (avoiding DOM materialisation), and viewport-bounded rendering.
 
-Optimised for time-to-first-visual, SDE delivers about \textbf{70$\times$} speedup over Microsoft Excel when opening a selected sheet when opening a selected sheet in a large real-world workbook; under workload-equivalent conditions (single worksheet, full parse) it remains about \textbf{10$\times$} faster, while preserving layout fidelity. These results indicate SDE’s potential for reliable, scalable extraction across diverse spreadsheet formats.
+Optimised for time-to-first-visual, SDE delivers about \textbf{70$\times$} speedup over Microsoft Excel when opening a selected sheet in a large real-world workbook; under workload-equivalent conditions (single worksheet, full parse) it remains about \textbf{10$\times$} faster, while preserving layout fidelity. These results indicate SDE's potential for reliable, scalable extraction across diverse spreadsheet formats.
 \end{abstract}
 
 %%
@@ -179,7 +179,7 @@ Eberius et al.~\cite{eberius2013deexcelerator} introduced \textbf{DeExcelerator}
 
 \subsection{XLIndy}
 
-Koci et al.~\cite{koci2019xlindy} developed \textbf{XLIndy}, an interactive Excel add-in with a Python-based machine learning backend. Unlike DeExcelerator’s fully automated heuristic approach, XLIndy integrates machine learning techniques for layout inference and table recognition, enabling a more adaptable and accurate extraction process. XLIndy's interactive interface allows users to visually inspect extraction results, adjust configurations, and compare different extraction runs, facilitating iterative fine-tuning. Additionally, users can manually revise predicted layouts and tables, saving these revisions as annotations to improve classifier performance through (re-)training. This user-centric approach enhances the tool’s flexibility, allowing it to accommodate diverse spreadsheet formats and user-specific requirements more effectively than purely heuristic-based systems.
+Koci et al.~\cite{koci2019xlindy} developed \textbf{XLIndy}, an interactive Excel add-in with a Python-based machine learning backend. Unlike DeExcelerator's fully automated heuristic approach, XLIndy integrates machine learning techniques for layout inference and table recognition, enabling a more adaptable and accurate extraction process. XLIndy's interactive interface allows users to visually inspect extraction results, adjust configurations, and compare different extraction runs, facilitating iterative fine-tuning. Additionally, users can manually revise predicted layouts and tables, saving these revisions as annotations to improve classifier performance through (re-)training. This user-centric approach enhances the tool's flexibility, allowing it to accommodate diverse spreadsheet formats and user-specific requirements more effectively than purely heuristic-based systems.
 
 \subsection{FLASHRELATE}
 
@@ -647,7 +647,7 @@ Horizontally, letting \(c_{\max}\) be the largest covered column,
 These extents parameterize the viewport and drive scrollbar sizing in the UI.
 
 \paragraph{Complexity and memory.}
-All searches are bounded by structural sentinels (\texttt{>}, next \texttt{<row}, next \texttt{<c}, or \texttt{</sheetData>}). Anchoring \texttt{</sheetData>} is \(O(N)\) with tiny constants; row streaming is \(O(R)\) with \(O(1)\) per-row offset updates; a targeted cell within a row scans only that row’s interval; merge queries run in \(O(\log M + \alpha)\) with a short local scan \(\alpha\). The representation is compact (byte slices + small numeric state), and strings are decoded only when needed.
+All searches are bounded by structural sentinels (\texttt{>}, next \texttt{<row}, next \texttt{<c}, or \texttt{</sheetData>}). Anchoring \texttt{</sheetData>} is \(O(N)\) with tiny constants; row streaming is \(O(R)\) with \(O(1)\) per-row offset updates; a targeted cell within a row scans only that row's interval; merge queries run in \(O(\log M + \alpha)\) with a short local scan \(\alpha\). The representation is compact (byte slices + small numeric state), and strings are decoded only when needed.
 \subsection{Two-Dimensional Grid Viewport Rendering}
 
 Given a (potentially very large) worksheet with variable row heights, banded column
@@ -883,7 +883,7 @@ $\mathcal{C} \gets$ \textbf{sort} $\mathcal{C}$ by increasing $O_i$ \tcp*{preser
 
 Large workbooks and selection hierarchies make fully materializing a relational
 view prohibitively expensive. Empirically, naive flattening leads to seconds or
-minutes of UI stalls on sheets with up to $10^6$ rows (Excel’s limit) and many
+minutes of UI stalls on sheets with up to $10^6$ rows (Excel's limit) and many
 columns. Our goal is to \emph{render only what the user is about to see},
 without precomputing the entire output.
 
@@ -965,7 +965,7 @@ Otherwise we pop a frame. If the popped task has no children, its
 (start $=$ \texttt{builtRows}, length $=$ number of selected cells) and we
 return it. If the task has children, we enqueue each child with the extended
 \texttt{path}. This BFS over the selection tree yields a deterministic,
-top-down order that matches the user’s mental model.
+top-down order that matches the user's mental model.
 
 \begin{algorithm}[h]
 \footnotesize
@@ -1127,54 +1127,61 @@ By applying this method, we render only the cells necessary for the current view
 
 \section{Evaluation}
 
-The fundamental approach of the Spreadsheet Data Extractor, based on the converter by Aue et al.~\cite{alexander2024converting}, upon which we build, remains unchanged. The effectiveness of this approach has already been investigated. Aue et al. evaluated the extraction of data from over 500 Excel files. The time required for each file was determined from a sample of 331 processed Excel files comprising 3,093 worksheets. On average, student assistants needed 15 minutes per file and 95 seconds per worksheet.
 
-Our focus is on improving the user experience and optimizing the performance of the prior solution. We enhanced the user experience by displaying the Excel worksheets similarly to how they appear in Excel and by reducing the number of required user interactions through the integration of the selection hierarchy, worksheet view, and output preview into a single interface, thereby reducing context switching. Performance was further improved by implementing incremental loading of Excel files and rendering only the visible cells.
 
-\begin{figure*}[t] 
-  \centering 
-  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/performance/fps_scrolling.png} 
-  \caption{Performance profiling of the SDE. 
-The timeline view shows frame rendering costs (blue) and highlights the 
-maximum (54\,ms/frame) and average (18\,ms/frame) rendering time.
-} 
-  \label{fig:boxplot_run_times_to_open_worksheet} 
+The Spreadsheet Data Extractor (SDE) builds on the converter by Aue et al.~\cite{alexander2024converting}, whose extraction effectiveness was evaluated on over 500 Excel files (331 files; 3{,}093 worksheets; mean 15\,min per file, 95\,s per worksheet). Our contribution focuses on \emph{user experience} and \emph{latency}: we render worksheets as they appear in Excel, reduce context switching by integrating selection hierarchy, worksheet view, and output preview, and engineer incremental loading, byte-level parsing and plus viewport-bounded rendering.
+
+
+
+
+
+
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/performance/fps_scrolling.png}
+  \caption{SDE performance profiling during scrolling. Timeline shows per-frame rendering costs (blue); average \(\approx\)18\,ms/frame and peak 54\,ms/frame.}
+  \label{fig:sde_profiling_scrolling}
 \end{figure*}
 
 \subsection{Acceleration When Opening Files}
 \label{sec:evaluation-opening}
 
-We evaluate three systems: our \emph{Spreadsheet Data Extractor (SDE)}, Microsoft Excel (automated via PowerShell/COM), and the Dart \textit{excel} package. Each condition was repeated ten times and we report distributions as box plots on a \(\log_{10}\) time axis. The Dart \textit{excel} package completed only the first run after \textbf{343.5680} seconds; runs 2–10 terminated were not possible to finish because it let the test machine run out of memory. Excel: \textbf{45.84275} seconds (median); SDE: \textbf{0.6565} seconds (median). SDE is \textbf{45.18625\(\times\)} faster than Excel and \textbf{342.9115 \(\times\)} faster than the Dart \textit{excel} package.
+We quantify opening latency in two complementary scenarios: (i) a \emph{user-centred} case that measures time-to-first-visual when opening a \emph{selected worksheet} from a large, multi-worksheet workbook; and (ii) a \emph{workload-equivalent} case that uses a single worksheet with 1{,}048{,}548 rows to align the amount of work across programmes (first rows vs.\ last row). Throughout, we report medians over repeated runs and show distributions as box plots on a \(\log_{10}\) time axis.
+
+\paragraph{Setup.}
+We evaluate three programmes: the \emph{SDE}, Microsoft Excel (automated via PowerShell/COM), and a Dart \textit{excel} package. Each condition was repeated ten times \emph{unless noted otherwise}.
+
+\paragraph{User-centred latency: opening a selected worksheet.}
+Opening a selected worksheet from a large real-world workbook~\cite{destatis_rechnungsergebnis_2024}, SDE initialises only the requested sheet and achieves a median of \textbf{0.657\,s}, compared to \textbf{45.843\,s} for Excel—a \textbf{69.8\(\times\)} speedup (Fig.~\ref{fig:one-sheet-sub}). The Dart \textit{excel} package completed only the first run at 343.568\,s; runs~2–10 terminated with out-of-memory on our test machine (\(n{=}1\)). Based on that single run, SDE is \textbf{522.9\(\times\)} faster in this scenario.
+
+
+
 
 \paragraph{Controlling for workload comparability.}
-The multi-worksheet experiment reflects an important user scenario (time-to-first-visual for a selected sheet), but it is not a like-for-like comparison: SDE opens only the requested worksheet, whereas the baselines initialise the entire workbook. To control for this confound and establish workload equivalence, we construct a single-worksheet benchmark by pruning the workbook from the example described in \ref{sec:design-philosophy} \nameref{sec:design-philosophy} to one sheet and duplicating the table on top of each other until no more fits another table and hence the sheet contains 1{,}048{,}548 rows resulting in a file with \(\sim 35\)~MB , uncompressed: \(\sim 282\)~MB. We then report two cases —\emph{first rows} (time-to-first-visual) and \emph{last row} (forces a full parse)—to align its measured cost with eager parsers. Under these identical I/O and parsing conditions, SDE achieves \textbf{1.229\,s} vs.\ \textbf{52.756\,s} for Excel on first rows (\textbf{42.9\(\times\)}), and \textbf{5.515\,s} vs.\ \textbf{52.228\,s} on the last row (\textbf{9.47\(\times\)}).
+The multi-worksheet experiment reflects an important user scenario (time-to-first-visual for a selected sheet), but it is not a like-for-like comparison: SDE initialises only the requested worksheet, whereas the baselines initialise the entire workbook. To control for this confound and establish workload equivalence, we construct a \emph{single-worksheet} benchmark from the example in Section~\ref{sec:design-philosophy} (\nameref{sec:design-philosophy}) by pruning the workbook to one sheet and duplicating the table vertically until no additional table fits, yielding 1{,}048{,}548 rows of real data. The resulting file is \(\sim 35\)\,MB on disk (XLSX ZIP container) and \(\sim 282\)\,MB uncompressed. We then report two cases—\emph{first rows} (time-to-first-visual) and \emph{last row} (forces a full parse)—to align SDE's measured cost with eager parsers. Under these identical I/O and parsing conditions, SDE achieves \textbf{1.229\,s} vs.\ \textbf{52.756\,s} for Excel on first rows (\textbf{42.9\(\times\)}), and \textbf{5.515\,s} vs.\ \textbf{52.228\,s} on the last row (\textbf{9.47\(\times\)}).
+
+
 
 \paragraph{Results (overview).}
-Figure~\ref{fig:one-sheet-sub} demonstrates the practical benefit in a multi-worksheet file: initialising only the selected sheet yields much lower time-to-first-visual. Figure~\ref{fig:first-vs-last-sub} isolates algorithmic differences under identical workload: SDE remains \(\sim\!10\times\) faster even when a full parse is enforced.
+Initialising only the selected sheet yields much lower time-to-first-visual (Fig.~\ref{fig:one-sheet-sub}); under identical workload SDE remains \(\sim\!10\times\) faster even when a full parse is enforced (Fig.~\ref{fig:first-vs-last-sub}).
 
 
 
-All tests were conducted on a machine with the following specifications: Intel Core i5-10210U quad-core CPU at 1.60~GHz, 16~GB RAM, and a solid-state drive (SSD), running Windows 10 Pro. The version of Microsoft Excel used was Microsoft Office LTSC Professional Plus 2021.
-
-We ran the script 10 times, measuring the time required to open the file and read the values in each iteration. The results of these runtime measurements are presented in Figure~\ref{fig:boxplot_run_times_to_open_worksheet}. 
-The Spreadsheet Data Extractor opened the worksheet with a median time of 120 milliseconds and an average time of 178 milliseconds. The first run took 668~milliseconds, possibly because the file was not yet cached and had to be loaded from the disk.
-In contrast, Excel opened the worksheet with a median time of 40.281~seconds and an average time of 41.138~seconds.
-The Dart \texttt{excel} package~\cite{excelPackage} used in the previous work took 13 minutes and 15 seconds to open the worksheet in the first run. The other nine runs could not be completed because an out-of-memory exception was thrown during the second run.
-
-These results demonstrate that the Spreadsheet Data Extractor opens worksheets over two orders of magnitude faster than Excel and nearly four orders of magnitude faster than the Dart \texttt{excel} package used in prior work.
 
 
-\subsection{Scalability Motivation}
+
+\subsection{Interactive scalability}
 \label{subsec:scalability-motivation}
 
 While the underlying extraction model remained effective, the previous prototype
-did not remain interactive on very large sheets. Empirically, on workbooks with
-hundreds of thousands of rows and, in particular, on sheets near Excel’s $10^6$-row
-limit, two failure modes dominated:
+did not stay interactive on very large sheets. Empirically, on workbooks with
+hundreds of thousands of rows—and in particular near Excel's $10^6$-row limit—
+two failure modes dominated:
 
 \begin{enumerate}
-  \item \textbf{Eager materialization in views.} When the selection view or the output
-        view attempted to realize large regions eagerly, per-frame times rose above
+  \item \textbf{Eager materialisation in views.} When the selection view or the output
+        view attempted to realise large regions eagerly, per-frame times rose above
         $1$\,s, making panning and selection unusable.
   \item \textbf{Large selection hierarchies.} With many nested selections, highlight
         updates and duplicate/move previews performed work proportional to the total
@@ -1192,7 +1199,15 @@ Together these changes bound per-interaction work to the visible area rather tha
 the sheet size.
 
 On a sheet with $10^6$ rows and a selection covering all cells, the UI remained
-smooth during scrolling, sustaining $\approx 2$\,ms per frame, which calculates to $\approx 500$\,FPS. When dragging the scrollbar which causes to fill the whole viewport at once with new content, the frame times rise to about 60 to 80 \,ms, which calculates to $\approx 16$\,FP which is still acceptable while scrolling through large datasets with $10^6$ rows.
+smooth during scrolling, sustaining $\approx 2$\,ms per frame (Fig.~\ref{fig:sde_profiling_scrolling}),
+which corresponds to $\approx 500$\,FPS. When dragging the scrollbar—filling the
+entire viewport at once with new content—frame times rose to about $60$–$80$\,ms
+($\approx 12$–$17$\,FPS), which remained acceptable for rapid navigation at that scale.
+
+
+\paragraph{Benchmarking environment.}
+All tests were conducted on a machine with an AMD Ryzen 5 PRO 7535U with Radeon Graphics (6-core CPU at 2.9~GHz), 31.3~GB RAM, and a hard disk drive (HDD), running Microsoft Windows 11 Enterprise (build~26100, 64-bit). The version of Microsoft Excel used was version~16.0.
+
 
 \section{Conclusion}
 
