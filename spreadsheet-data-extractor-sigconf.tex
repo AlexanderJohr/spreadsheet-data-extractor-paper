@@ -107,7 +107,7 @@ Transitioning from these ad-hoc spreadsheet solutions to standardized database s
 
 Given the abundance of spreadsheet data and the clear advantages of database systems, there is a pressing need for tools that bridge these formats. Automated, accurate extraction from spreadsheets into relational representations is essential.
 
-Prior work introduced a tool for extracting data from Excel files~\cite{alexander2024converting}. While effective, that system exhibited performance issues on large workbooks and imprecise rendering of cell geometry, which limited usability for complex, real-world files. The user interface was also fragmented, requiring context switches between hierarchy definition and output preview.
+Prior work introduced a tool for extracting data from Excel files~\cite{aue2024converting}. While effective, that system exhibited performance issues on large workbooks and imprecise rendering of cell geometry, which limited usability for complex, real-world files. The user interface was also fragmented, requiring context switches between hierarchy definition and output preview.
 
 This paper presents the \emph{Spreadsheet Data Extractor (SDE)}, which transforms semi-structured spreadsheet content into machine-readable form. Users declare structure directly via cell selections—no programming required. The design addresses the above limitations and supports large, irregular spreadsheets with predictable, interactive performance.
 
@@ -151,7 +151,7 @@ The extraction of relational data from semi-structured documents, particularly s
 
 \subsection{Aue et al.'s Converter}
 
-Aue et al.~\cite{alexander2024converting} developed a tool to facilitate data extraction from Excel spreadsheets by leveraging the Dart \textit{excel} package~\cite{excelPackage} to process .xlsx files. This tool allows users to define data hierarchies by selecting relevant cells containing data and metadata. However, the approach faced significant performance bottlenecks due to the \textit{excel} package's requirement to load the entire .xlsx file into memory, resulting in slow response times, particularly for large files.
+Aue et al.~\cite{aue2024converting} developed a tool to facilitate data extraction from Excel spreadsheets by leveraging the Dart \textit{excel} package~\cite{excelPackage} to process .xlsx files. This tool allows users to define data hierarchies by selecting relevant cells containing data and metadata. However, the approach faced significant performance bottlenecks due to the \textit{excel} package's requirement to load the entire .xlsx file into memory, resulting in slow response times, particularly for large files.
 
 In addition to memory issues, the tool calculated row heights and column widths based solely on cell content, ignoring the dimensions specified in the original Excel file. This led to rendering discrepancies between the tool and the original spreadsheet. Furthermore, the tool rendered all cells, regardless of their visibility within the viewport, significantly degrading performance when handling worksheets with large numbers of cells.
 
@@ -1111,7 +1111,7 @@ By applying this method, we render only the cells necessary for the current view
 
 
 
-The Spreadsheet Data Extractor (SDE) builds on the converter by Aue et al.~\cite{alexander2024converting}, whose extraction effectiveness was evaluated on over 500 Excel files (331 files; 3{,}093 worksheets; mean 15\,min per file, 95\,s per worksheet). Our contribution focuses on \emph{user experience} and \emph{latency}: we render worksheets as they appear in Excel, reduce context switching by integrating selection hierarchy, worksheet view, and output preview, and engineer incremental loading, byte-level parsing and plus viewport-bounded rendering.
+The Spreadsheet Data Extractor (SDE) builds on the converter by Aue et al.~\cite{aue2024converting}, whose extraction effectiveness was evaluated on over 500 Excel files (331 files; 3{,}093 worksheets; mean 15\,min per file, 95\,s per worksheet). Our contribution focuses on \emph{user experience} and \emph{latency}: we render worksheets as they appear in Excel, reduce context switching by integrating selection hierarchy, worksheet view, and output preview, and engineer incremental loading, byte-level parsing and plus viewport-bounded rendering.
 
 
 
@@ -1193,7 +1193,7 @@ All tests were conducted on a machine with an AMD Ryzen 5 PRO 7535U with Radeon 
 
 \section{Conclusion}
 
-In this paper, we introduced the Spreadsheet Data Extractor~\cite{spreadsheet_data_extractor}, an enhanced tool that builds upon the foundational work of Aue et al.~\cite{alexander2024converting}. By addressing key limitations of the existing solution, we implemented significant performance optimizations and usability enhancements. Specifically, SDE employs incremental loading of worksheets and optimizes rendering by processing only the visible cells, resulting in performance improvements that enable the tool to open large Excel files.
+In this paper, we introduced the Spreadsheet Data Extractor~\cite{spreadsheet_data_extractor}, an enhanced tool that builds upon the foundational work of Aue et al.~\cite{aue2024converting}. By addressing key limitations of the existing solution, we implemented significant performance optimizations and usability enhancements. Specifically, SDE employs incremental loading of worksheets and optimizes rendering by processing only the visible cells, resulting in performance improvements that enable the tool to open large Excel files.
 
 We also integrated the selection hierarchy, worksheet view, and output preview into a unified interface, streamlining the data extraction process. By adopting a user-centric approach that gives users full control over data selection and metadata hierarchy definition without requiring programming knowledge, we provide a robust and accessible solution for data extraction. Our tool offers user-friendly features such as the ability to duplicate hierarchies of columns and tables and to move them over similar structures for reuse, reducing the need for repetitive configurations.
 
