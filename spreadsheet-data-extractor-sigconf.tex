@@ -1,5 +1,6 @@
  
 \documentclass[sigconf,review,anonymous]{acmart}
+
 %\documentclass[sigconf]{acmart}
 %\documentclass[manuscript, screen, review, anonymous]{acmart}
 
@@ -377,12 +378,14 @@ In Excel, column widths and row heights are defined in units that do not directl
 
 Cell formatting plays a crucial role in accurately representing the appearance of worksheets. Formatting information is stored in the \texttt{styles.xml} file, where styles are defined and later referenced in the \texttt{sheetX.xml} files as shown in Figure \ref{fig:formatting}.
 
-\begin{figure}[h] 
-  \centering 
-  \includegraphics[width=\linewidth]{images/xml_collage/collage.pdf} 
-  \caption{Illustration of the relationship between style definitions in xl/styles.xml (fonts, fills, borders, and cellXfs) and their application in a worksheet file (xl/worksheets/sheetX.xml).} 
-  \label{fig:formatting} 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{images/xml_collage/collage.pdf}
+  \caption{Illustration of the relationship between style definitions in xl/styles.xml (fonts, fills, borders, and cellXfs) and their application in a worksheet file (xl/worksheets/sheetX.xml).}
+  \Description{Collage of two XML excerpts with arrows showing how worksheet cells reference central style definitions. The upper panel shows parts of \texttt{xl/styles.xml}: a \texttt{fonts} list, a \texttt{fills} list (including a solid fill with colour \texttt{FFD7E1F0}), a \texttt{borders} list (thin border with theme colours), and a \texttt{cellXfs} section containing an \texttt{<xf>} record with \texttt{fontId="2"}, \texttt{fillId="2"}, \texttt{borderId="1"}, and \texttt{alignment} set to centre with wrap. Arrows link these lists to the \texttt{<xf>} that combines them. A further arrow points to the lower panel from \texttt{xl/worksheets/sheetX.xml}, which shows a row \texttt{r="3"} and a cell \texttt{B3} with \texttt{s="10"} (style index) and a string value. The figure conveys that worksheet cells use a numeric style index (\texttt{s}) to select a composed style (\texttt{xf}) defined in \texttt{styles.xml}, which in turn references specific font, fill, and border entries by ID.}
+  \label{fig:formatting}
 \end{figure}
+
 
 Each cell in the worksheet references a style index through the \textit{s} attribute, which points to the corresponding \texttt{<xf>} element within the \texttt{cellXfs} collection. These \texttt{<xf>} elements contain attributes such as \textit{fontId}, \textit{fillId}, and \textit{borderId}, which reference specific font, fill (background), and border definitions located in the \texttt{fonts}, \texttt{fills}, and \texttt{borders} collections, respectively. By parsing these references, we can accurately apply the appropriate fonts, background colors, and border styles to each cell.
 
@@ -396,11 +399,12 @@ We implemented text overflow handling by checking if the adjacent cell to the ri
 
 Figure \ref{fig:nothing} illustrates this behavior. The text "Supply of Nursing Staff ..." extends into the neighboring cell because it is empty. If not for this handling, the text would be truncated at the cell boundary, leading to incomplete data display as shown in Figure \ref{fig:overflow}.
 
-\begin{figure}[h] 
-  \centering 
-  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/ooverflow/overflow.png} 
-  \caption{Incorrect rendering without overflow for cells adjacent to empty cells.} 
-  \label{fig:overflow} 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{images/spreadsheet_data_extractor/ooverflow/overflow.png}
+  \caption{Incorrect rendering without overflow for cells adjacent to empty cells.}
+  \Description{Screenshot illustrating a rendering bug: long text in a cell is clipped at the cell boundary instead of overflowing into neighbouring empty cells. The page shows a link “To the table of …” and a truncated heading “Supply of Nurs…”. Below, a table header reads “Age from … to under … Years” and “Nursing Staff / Year” with columns for 2024, 2029, 2034, 2039, 2044, and 2049; the first data row “Total” shows 1673, 1710, 1738, 1790, 1839, and 1867. The figure demonstrates the missing text overflow across adjacent blank cells.}
+  \label{fig:overflow}
 \end{figure}
 
 By accurately handling text overflow, we improve readability and maintain consistency with Excel's user interface, which is crucial for users transitioning between Excel and our tool.
@@ -1131,7 +1135,6 @@ The Spreadsheet Data Extractor (SDE) builds on the converter by Aue et al.~\cite
   \Description{Screenshot of SDE’s performance timeline while scrolling a large worksheet. Two horizontal tracks are shown: a top “Raster” band and a lower “UI” band. Each track consists of dense blue vertical bars encoding per-frame time; most bars are short with occasional taller clusters. Track labels report average and maximum frame costs; the raster band shows the higher values, the UI band remains low. Two bright green vertical markers indicate the current cursor positions. The figure illustrates smooth scrolling with low per-frame times; numeric averages and peaks are given in the caption.}
   \label{fig:sde_profiling_scrolling}
 \end{figure*}
-
 \subsection{Acceleration When Opening Files}
 \label{sec:evaluation-opening}
 
