@@ -37,24 +37,6 @@
 
 \title[Spreadsheet Data Extractor (SDE)]{Spreadsheet Data Extractor (SDE): A Performance-Optimized, User-Centric Tool for Transforming Semi-Structured Excel Spreadsheets into Relational Data}
 
-\author{Alexander Aue-Johr}
- \email{alexander.aue@thuenen.de}
-\orcid{0009-0001-8683-3630}
-\affiliation{%
-  \institution{Thünen Institute for Rural Areas}
-  \city{Brunswick}
-  \country{Germany}
-}
-
-\author{Norbert Röder}
- \email{norbert.roeder@thuenen.de}
-\orcid{https://orcid.org/0000-0002-2491-2624}
-\affiliation{%
-  \institution{Thünen Institute for Rural Areas}
-  \city{Brunswick}
-  \country{Germany}
-}
-
 \begin{abstract}
 Spreadsheets are widely used across domains, yet their human-oriented layouts (merged cells, hierarchical headers, multiple tables) hinder automated extraction. We present the Spreadsheet Data Extractor (SDE), a user-in-the-loop system that converts semi-structured sheets into structured outputs without programming. Users declare the structure they perceive; the engine broadcasts selections deterministically and renders results immediately. Under the hood, SDE employs incremental loading, byte-level XML streaming (avoiding DOM materialisation), and viewport-bounded rendering.
 
