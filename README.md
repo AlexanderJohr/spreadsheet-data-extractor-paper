@@ -88,9 +88,9 @@ flutter doctor
 
 ---
 
-## 5) Running the Benchmarks
+## 4) Running the Benchmarks
 
-### 5.1. Single-worksheet benchmark (first rows vs. last row)
+### 4.1. Single-worksheet benchmark (first rows vs. last row)
 
 This measures SDE’s **time-to-first-visual** vs. **full-parse** under identical workload.
 
@@ -122,7 +122,7 @@ powershell -NoProfile -ExecutionPolicy Bypass `
 #   charts/parse_large_sheet/parse_large_sheet_microsoft_excel/run_times_to_open_worksheet_powershell_last.csv
 ```
 
-### 5.2. Large multi-worksheet workbook (open one selected sheet)
+### 4.2. Large multi-worksheet workbook (open one selected sheet)
 
 This measures **user-centred latency** (open only the selected sheet).
 
@@ -153,7 +153,7 @@ powershell -NoProfile -ExecutionPolicy Bypass `
 
 ---
 
-## 6) Generating the Charts (after CSVs exist)
+## 5) Generating the Charts (after CSVs exist)
 
 ### Single-worksheet (first vs. last row)
 
@@ -178,7 +178,7 @@ python charts/parse_large_file/generate_boxplot_run_times_to_open_worksheet_from
 
 ---
 
-## 7) Running the SDE UI
+## 6) Running the SDE UI
 
 From repo root:
 
@@ -194,7 +194,7 @@ Or use the VS Code launch configs:
 
 ---
 
-## 9) Troubleshooting
+## 7) Troubleshooting
 
 * **PowerShell cannot run scripts**
   Use the `-ExecutionPolicy Bypass` flag or run:
@@ -211,14 +211,14 @@ Or use the VS Code launch configs:
 
 ---
 
-## 10) Paper build
+## 8) Paper build
 
 The LaTeX manuscript is in the repo root (`main.tex`).
 It can be build via `latexmk` or `pdflatex`/`lualatex` per your workflow.
 
 ---
 
-## 11) Environment reference (used in paper)
+## 9) Environment reference (used in paper)
 
 * **OS**: Windows 11 Enterprise (build 26100, 64-bit)
 * **CPU**: AMD Ryzen 5 PRO 7535U (6-core, 2.9 GHz)
