@@ -1,5 +1,4 @@
-name: parse_large_file_excel_package
-description: A sample command-line application.
+name: parse_large_sheet_excel_package
 version: 1.0.0
 
 environment:

@@ -1,0 +1,85 @@
+{
+    "@@locale": "es",
+    "appTitle": "Descriptor de hoja de cálculo y extractor de datos",
+    "taskPageTitle": "Importar archivos de Excel",
+    "firstAppCallIntroTitle": "Spreadsheet Metadata Hierarchy Describer and Data Extractor 0.12.0 - Sólo para uso interno",
+    "acceptButtonText": "aceptar",
+    "selectedDataIsNotExcelErrorText": "Error: El archivo seleccionado para adjuntar datos no es un archivo de Excel",
+    "fileExistsText": "Se han añadido con éxito líneas {linesAppended} a las líneas existentes en {filePath}.",
+    "@fileExistsText": {
+        "placeholders": {
+            "linesAppended": {
+                "type": "int",
+                "example": "12"
+            },
+            "filePath": {
+                "type": "String",
+                "example": "pathtoyourfile.xslx"
+            }
+        }
+    },
+    "fileDoesNotExistsText": "Guardadas con éxito las línea(s) {linesAppended} en el nuevo archivo {filePath}.",
+    "@fileDoesNotExistsText": {
+        "placeholders": {
+            "linesAppended": {
+                "type": "int",
+                "example": "12"
+            },
+            "filePath": {
+                "type": "String",
+                "example": "pathtoyourfile.xslx"
+            }
+        }
+    },
+    "taskParentHeaderTitle": "tareas",
+    "importExcelFilesButtonText": "importar archivos de Excel",
+    "copyConfigButtonText": "copiar configuración",
+    "insertConfigButtonText": "insertar configuración",
+    "configSavedText": "Configuración guardada correctamente.",
+    "saveConfigButtonText": "guardar configuración",
+    "loadConfigButtonText": "configuración de carga",
+    "importSheetsButtonText": "importar hojas de Excel",
+    "importAdditionalFilesButtonText": "importar archivos adicionales",
+    "copyExcelFileImportTaskButtonText": "copiar tarea de importación de archivos Excel",
+    "insertExcelFileImportTaskButtonText": "insertar tarea de importación de archivos Excel",
+    "noSheetSelectedText": "haga clic para seleccionar hojas de Excel",
+    "importCellsButtonText": "importar celdas de tabla",
+    "copyWorksheetImportTaskButtonText": "copiar tarea de importación de hojas de cálculo",
+    "insertWorksheetImportTaskButtonText": "insertar tarea de importación de la hoja del tramo de trabajo",
+    "noCellsSelectedText": "haga clic para seleccionar celdas de Excel",
+    "linkCellIndexBoxText": "índice de células de enlace",
+    "useDefaultValueBoxText": "utilizar el valor por defecto",
+    "copyCellSelectionButtonText": "copiar selección de celdas",
+    "copyTaskButtonText": "copiar tarea",
+    "duplicateTaskButtonText": "duplicar tarea",
+    "insertCellSelectionButtonText": "insertar selección de celdas",
+    "insertTaskButtonText": "insertar tarea",
+    "alignCellSelectionButtonText": "alinear la selección de celdas",
+    "moveAllSelectionsButtonText": "mover todas las selecciones",
+    "linkWithCellsButtonText": "vínculo con las células",
+    "errNonValidConfigTitle": "configuración no válida",
+    "errNonValidConfigText": "El fichero seleccionado no contiene una configuración válida.",
+    "errNonValidJSONTitle": "json no válido",
+    "errNonValidJSONText": "El archivo seleccionado no contiene un json válido.",
+    "errUnexpectedErrorTitle": "error inesperado",
+    "errUnexpectedErrorText": "Se ha producido un error inesperado : {exception}",
+    "@errUnexpectedErrorText": {
+        "placeholders": {
+            "exception": {
+                "type": "Object"
+            }
+        }
+    },
+    "fileAlreadyExistsTitle": "El archivo ya existe - ¿lo sobrescribo?",
+    "fileAlreadyExistsText": "El archivo ya existe, ¿hay que sobrescribirlo?",
+    "yesButtonText": "sì",
+    "noButtonText": "no",
+    "discardChangesTitle": "¿Descartar cambios?",
+    "discardChangesText": "Se han realizado cambios en esta vista. ¿Descartarlos?",
+    "duplicateAndMoveCheckboxText": "duplicar y mover",
+    "embedLabelText": "encapsular",
+    "useCellSelectionLabelText": "usar selección de celdas",
+    "enterValueManuallyLabelText": "ingresar valor manualmente",
+    "repeatLabelText": "repetir",
+    "manualValueLabelText": "valor manual"
+}

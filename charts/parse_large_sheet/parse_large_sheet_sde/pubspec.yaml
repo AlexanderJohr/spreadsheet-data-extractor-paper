@@ -1,13 +1,12 @@
-name: parse_large_file_sde
-description: A sample command-line application.
+name: parse_large_sheet_sde
 version: 1.0.0
 
 environment:
   sdk: ^3.8.1
 
 dependencies:
-  smedahidesdex:
-    path: ../../../../spreadsheet_data_extractor
+  spreadsheet_data_extractor:
+    path: ../../../spreadsheet_data_extractor
 
 dev_dependencies:
   lints: ^5.0.0

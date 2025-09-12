@@ -1,10 +1,72 @@
 {
     "configurations": [
         {
+            "name": "Spreadsheet Data Extractor (Debug)",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/spreadsheet_data_extractor/lib/main.dart"
+        },
+        {
+            "name": "Spreadsheet Data Extractor (Release)",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/spreadsheet_data_extractor/lib/main.dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "Spreadsheet Data Extractor (Profile)",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/spreadsheet_data_extractor/lib/main.dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "Run Tests for Parse Large Sheet with SDE",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/charts/parse_large_sheet/parse_large_sheet_sde/parse_large_sheet_sde_test.dart",
+        },
+        {
+            "name": "Run Microsoft Excel to Parse Large Workbook (PowerShell)",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}/charts/parse_large_file/parse_large_file_microsoft_excel/parse_large_file_microsoft_excel_powershell.ps1",
+            "cwd": "${workspaceFolder}/charts/parse_large_file/parse_large_file_microsoft_excel",
+            "args": [],
+            "createTemporaryIntegratedConsole": true
+        },
+        {
+            "name": "Run Microsoft Excel to Parse Single Worksheet (PowerShell)",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}/charts/parse_large_sheet/parse_large_sheet_microsoft_excel/parse_large_file_microsoft_excel.ps1",
+            "cwd": "${workspaceFolder}/charts/parse_large_sheet/parse_large_sheet_microsoft_excel",
+            "args": [],
+            "createTemporaryIntegratedConsole": true
+        },
+        {
+            "name": "Run Tests for Parse Large Sheet with Excel Package",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/charts/parse_large_sheet/parse_large_sheet_excel_package/parse_large_sheet_excel_package_test.dart",
+        },
+        {
+            "name": "Run Tests for Parse Large File with SDE",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/charts/parse_large_file/parse_large_file_sde/parse_large_file_sde_test.dart",
+        },
+        {
+            "name": "Run Tests for Parse Large File with Excel Package",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/charts/parse_large_file/parse_large_file_excel_package/parse_large_file_excel_package_test.dart",
+        },
+        {
             "name": "Generate Boxplot Run Times to Open Large Worksheet",
             "type": "debugpy",
             "request": "launch",
-            "program": "charts/parse_large_sheet/generate_boxplot_run_times_to_open_large_sheet.py",
+            "program": "${workspaceFolder}/charts/parse_large_sheet/generate_boxplot_run_times_to_open_large_sheet.py",
             "python": "${workspaceFolder}/.venv/Scripts/python",
         },
         {
@@ -13,26 +75,6 @@
             "request": "launch",
             "program": "charts/parse_large_file/generate_boxplot_run_times_to_open_worksheet_from_large_workbook.py",
             "python": "${workspaceFolder}/.venv/Scripts/python",
-        },
-        {
-            "name": "spreadsheet_data_extractor",
-            "cwd": "spreadsheet_data_extractor",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "spreadsheet_data_extractor (profile mode)",
-            "cwd": "spreadsheet_data_extractor",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "spreadsheet_data_extractor (release mode)",
-            "cwd": "spreadsheet_data_extractor",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
-        },
+        }
     ]
 }

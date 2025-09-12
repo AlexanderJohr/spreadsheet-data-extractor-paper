@@ -1,0 +1,85 @@
+{
+    "@@locale": "de",
+    "appTitle": "Smedahidesdex",
+    "taskPageTitle": "Importiere Excel Dateien",
+    "firstAppCallIntroTitle": "Spreadsheet Metadata Hierarchy Describer and Data Extractor 0.12.0 - Nur zur internen Verwendung",
+    "acceptButtonText": "akzeptieren",
+    "selectedDataIsNotExcelErrorText": "Fehler: Ausgewählte Datei zum Anhängen der Daten ist keine Excel Datei",
+    "fileExistsText": "Erfolgreich {linesAppended} Zeilen an die bestehenden Zeilen in {filePath} angehängt",
+    "@fileExistsText": {
+        "placeholders": {
+            "linesAppended": {
+                "type": "int",
+                "example": "12"
+            },
+            "filePath": {
+                "type": "String",
+                "example": "pathtoyourfile.xslx"
+            }
+        }
+    },
+    "fileDoesNotExistsText": "Erfolgreich {linesAppended} Zeile(n) in die neue Datei {filePath} gespeichert.",
+    "@fileDoesNotExistsText": {
+        "placeholders": {
+            "linesAppended": {
+                "type": "int",
+                "example": "12"
+            },
+            "filePath": {
+                "type": "String",
+                "example": "pathtoyourfile.xslx"
+            }
+        }
+    },
+    "taskParentHeaderTitle": "Aufgaben",
+    "importExcelFilesButtonText": "Importiere Excel Dateien",
+    "copyConfigButtonText": "Kopiere Konfiguration",
+    "insertConfigButtonText": "Füge Konfiguration ein",
+    "configSavedText": "Konfiguration erfolgreich gespeichert.",
+    "saveConfigButtonText": "Speichere Konfiguration",
+    "loadConfigButtonText": "Lade Konfiguration",
+    "importSheetsButtonText": "Importiere Excel Sheets",
+    "importAdditionalFilesButtonText": "Importiere zusätzliche Dateien",
+    "copyExcelFileImportTaskButtonText": "Kopiere Exceldatei-Import Aufgabe",
+    "insertExcelFileImportTaskButtonText": "Füge Exceldatei-Import Aufgabe ein",
+    "noSheetSelectedText": "Klicken um Excel Sheets zu Selektieren",
+    "importCellsButtonText": "Importiere Zellen",
+    "copyWorksheetImportTaskButtonText": "Kopiere Arbeitsblatt-Import Aufgabe",
+    "insertWorksheetImportTaskButtonText": "Füge Arbeitsbeinlatt-Import Aufgabe ein",
+    "noCellsSelectedText": "Klicken um Excel Zellen zu Selektieren",
+    "linkCellIndexBoxText": "Verknüpfe Zellenindex",
+    "useDefaultValueBoxText": "Verwende vorgegebenen Wert",
+    "copyCellSelectionButtonText": "Kopiere Zellen-Selektion",
+    "copyTaskButtonText": "Kopiere Aufgabe",
+    "duplicateTaskButtonText": "Dupliziere Aufgabe",
+    "insertCellSelectionButtonText": "Füge Zellen-Selektion ein",
+    "insertTaskButtonText": "Füge Aufgabe ein",
+    "alignCellSelectionButtonText": "Zell-Selektion ausrichten",
+    "moveAllSelectionsButtonText": "Verschiebe alle Selektionen",
+    "linkWithCellsButtonText": "Verknüpfe mit Zellen",
+    "errNonValidConfigTitle": "Konfiguration nicht valide",
+    "errNonValidConfigText": "Die selektierte Datei enthält keine valide Konfiguration.",
+    "errNonValidJSONTitle": "Json nicht valide",
+    "errNonValidJSONText": "Die selektierte Datei enthält kein valides Json.",
+    "errUnexpectedErrorTitle": "Unerwarteter Fehler",
+    "errUnexpectedErrorText": "Ein unerwarteter Fehler ist aufgetreten : {exception}",
+    "@errUnexpectedErrorText": {
+        "placeholders": {
+            "exception": {
+                "type": "Object"
+            }
+        }
+    },
+    "fileAlreadyExistsTitle": "Datei existiert bereits - überschreiben?",
+    "fileAlreadyExistsText": "Die Datei existiert bereits, soll sie überschrieben werden?",
+    "yesButtonText": "ja",
+    "noButtonText": "nein",
+    "discardChangesTitle": "Änderungen verwerfen?",
+    "discardChangesText": "Es wurden Änderungen in dieser Ansicht vorgenommen. Sollen diese verworfen werden?",
+    "duplicateAndMoveCheckboxText": "verschieben und duplizieren",
+    "embedLabelText": "verschachteln",
+    "useCellSelectionLabelText": "verwende Zellen-Selektion",
+    "enterValueManuallyLabelText": "Wert manuell eingeben",
+    "repeatLabelText": "wiederhole",
+    "manualValueLabelText": "manueller Wert"
+}

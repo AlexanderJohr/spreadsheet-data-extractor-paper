@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:smedahidesdex/src/utils/excel_decoder/workbook.dart';
+import 'package:spreadsheet_data_extractor/src/utils/excel_decoder/workbook.dart';
 
 void main() {
   const xlsxRelativePath =

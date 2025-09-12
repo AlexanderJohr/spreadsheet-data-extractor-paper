@@ -1,0 +1,42 @@
+name: spreadsheet_data_extractor
+description: A Flutter application to extract and process data from spreadsheet files.
+publish_to: 'none'
+version: 0.12.0
+
+environment:
+  sdk: ">=3.7.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  archive: ^4.0.7
+  intl: any
+  csv: any
+  rxdart: any
+  built_value: any
+  built_collection: any
+  file_selector: any
+  sliver_tools: any
+  url_launcher: any
+  get_it: any
+  multi_split_view: any
+  xml: ^6.5.0
+  collection: ^1.19.1
+  path: ^1.9.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: any
+  test: any
+  mockito: any
+  build_runner: any
+  built_value_generator: any
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - assets/images/

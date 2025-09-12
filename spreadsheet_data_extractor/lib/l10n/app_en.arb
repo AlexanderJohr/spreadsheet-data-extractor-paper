@@ -1,0 +1,85 @@
+{
+  "@@locale": "en",
+  "appTitle": "Spreadsheet Describer and Data Extractor",
+  "taskPageTitle": "Import Excel Files",
+  "firstAppCallIntroTitle": "Spreadsheet Metadata Hierarchy Describer and Data Extractor 0.12.0 - For internal use only",
+  "acceptButtonText": "accept",
+  "selectedDataIsNotExcelErrorText": "Error: The selected file to attach the data is not an Excel file",
+  "fileExistsText": "Successfully appended {linesAppended} line(s) to the existing lines in {filePath}",
+  "@fileExistsText": {
+    "placeholders": {
+      "linesAppended": {
+        "type": "int",
+        "example": "12"
+      },
+      "filePath": {
+        "type": "String",
+        "example": "pathtoyourfile.xslx"
+      }
+    }
+  },
+  "fileDoesNotExistsText": "Successfully saved {linesAppended} lines to new {filePath} file.",
+  "@fileDoesNotExistsText": {
+    "placeholders": {
+      "linesAppended": {
+        "type": "int",
+        "example": "12"
+      },
+      "filePath": {
+        "type": "String",
+        "example": "pathtoyourfile.xslx"
+      }
+    }
+  },
+  "taskParentHeaderTitle": "tasks",
+  "importExcelFilesButtonText": "import Excel files",
+  "copyConfigButtonText": "copy configuration",
+  "insertConfigButtonText": "insert configuration",
+  "configSavedText": "Configuration saved successfully.",
+  "saveConfigButtonText": "save configuration",
+  "loadConfigButtonText": "load configuration",
+  "importSheetsButtonText": "import Excel sheets",
+  "importAdditionalFilesButtonText": "import additional files",
+  "copyExcelFileImportTaskButtonText": "copy Excel file import task",
+  "insertExcelFileImportTaskButtonText": "insert Excel file import task",
+  "noSheetSelectedText": "click to select Excel sheet",
+  "importCellsButtonText": "import cells",
+  "copyWorksheetImportTaskButtonText": "copy worksheet import task",
+  "insertWorksheetImportTaskButtonText": "insert worksheet import task",
+  "noCellsSelectedText": "click to select cells",
+  "linkCellIndexBoxText": "link cell index",
+  "useDefaultValueBoxText": "use default value",
+  "copyCellSelectionButtonText": "copy cell selection",
+  "copyTaskButtonText": "copy task",
+  "duplicateTaskButtonText": "duplicate task",
+  "insertCellSelectionButtonText": "insert cell selection",
+  "insertTaskButtonText": "insert task",
+  "alignCellSelectionButtonText": "align cell selection",
+  "moveAllSelectionsButtonText": "move all selections",
+  "linkWithCellsButtonText": "link with cells",
+  "errNonValidConfigTitle": "non valid configuration",
+  "errNonValidConfigText": "The selected file does not contain a valid configuration.",
+  "errNonValidJSONTitle": "non valid json",
+  "errNonValidJSONText": "The selected file does not contain a valid json.",
+  "errUnexpectedErrorTitle": "unexpected error",
+  "errUnexpectedErrorText": "An unexpected error occurred : {exception}",
+  "@errUnexpectedErrorText": {
+    "placeholders": {
+      "exception": {
+        "type": "Object"
+      }
+    }
+  },
+  "fileAlreadyExistsTitle": "file already exists - overwrite it?",
+  "fileAlreadyExistsText": "The file already exists, should it be overwritten?",
+  "yesButtonText": "yes",
+  "noButtonText": "no",
+  "discardChangesTitle": "discard changes?",
+  "discardChangesText": "Changes have been made in this view. Discard them?",
+  "duplicateAndMoveCheckboxText": "move and duplicate",
+  "embedLabelText": "encapsulate",
+  "useCellSelectionLabelText": "use cell selection",
+  "enterValueManuallyLabelText": "enter value manually",
+  "repeatLabelText": "repeat",
+  "manualValueLabelText": "manual value"
+}
