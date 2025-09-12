@@ -1,17 +1,43 @@
+\DocumentMetadata
+  {
+    lang=en-US,
+    pdfversion=2.0,
+    pdfstandard=ua-2,
+    testphase={phase-III,math,title,table,firstaid},
+  }
+% for initial submissions
+%\documentclass[manuscript,review,anonymous]{acmart}
+%\newlength{\onecolumnwidth}
+%\setlength{\onecolumnwidth}{0.5\textwidth}
 
+% for publication
 \documentclass[sigconf,review,anonymous]{acmart}
+\newlength{\onecolumnwidth}
+\setlength{\onecolumnwidth}{\linewidth}
 
 % In the tagged PDF, mark as a text section (no alt text required)
 % Tag algorithm2e algorithms as a text Section in the PDF structure tree
-%\makeatletter
-%% The real body is in 'algocf', not 'algorithm'
-%\AddToHook{env/algocf/begin}{\par\tagstructbegin{tag=Sect}}
-%\AddToHook{env/algocf/end}{\tagstructend\par}
-%
-%% (Optional) keep the outer 'algorithm' wrapper clean wrt paragraphs
-%\AddToHook{env/algorithm/begin}{\par}
-%\AddToHook{env/algorithm/end}{\par}
-%\makeatother
+\makeatletter
+% The real body is in 'algocf', not 'algorithm'
+\AddToHook{env/algocf/begin}{\par\tagstructbegin{tag=Sect}}
+\AddToHook{env/algocf/end}{\tagstructend\par}
+
+% (Optional) keep the outer 'algorithm' wrapper clean wrt paragraphs
+\AddToHook{env/algorithm/begin}{\par}
+\AddToHook{env/algorithm/end}{\par}
+\makeatother
+
+% Tagging for algorithm2e
+\makeatletter
+\AddToHook{env/algocf/begin}{%
+  \tagpdfsetup{paratagging=false}%
+  \tagstructbegin{tag=Sect}%
+}
+\AddToHook{env/algocf/end}{%
+  \tagstructend
+  \tagpdfsetup{paratagging=true}%
+}
+\makeatother
 
 % --- Collect all figure captions + \Description{} into a single text file
 \makeatletter
@@ -148,15 +174,15 @@ Given the abundance of spreadsheet data and the clear advantages of database sys
 
 Prior work introduced a tool for extracting data from Excel files~\cite{aue2024converting}. While effective, that system exhibited performance issues on large workbooks and imprecise rendering of cell geometry, which limited usability for complex, real-world files. The user interface was also fragmented, requiring context switches between hierarchy definition and output preview.
 
-This paper presents the \emph{Spreadsheet Data Extractor (SDE)}, which transforms semi-structured spreadsheet content into machine-readable form. Users declare structure directly via cell selections—no programming required. The design addresses the above limitations and supports large, irregular spreadsheets with predictable, interactive performance.
+This paper presents the \emph{Spreadsheet Data Extractor (SDE)}, which transforms data from semi-structured spreadsheets into machine-readable form. Users declare structure directly via cell selections—no programming is required. The design addresses the above limitations and supports large, irregular spreadsheets with predictable, interactive performance.
 
 \subsection{Contributions}
 
 \begin{enumerate}
-  \item \textbf{Unified interaction.} We integrate the selection hierarchy, worksheet view, and output preview into a single interface, reducing context switches and lowering the number of required interactions.
-  \item \textbf{DOM-free, byte-level worksheet parsing.} We implement a custom parser that operates directly on the XLSX worksheet bytes, avoiding DOM construction and regex over decoded strings. This greatly reduces memory footprint and improves robustness on large/“bloated” sheets.
+  \item \textbf{Unified interaction.} SDE integrates the selection hierarchy, worksheet view, and output preview into a single interface, reducing context switching and interaction count.
+  \item \textbf{DOM-free, byte-level worksheet parsing.} SDE implements a custom parser that operates directly on XLSX worksheet bytes, avoiding DOM construction and regular-expression passes over decoded strings; this substantially reduces memory footprint, parsing time, and improves robustness on large (“bloated”) sheets.
   \item \textbf{Incremental loading.} Worksheets are loaded and parsed on demand from the XLSX archive, enabling near-instant open times and interactive latency on large files (quantified in \S\ref{sec:evaluation}).
-  \item \textbf{Excel-faithful rendering.} We recover row heights, column widths, and merges from XML to render worksheets closely to Excel, including text overflow behavior, which improves user orientation.
+  \item \textbf{Excel-faithful rendering.} Row heights, column widths, and merged regions are recovered from the XML to render worksheets faithfully to Excel, improving user orientation.
   \item \textbf{Viewport-bounded rendering.} The renderer draws only cells intersecting the viewport; selection queries are pruned with cached axis-aligned bounding boxes. Together these keep per-frame work proportional to what is visible rather than to sheet size.
 \end{enumerate}
 
@@ -227,7 +253,8 @@ Senbazuru comprises three primary functional components:
     \item \textbf{Query}: Supports basic relational operations such as selection and join on the extracted relational tables, enabling users to perform complex data analysis tasks without needing to write SQL queries.
 \end{enumerate}
 
-Senbazuru's ability to handle hierarchical spreadsheets, where attributes may span multiple rows or columns without explicit labeling, sets it apart from earlier systems like DeExcelerator and XLIndy. By employing machine learning techniques and providing user-friendly repair interfaces, Senbazuru ensures high-quality extraction and facilitates the integration of spreadsheet data into relational databases.
+Senbazuru's ability to handle hierarchical spreadsheets, where attributes may span multiple rows or columns without explicit labeling, sets it apart from earlier systems like DeExcelerator and XLIndy.
+By combining learning methods with an interactive repair workflow, Senbazuru improves extraction accuracy and consistency and produces relations suitable for integration into databases.
 
 \begin{figure*}[ht]
   \centering
@@ -280,7 +307,7 @@ Users select individual cells or ranges (click, Shift-click for multi-selection)
 The interface supports flexible management: users drag-and-drop nodes to reparent or reorder the hierarchy when a different organization is more appropriate. Users can also introduce \emph{custom nodes} with user-defined text to encode metadata that is implicit in the spreadsheet but absent from cell contents.
 
 \paragraph{Reusability and Efficiency}
-To reduce repetitive work on sheets with repeated layouts, users can duplicate an existing selection hierarchy and apply it to similar regions. When moving a hierarchy, some cells may need to remain fixed (e.g., vertically stacked tables where only the topmost table repeats header rows). In \texttt{DuplicateAndMove} mode, the SDE provides a \emph{lock} function: users freeze specific cells while relocating the rest of the hierarchy. Locks can be toggled via the lock icon at the top-left corner of a cell or next to the corresponding selection in the hierarchy panel; locked cells remain stationary while other selections shift accordingly (see Figure~\ref{fig:5_repetitions} in \ref{sec:example-workflow}). Already-locked selections are visually indicated and can be unlocked at any time.
+To reduce repetitive work on sheets with repeated layouts, users can duplicate an existing selection hierarchy and apply it to similar regions. When moving a hierarchy, some cells may need to remain fixed (e.g., vertically stacked tables where only the topmost table repeats header rows). While in “move and duplicate” mode, the SDE provides a \emph{lock} function: users freeze specific cells while relocating the rest of the hierarchy. Locks can be toggled via the lock icon at the top-left corner of a cell or next to the corresponding selection in the hierarchy panel; locked cells remain stationary while other selections shift accordingly (see Figure~\ref{fig:5_repetitions} in \ref{sec:example-workflow}). Already-locked selections are visually indicated and can be unlocked at any time.
 
 \section{Example Workflow}
 \label{sec:example-workflow}
@@ -307,7 +334,7 @@ The user adds a node to the hierarchy and selects the cell containing the metada
 
 \begin{figure}[b]
   \centering
-  \includegraphics[width=\linewidth, alt={Screenshot of the SDE selection pane with a context menu opened for the node “B5 2024”. The left panel shows the hierarchy (e.g., “B3 Nursing Staff,” → “A6 Total,” → “A6:A17 …” → “B5 2024,” → “B6:B17 1673, 53, 154, …”). On the right, a floating menu lists actions: “encapsulate”, “enter value manually”, “move and duplicate” (highlighted), “copy cell selection”, “copy task”, and “duplicate task”. At the bottom, preview rows display timestamps, the workbook name, the sheet “12421-05”, the column label “Nursing Staff”, row labels, cell addresses, and values. The figure illustrates invoking the “move and duplicate” command on the 2024 column node.}]{images/spreadsheet_data_extractor/move_and_duplicate/move_and_duplicate_2024_half.png}
+  \includegraphics[width=\onecolumnwidth, alt={Screenshot of the SDE selection pane with a context menu opened for the node “B5 2024”. The left panel shows the hierarchy (e.g., “B3 Nursing Staff,” → “A6 Total,” → “A6:A17 …” → “B5 2024,” → “B6:B17 1673, 53, 154, …”). On the right, a floating menu lists actions: “encapsulate”, “enter value manually”, “move and duplicate” (highlighted), “copy cell selection”, “copy task”, and “duplicate task”. At the bottom, preview rows display timestamps, the workbook name, the sheet “12421-05”, the column label “Nursing Staff”, row labels, cell addresses, and values. The figure illustrates invoking the “move and duplicate” command on the 2024 column node.}]{images/spreadsheet_data_extractor/move_and_duplicate/move_and_duplicate_2024_half.png}
   \caption{Invoking the "move and duplicate" feature on the 2024 column node.}
   \Description{Screenshot of the SDE selection pane with a context menu opened for the node “B5 2024”. The left panel shows the hierarchy (e.g., “B3 Nursing Staff,” → “A6 Total,” → “A6:A17 …” → “B5 2024,” → “B6:B17 1673, 53, 154, …”). On the right, a floating menu lists actions: “encapsulate”, “enter value manually”, “move and duplicate” (highlighted), “copy cell selection”, “copy task”, and “duplicate task”. At the bottom, preview rows display timestamps, the workbook name, the sheet “12421-05”, the column label “Nursing Staff”, row labels, cell addresses, and values. The figure illustrates invoking the “move and duplicate” command on the 2024 column node.}
   \label{fig:move_and_duplicate_2024}
@@ -327,7 +354,7 @@ To do this, the user selects the node of the first column "2024" and right-click
 
 \begin{figure}[b]
   \centering
-  \includegraphics[width=\linewidth, alt={Screenshot while using the “move and duplicate” feature. A toolbar at the top shows arrow buttons, confirm/cancel, and a counter “repeat 5”. In the sheet view, the header cells “Nursing Staff” and “Year” are locked (padlock icons). The column “2024” is highlighted; five adjacent year columns to the right (2029-2049) are outlined in dark red with a pink overlay, indicating the duplicated steps. The figure illustrates shifting the selection one cell to the right and repeating it five times to replicate the column selection across the neighbouring years.}]{images/spreadsheet_data_extractor/move_and_duplicate/duplicate_columns_lock_symbol.png}
+  \includegraphics[width=\onecolumnwidth, alt={Screenshot while using the “move and duplicate” feature. A toolbar at the top shows arrow buttons, confirm/cancel, and a counter “repeat 5”. In the sheet view, the header cells “Nursing Staff” and “Year” are locked (padlock icons). The column “2024” is highlighted; five adjacent year columns to the right (2029-2049) are outlined in dark red with a pink overlay, indicating the duplicated steps. The figure illustrates shifting the selection one cell to the right and repeating it five times to replicate the column selection across the neighbouring years.}]{images/spreadsheet_data_extractor/move_and_duplicate/duplicate_columns_lock_symbol.png}
   \caption{Moving the hierarchy one cell to the right while adjusting the number of repetitions to duplicate the column selection.}
 \Description{Screenshot while using the “move and duplicate” feature. A toolbar at the top shows arrow buttons, confirm/cancel, and a counter “repeat 5”. In the sheet view, the header cells “Nursing Staff” and “Year” are locked (padlock icons). The column “2024” is highlighted; five adjacent year columns to the right (2029-2049) are outlined in dark red with a pink overlay, indicating the duplicated steps. The figure illustrates shifting the selection one cell to the right and repeating it five times to replicate the column selection across the neighbouring years.}
   \label{fig:5_repetitions}
@@ -336,7 +363,7 @@ To do this, the user selects the node of the first column "2024" and right-click
 \begin{figure*}[ht]
   \centering
   \includegraphics[width=\linewidth, alt={Screenshot of SDE after applying “move and duplicate” and confirming (Accept). The left pane shows the hierarchical selection list (e.g., “B3 Nursing Staff”, “A6 Total”, the range “A6:A17 …”, “B5 2024”, and “B6:B17 1673, 53, 154, …”). The right pane renders the worksheet “Supply of Nursing Staff …” with the header “Nursing Staff” highlighted and six year columns 2024-2049 boxed in distinct colours, indicating the replicated column selections across years. At the bottom, the preview table lists extracted records for sheet “12421-05” with column “Nursing Staff”, row labels (Total, 15-20, 20-25), cell addresses (B6, B7, B8), and values (1673, 53, 154). A green check button in the lower right confirms the operation.}]{images/spreadsheet_data_extractor/move_and_duplicate/move_accept.png}
-  \caption{Resulting Hierarchy After Move and Accept}
+  \caption{Resulting Hierarchy using the “Move and Duplicate” Function to Replicate the Column Selection Across Years}
   \Description{Screenshot of SDE after applying “move and duplicate” and confirming (Accept). The left pane shows the hierarchical selection list (e.g., “B3 Nursing Staff”, “A6 Total”, the range “A6:A17 …”, “B5 2024”, and “B6:B17 1673, 53, 154, …”). The right pane renders the worksheet “Supply of Nursing Staff …” with the header “Nursing Staff” highlighted and six year columns 2024-2049 boxed in distinct colours, indicating the replicated column selections across years. At the bottom, the preview table lists extracted records for sheet “12421-05” with column “Nursing Staff”, row labels (Total, 15-20, 20-25), cell addresses (B6, B7, B8), and values (1673, 53, 154). A green check button in the lower right confirms the operation.}
 
   \label{fig:move_accept}
@@ -344,7 +371,7 @@ To do this, the user selects the node of the first column "2024" and right-click
 
 \begin{figure}[b] 
   \centering 
-  \includegraphics[width=\linewidth, alt={Screenshot of SDE after duplicating the first table's selection to all subtables. A top toolbar shows “move and duplicate” with the counter set to “repeat 2”. In the worksheet view, six year columns (2024, 2029, 2034, 2039, 2044, 2049) are outlined in distinct colours. The cells in the top table are overlaid with lighter, less-saturated tints indicating the origin selections; the corresponding cells in the lower subtables are overlaid with stronger, more-saturated tints indicating the duplicated (destination) selections. Header cells display padlock icons for locked ranges. Row labels such as “Total”, “Male”, and “Female” with age bands (e.g., 15-20, 20-25, …) are visible, and every cell within the highlighted columns is selected across subtables. The figure demonstrates how duplicating the first table's hierarchy propagates the selection to subsequent tables, with saturation differentiating origin and destination.}]{images/spreadsheet_data_extractor/move_and_duplicate/duplicate_tables_cropped_to_one_column.png} 
+  \includegraphics[width=\onecolumnwidth, alt={Screenshot of SDE after duplicating the first table's selection to all subtables. A top toolbar shows “move and duplicate” with the counter set to “repeat 2”. In the worksheet view, six year columns (2024, 2029, 2034, 2039, 2044, 2049) are outlined in distinct colours. The cells in the top table are overlaid with lighter, less-saturated tints indicating the origin selections; the corresponding cells in the lower subtables are overlaid with stronger, more-saturated tints indicating the duplicated (destination) selections. Header cells display padlock icons for locked ranges. Row labels such as “Total”, “Male”, and “Female” with age bands (e.g., 15-20, 20-25, …) are visible, and every cell within the highlighted columns is selected across subtables. The figure demonstrates how duplicating the first table's hierarchy propagates the selection to subsequent tables, with saturation differentiating origin and destination.}]{images/spreadsheet_data_extractor/move_and_duplicate/duplicate_tables_cropped_to_one_column.png} 
   \caption{Selection of All Cells in the Subtables by Duplicating the Hierarchy of the First Table} 
   \Description{Screenshot of SDE after duplicating the first table's selection to all subtables. A top toolbar shows “move and duplicate” with the counter set to “repeat 2”. In the worksheet view, six year columns (2024, 2029, 2034, 2039, 2044, 2049) are outlined in distinct colours. The cells in the top table are overlaid with lighter, less-saturated tints indicating the origin selections; the corresponding cells in the lower subtables are overlaid with stronger, more-saturated tints indicating the duplicated (destination) selections. Header cells display padlock icons for locked ranges. Row labels such as “Total”, “Male”, and “Female” with age bands (e.g., 15-20, 20-25, …) are visible, and every cell within the highlighted columns is selected across subtables. The figure demonstrates how duplicating the first table's hierarchy propagates the selection to subsequent tables, with saturation differentiating origin and destination.}
 
@@ -353,7 +380,7 @@ To do this, the user selects the node of the first column "2024" and right-click
 \subsection{Duplicating the Table Hierarchy}
 Subsequently, a series of buttons opens in the app bar at the top right, allowing the user to move the cell selections of the node as well as all child nodes, as seen in Figure \ref{fig:5_repetitions}. By pressing the button to move the selection by one unit to the right, the next column is selected. However, this would also deselect the first column since the selection was moved. To preserve the first column, the "move and duplicate" checkbox can be activated. This creates the shifted selection in addition to the original selection. The changes are only applied when the "accept" button is clicked. The next columns could also be selected in the same way. But this can be done faster, because instead of moving the selection and duplicating it only once, the "repeat" input field can be filled with as many repetitions as there are columns. By entering the number 5, the selection of the first column is shifted 5 times by one unit to the right and duplicated at each step.
 
-The user reviews the selections in the spreadsheet view, where each selection is highlighted in a different color corresponding to its node in the hierarchy. Only after the user has reviewed the shifted and duplicated selections in the worksheet and clicked the "accept" button are the nodes in the hierarchy created as desired. Figure \ref{fig:move_accept} shows the resulting selection after the user approved the
+The user reviews the selections in the spreadsheet view, where each selection is highlighted in a different color corresponding to its node in the hierarchy. Only after the user has reviewed the shifted and duplicated selections in the worksheet and clicked the "accept" button are the nodes in the hierarchy created as desired. Figure \ref{fig:move_accept} shows the resulting selection after the user approved the proposed changes.
 
 The same method that worked effectively for duplicating the columns can now be applied to the subtables, as shown in Figure~\ref{fig:all_cells_selected}.
 
@@ -373,7 +400,7 @@ three columns and rows of the leftmost sub-table.
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth, alt={Diagram of the selection hierarchy before path-wise broadcasting. From left to right, rectangular nodes show the current chain of selections: “Nursing Staff” → “Total” → a stacked block with “Total”, “15-20”, and “20-25”. From that block the flow splits into three separate year nodes—“2024”, “2029”, and “2034”—each pointing to its corresponding three data cells on the right (e.g., for 2024 the values 1673, 154, 53; for 2029 the values 1710, 55, 152; for 2034 the values 1738, 59, 155). Colours match the worksheet highlights; black arrows indicate the direction of propagation. The figure illustrates the structure prior to broadcasting the selection along all paths.}]{images/spreadsheet_data_extractor/broadcast/cross_before.pdf}
+  \includegraphics[width=\onecolumnwidth, alt={Diagram of the selection hierarchy before path-wise broadcasting. From left to right, rectangular nodes show the current chain of selections: “Nursing Staff” → “Total” → a stacked block with “Total”, “15-20”, and “20-25”. From that block the flow splits into three separate year nodes—“2024”, “2029”, and “2034”—each pointing to its corresponding three data cells on the right (e.g., for 2024 the values 1673, 154, 53; for 2029 the values 1710, 55, 152; for 2034 the values 1738, 59, 155). Colours match the worksheet highlights; black arrows indicate the direction of propagation. The figure illustrates the structure prior to broadcasting the selection along all paths.}]{images/spreadsheet_data_extractor/broadcast/cross_before.pdf}
   \caption{Selection hierarchy before path-wise broadcasting.}
   \Description{Diagram of the selection hierarchy before path-wise broadcasting. From left to right, rectangular nodes show the current chain of selections: “Nursing Staff” → “Total” → a stacked block with “Total”, “15-20”, and “20-25”. From that block the flow splits into three separate year nodes—“2024”, “2029”, and “2034”—each pointing to its corresponding three data cells on the right (e.g., for 2024 the values 1673, 154, 53; for 2029 the values 1710, 55, 152; for 2034 the values 1738, 59, 155). Colours match the worksheet highlights; black arrows indicate the direction of propagation. The figure illustrates the structure prior to broadcasting the selection along all paths.}
   \label{fig:crossBefore}
@@ -404,7 +431,7 @@ per cell.
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth, alt={Diagram of the selection hierarchy after path-wise broadcasting. Each output cell now has its full upstream context replicated on its own row. From left to right, the blocks “Nursing Staff” and “Total” are repeated three times vertically, followed by a stacked block “Total / 15-20 / 20-25”, also repeated. Each row then carries one year node—2024, 2029, or 2034—aligned with the corresponding value on the far right (e.g., 1673, 154, 53 for 2024; 1710, 55, 152 for 2029; 1738, 59, 155 for 2034). Colours match the worksheet highlights and black arrows indicate the flow. The figure shows that broadcasting duplicates and aligns upstream labels so that every value cell is paired with its context, yielding one record per cell.}]{images/spreadsheet_data_extractor/broadcast/cross_after.pdf}
+  \includegraphics[width=\onecolumnwidth, alt={Diagram of the selection hierarchy after path-wise broadcasting. Each output cell now has its full upstream context replicated on its own row. From left to right, the blocks “Nursing Staff” and “Total” are repeated three times vertically, followed by a stacked block “Total / 15-20 / 20-25”, also repeated. Each row then carries one year node—2024, 2029, or 2034—aligned with the corresponding value on the far right (e.g., 1673, 154, 53 for 2024; 1710, 55, 152 for 2029; 1738, 59, 155 for 2034). Colours match the worksheet highlights and black arrows indicate the flow. The figure shows that broadcasting duplicates and aligns upstream labels so that every value cell is paired with its context, yielding one record per cell.}]{images/spreadsheet_data_extractor/broadcast/cross_after.pdf}
   \caption{Selection hierarchy after path-wise broadcasting. Each value cell is
   paired with its repeated/aligned upstream context, producing one row per cell.}
   \Description{Diagram of the selection hierarchy after path-wise broadcasting. Each output cell now has its full upstream context replicated on its own row. From left to right, the blocks “Nursing Staff” and “Total” are repeated three times vertically, followed by a stacked block “Total / 15-20 / 20-25”, also repeated. Each row then carries one year node—2024, 2029, or 2034—aligned with the corresponding value on the far right (e.g., 1673, 154, 53 for 2024; 1710, 55, 152 for 2029; 1738, 59, 155 for 2034). Colours match the worksheet highlights and black arrows indicate the flow. The figure shows that broadcasting duplicates and aligns upstream labels so that every value cell is paired with its context, yielding one record per cell.}
@@ -433,7 +460,7 @@ Cell formatting plays a crucial role in accurately representing the appearance o
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth, alt={Collage of two XML excerpts with arrows showing how worksheet cells reference central style definitions. The upper panel shows parts of “xl/styles.xml”: a “fonts” list, a “fills” list (including a solid fill with colour FFD7E1F0), a “borders” list (thin border with theme colours), and a “cellXfs” section containing an “<xf>” record with “fontId="2"”, “fillId="2"”, “borderId="1"”, and “alignment” set to centre with wrap. Arrows link these lists to the “<xf>” that combines them. A further arrow points to the lower panel from “xl/worksheets/sheetX.xml”, which shows a row “r="3"” and a cell “B3” with “s="10"” (style index) and a string value. The figure conveys that worksheet cells use a numeric style index (“s”) to select a composed style (“xf”) defined in “styles.xml”, which in turn references specific font, fill, and border entries by ID.}]{images/xml_collage/collage.pdf}
+  \includegraphics[width=\onecolumnwidth, alt={Collage of two XML excerpts with arrows showing how worksheet cells reference central style definitions. The upper panel shows parts of “xl/styles.xml”: a “fonts” list, a “fills” list (including a solid fill with colour FFD7E1F0), a “borders” list (thin border with theme colours), and a “cellXfs” section containing an “<xf>” record with “fontId="2"”, “fillId="2"”, “borderId="1"”, and “alignment” set to centre with wrap. Arrows link these lists to the “<xf>” that combines them. A further arrow points to the lower panel from “xl/worksheets/sheetX.xml”, which shows a row “r="3"” and a cell “B3” with “s="10"” (style index) and a string value. The figure conveys that worksheet cells use a numeric style index (“s”) to select a composed style (“xf”) defined in “styles.xml”, which in turn references specific font, fill, and border entries by ID.}]{images/xml_collage/collage.pdf}
   \caption{Illustration of the relationship between style definitions in xl/styles.xml (fonts, fills, borders, and cellXfs) and their application in a worksheet file (xl/worksheets/sheetX.xml).}
   \Description{Collage of two XML excerpts with arrows showing how worksheet cells reference central style definitions. The upper panel shows parts of “xl/styles.xml”: a “fonts” list, a “fills” list (including a solid fill with colour FFD7E1F0), a “borders” list (thin border with theme colours), and a “cellXfs” section containing an “<xf>” record with “fontId="2"”, “fillId="2"”, “borderId="1"”, and “alignment” set to centre with wrap. Arrows link these lists to the “<xf>” that combines them. A further arrow points to the lower panel from “xl/worksheets/sheetX.xml”, which shows a row “r="3"” and a cell “B3” with “s="10"” (style index) and a string value. The figure conveys that worksheet cells use a numeric style index (“s”) to select a composed style (“xf”) defined in “styles.xml”, which in turn references specific font, fill, and border entries by ID.}
   \label{fig:formatting}
@@ -454,7 +481,7 @@ Figure \ref{fig:nothing} illustrates this behavior. The text "Supply of Nursing 
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth, alt={Screenshot illustrating a rendering bug: long text in a cell is clipped at the cell boundary instead of overflowing into neighbouring empty cells. The page shows a link “To the table of …” and a truncated heading “Supply of Nurs…”. Below, a table header reads “Age from … to under … Years” and “Nursing Staff / Year” with columns for 2024, 2029, 2034, 2039, 2044, and 2049; the first data row “Total” shows 1673, 1710, 1738, 1790, 1839, and 1867. The figure demonstrates the missing text overflow across adjacent blank cells.}]{images/spreadsheet_data_extractor/overflow/overflow.png}
+  \includegraphics[width=\onecolumnwidth, alt={Screenshot illustrating a rendering bug: long text in a cell is clipped at the cell boundary instead of overflowing into neighbouring empty cells. The page shows a link “To the table of …” and a truncated heading “Supply of Nurs…”. Below, a table header reads “Age from … to under … Years” and “Nursing Staff / Year” with columns for 2024, 2029, 2034, 2039, 2044, and 2049; the first data row “Total” shows 1673, 1710, 1738, 1790, 1839, and 1867. The figure demonstrates the missing text overflow across adjacent blank cells.}]{images/spreadsheet_data_extractor/overflow/overflow.png}
   \caption{Incorrect rendering without overflow for cells adjacent to empty cells.}
   \Description{Screenshot illustrating a rendering bug: long text in a cell is clipped at the cell boundary instead of overflowing into neighbouring empty cells. The page shows a link “To the table of …” and a truncated heading “Supply of Nurs…”. Below, a table header reads “Age from … to under … Years” and “Nursing Staff / Year” with columns for 2024, 2029, 2034, 2039, 2044, and 2049; the first data row “Total” shows 1673, 1710, 1738, 1790, 1839, and 1867. The figure demonstrates the missing text overflow across adjacent blank cells.}
   \label{fig:overflow}
@@ -487,7 +514,7 @@ Our solution opens the Excel file as a ZIP archive and initially extracts only t
 
     \item \textbf{Selective Extraction}:
 
-    We immediately extract \texttt{sharedStrings.xml} and \texttt{styles.xml} because these files are small and contain information necessary for rendering cell content and styles across all worksheets. These files are parsed and stored in memory for quick access during rendering.
+    We immediately extract the \texttt{sharedStrings.xml} and the \texttt{styles.xml} files because these files are small and contain information necessary for rendering cell content and styles across all worksheets. These files are parsed and stored in memory for quick access during rendering.
     \item \textbf{Deferred Worksheet Loading}:
     The individual worksheet files (\texttt{sheetX.xml}) remain compressed and are loaded into memory in their binary unextracted form. They are not decompressed or parsed at this stage.
 
@@ -520,7 +547,7 @@ We first anchor the end of \texttt{<sheetData>} by a backward byte search (Alg.~
 and enter \emph{sheet-data mode} only when rows or cells are actually needed.
 
 \paragraph{Anchoring \& metadata.}
-We find the closing sentinel \verb|</sheetData>| by scanning backward and validating the 12-byte pattern (Alg.~\ref{alg:sheetdata-backward}). This yields byte indices that bound all subsequent searches and lets us enumerate \texttt{<mergeCell ... ref="A1:B3">} elements linearly, converting each A1 pair to \((r,c)\) and inserting the span into a compact index with binary-search probes and a prefix-maximum (used later by \texttt{spanAt}, Alg.~\ref{alg:viewport_layout}).
+We find the closing \verb|</sheetData>| sentinel by scanning backward and validating the 12-byte pattern (Alg.~\ref{alg:sheetdata-backward}). This yields byte indices that bound all subsequent searches and lets us enumerate \texttt{<mergeCell ... ref="A1:B3">} elements linearly, converting each A1 pair to \((r,c)\) and inserting the span into a compact index with binary-search probes and a prefix-maximum (used later by \texttt{spanAt}, Alg.~\ref{alg:viewport_layout}).
 
 \paragraph{Defaults and column bands.}
 We record the default row height $H_d$ (attribute \texttt{defaultRowHeight}) 
@@ -551,7 +578,7 @@ offset are answered via a linear or $O(\log B)$ search over these bands.
 \end{algorithm}
 
 \paragraph{Streaming rows and accumulating offsets.}
-Entering sheet-data mode, we stream \texttt{<row ...>} tags without decoding payloads. Within each opening tag we read \texttt{r="..."} (row index) and optional \texttt{ht="..."} (height). For each discovered row we cache its byte interval and compute its top offset incrementally using explicit heights or the default \(H_d\):
+Entering sheet-data mode, we stream \texttt{<row ...>} tags without decoding payloads. Within each opening tag we read \texttt{r="..."} (row index) and \texttt{ht="..."} (height) if present. For each discovered row we cache its byte interval and compute its top offset incrementally using explicit heights or the default \(H_d\):
 \[
 \text{off}_1 = (r_1 - 1)\,H_d,\qquad
 \text{off}_i = \text{off}_{i-1} + (h_{i-1}\ \text{or}\ H_d) + (r_i - r_{i-1} - 1)\,H_d.
@@ -1189,6 +1216,7 @@ The Spreadsheet Data Extractor (SDE) builds on the converter by Aue et al.~\cite
   \Description{Screenshot of SDE's performance timeline while scrolling a large worksheet. Two horizontal tracks are shown: a top “Raster” band and a lower “UI” band. Each track consists of dense blue vertical bars encoding per-frame time; most bars are short with occasional taller clusters. Track labels report average and maximum frame costs; the raster band shows the higher values, the UI band remains low. Two bright green vertical markers indicate the current cursor positions. The figure illustrates smooth scrolling with low per-frame times; numeric averages and peaks are given in the caption.}
   \label{fig:sde_profiling_scrolling}
 \end{figure*}
+
 \subsection{Acceleration When Opening Files}
 \label{sec:evaluation-opening}
 
