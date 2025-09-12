@@ -1,174 +1,231 @@
-# Spreadsheet Data Extractor — Reproducibility Pack
+# Reproducing the Results
 
-This artifact contains (i) the **Spreadsheet Data Extractor (SDE)** source (including the optimized parser used by the benchmarks), (ii) **benchmark scripts** for SDE, Microsoft Excel (via PowerShell/COM), and a Dart `excel` package, (iii) **CSV outputs** produced by the benchmarks, (iv) **plotting scripts** that generate the box plots shown in the paper, and (v) the **paper sources** (`main.tex`).
+This repository contains:
 
-> **TL;DR (VS Code users):** Open the folder in VS Code and use the two launch targets in `.vscode/launch.json` to render the two charts *after* you have run the benchmarks to produce the CSVs.
+* **Spreadsheet Data Extractor (SDE)** source (`/spreadsheet_data_extractor`) incl. the optimized byte-level parser used in benchmarks.
+* **Benchmarks** and **chart generators** under `/charts`, covering:
 
+  * **Large multi-worksheet workbook** (open one selected sheet).
+* **LaTeX sources** for the paper (`main.tex` and supporting `.tex` files), plus all required assets in the `images/` folder.
 
----
-
-## Prerequisites
-
-* **OS**
-
-  * Windows 10/11 **required** for the Microsoft Excel/COM benchmarks.
-* **Microsoft Excel** (Desktop 2019/2021/365). The PowerShell scripts launch Excel via COM.
-* **PowerShell** 5+ (comes with Windows).
-  You may need to temporarily allow script execution:
-
-  ```powershell
-  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-  ```
-* **Python** 3.9+ (for plotting) with `pip`.
-* **Dart SDK** 3.x (for SDE and `excel` package benchmarks).
-
-  * If you run the SDE app itself, **Flutter** 3.x is needed, but the benchmarks here are pure Dart.
-* **TeX** (optional, to build the paper): TeX Live/MiKTeX; build with `latexmk` or `pdflatex`.
+All benchmark scripts write CSVs and the Python scripts render the box plots used in the paper.
 
 ---
 
-## Setup (Python for plots)
+## 1) Requirements
+
+### OS / Tools
+
+* **Windows** (Excel COM automation requires Windows + Excel)
+* **Microsoft Excel** (version 16.x tested)
+* **PowerShell** (Windows built-in; allow script execution or use `-ExecutionPolicy Bypass`)
+* **Python** 3.10+ (create a venv and install `requirements.txt`)
+* **Dart** SDK (for Dart tests)
+* **Flutter** (for SDE UI; `flutter doctor` should pass)
+* **VS Code** (optional, but simplifies running everything)
+
+### VS Code extensions (recommended)
+
+* **Dart** (Dart-Code.dart-code)
+* **Flutter** (Dart-Code.flutter)
+* **Python** (ms-python.python)
+* **PowerShell** (ms-vscode.PowerShell)
+
+---
+
+## 2) Quick start (VS Code “Run and Debug”)
+
+We provide **ready-made launch configurations** in `.vscode/launch.json`.
+Open the repo in VS Code → **Run and Debug** (Ctrl/Cmd+Shift+D) → pick a config:
+
+### SDE app
+
+* **Spreadsheet Data Extractor (Debug)**
+* **Spreadsheet Data Extractor (Release)**
+* **Spreadsheet Data Extractor (Profile)**
+
+### Benchmarks — Single worksheet (first vs. last row)
+
+* **Run Tests for Parse Large Sheet with SDE**
+* **Run Tests for Parse Large Sheet with Excel Package**
+* **Run Microsoft Excel to Parse Single Worksheet (PowerShell)**
+
+### Benchmarks — Large multi-worksheet workbook (open one sheet)
+
+* **Run Tests for Parse Large File with SDE**
+* **Run Tests for Parse Large File with Excel Package**
+* **Run Microsoft Excel to Parse Large Workbook (PowerShell)**
+
+### Chart generation (after CSVs exist)
+
+* **Generate Boxplot Run Times to Open Large Worksheet**
+* **Generate Boxplot Run Times to Open Worksheet from Large Workbook**
+
+> If PowerShell complains about script execution, VS Code runs these with an integrated console and `ExecutionPolicy Bypass`. Otherwise, set in a terminal:
+> `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
+
+---
+
+## 3) Command-line (no VS Code)
+
+### 3.1. Python environment
 
 ```powershell
-# from the repository root
+# from repo root
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+.venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-> Linux/macOS:
->
-> ```bash
-> python3 -m venv .venv
-> source .venv/bin/activate
-> pip install -r requirements.txt
-> ```
-
----
-
-## Running the benchmarks
-
-> **Tip:** Close any already running Excel instances before starting the Excel/COM benchmarks. If Excel gets stuck, you can kill it with:
->
-> ```powershell
-> Get-Process EXCEL -ErrorAction SilentlyContinue | Stop-Process -Force
-> ```
-
-### A) Single-worksheet benchmark (first rows vs last row)
-
-**1) Microsoft Excel (PowerShell/COM)**
+### 3.2. Dart / Flutter
 
 ```powershell
-cd charts/parse_large_sheet/parse_large_sheet_microsoft_excel
-# produces ..._powershell_first.csv and ..._powershell_last.csv
-.\parse_large_file_microsoft_excel.ps1
-```
-
-**2) SDE (Dart)**
-
-```powershell
-cd charts/parse_large_sheet/parse_large_sheet_sde
-dart pub get
-# Runs both “first rows” and “last row” tests and writes the CSVs
-dart test parse_large_sheet_sde_test.dart
-# or, if the file is a standalone script:
-# dart run parse_large_sheet_sde_test.dart
-```
-
-**3) Dart "excel" package**
-
-```powershell
-cd charts/parse_large_sheet/parse_large_sheet_excel_package
-dart pub get
-dart test parse_large_file_excel_package_test.dart
-# (On large sheets this package may run out of memory; first/last CSVs are still written if the run completes.)
-```
-
-### B) Large multi-worksheet workbook (open one selected sheet)
-
-**1) Microsoft Excel (PowerShell/COM)**
-
-```powershell
-cd charts/parse_large_file/parse_large_file_microsoft_excel
-.\parse_large_file_microsoft_excel_powershell.ps1
-# writes run_times_to_open_worksheet_powershell.csv
-```
-
-**2) SDE (Dart)**
-
-```powershell
-cd charts/parse_large_file/parse_large_file_sde
-dart pub get
-dart test parse_large_file_sde_test.dart
-# writes run_times_to_open_worksheet_sde.csv
-```
-
-**3) Dart "excel" package**
-
-```powershell
-cd charts/parse_large_file/parse_large_file_excel_package
-dart pub get
-dart test parse_large_file_excel_package_test.dart
-# writes run_times_to_open_worksheet_dart.csv (may be a single run due to OOM)
+# Verify
+dart --version
+flutter --version
+flutter doctor
 ```
 
 ---
 
-## Generating the plots
+## 5) Running the Benchmarks
 
-After the CSVs exist (from the steps above), run:
+### 5.1. Single-worksheet benchmark (first rows vs. last row)
 
-```powershell
-# 1) Single-worksheet: first vs last row
-cd charts/parse_large_sheet
-python generate_boxplot_run_times_to_open_large_sheet.py
-# -> generates generate_boxplot_run_times_to_open_large_sheet.pdf
+This measures SDE’s **time-to-first-visual** vs. **full-parse** under identical workload.
 
-# 2) Multi-worksheet workbook: open one selected sheet
-cd ..\parse_large_file
-python generate_boxplot_run_times_to_open_worksheet_from_large_workbook.py
-# -> generates generate_boxplot_run_times_to_open_large_sheet.pdf (in this folder)
-```
-
-> **VS Code:** You can also press **Run** on the two launch configurations in `.vscode/launch.json`:
->
-> * “Generate Boxplot Run Times to Open Large Worksheet”
-> * “Generate Boxplot Run Times to Open Worksheet from Large Workbook”
->   (These launchers only *plot*; they assume the CSVs already exist.)
-
----
-
-## Building the paper
-
-From the repository root (where `main.tex` lives):
+#### SDE (Dart test)
 
 ```powershell
-latexmk -pdf -interaction=nonstopmode main.tex
-# or
-pdflatex main.tex
-bibtex main
-pdflatex main.tex
-pdflatex main.tex
+dart test charts/parse_large_sheet/parse_large_sheet_sde/parse_large_sheet_sde_test.dart -r expanded
+# Produces:
+#   charts/parse_large_sheet/parse_large_sheet_sde/run_times_to_open_worksheet_sde_first.csv
+#   charts/parse_large_sheet/parse_large_sheet_sde/run_times_to_open_worksheet_sde_last.csv
 ```
 
-The generated figures in `charts/.../*.pdf` are referenced by the LaTeX source.
+#### Excel Package (Dart test)
+
+```powershell
+dart test charts/parse_large_sheet/parse_large_sheet_excel_package/parse_large_sheet_excel_package_test.dart -r expanded
+# Produces:
+#   charts/parse_large_sheet/parse_large_sheet_excel_package/run_times_to_open_worksheet_dart_excel_package_first.csv
+#   charts/parse_large_sheet/parse_large_sheet_excel_package/run_times_to_open_worksheet_dart_excel_package_last.csv
+```
+
+#### Microsoft Excel (PowerShell / COM)
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass `
+  -File charts/parse_large_sheet/parse_large_sheet_microsoft_excel/parse_large_file_microsoft_excel.ps1
+# Produces:
+#   charts/parse_large_sheet/parse_large_sheet_microsoft_excel/run_times_to_open_worksheet_powershell_first.csv
+#   charts/parse_large_sheet/parse_large_sheet_microsoft_excel/run_times_to_open_worksheet_powershell_last.csv
+```
+
+### 5.2. Large multi-worksheet workbook (open one selected sheet)
+
+This measures **user-centred latency** (open only the selected sheet).
+
+#### SDE (Dart test)
+
+```powershell
+dart test charts/parse_large_file/parse_large_file_sde/parse_large_file_sde_test.dart -r expanded
+# Produces:
+#   charts/parse_large_file/parse_large_file_sde/run_times_to_open_worksheet_sde.csv
+```
+
+#### Excel Package (Dart test)
+
+```powershell
+dart test charts/parse_large_file/parse_large_file_excel_package/parse_large_file_excel_package_test.dart -r expanded
+# Produces (often only first run due to OOM on large file):
+#   charts/parse_large_file/parse_large_file_excel_package/run_times_to_open_worksheet_dart.csv
+```
+
+#### Microsoft Excel (PowerShell / COM)
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass `
+  -File charts/parse_large_file/parse_large_file_microsoft_excel/parse_large_file_microsoft_excel_powershell.ps1
+# Produces:
+#   charts/parse_large_file/parse_large_file_microsoft_excel/run_times_to_open_worksheet_powershell.csv
+```
 
 ---
 
-## Notes & caveats
+## 6) Generating the Charts (after CSVs exist)
 
-* **Excel/COM automation:** Requires desktop Excel on Windows. Scripts open Excel, time the operation, and close it. If Excel stays alive (e.g., a crash), terminate it as shown above.
-* **Dart `excel` package:** On very large sheets it may run out of memory; in our runs some measurements produced only a single CSV row. This behavior is expected and documented in the paper.
+### Single-worksheet (first vs. last row)
 
+```powershell
+. .venv\Scripts\activate
+python charts/parse_large_sheet/generate_boxplot_run_times_to_open_large_sheet.py
+# Output PDF:
+#   charts/parse_large_sheet/generate_boxplot_run_times_to_open_large_sheet.pdf
+```
+
+### Large multi-worksheet (open one sheet)
+
+```powershell
+. .venv\Scripts\activate
+python charts/parse_large_file/generate_boxplot_run_times_to_open_worksheet_from_large_workbook.py
+# Output PDF:
+#   charts/parse_large_file/generate_boxplot_run_times_to_open_large_sheet.pdf
+#   (or as configured in the script)
+```
+
+> The Python scripts expect the CSV files named above to exist in the same directories.
 
 ---
 
-## Contact / questions
+## 7) Running the SDE UI
 
-If anything is unclear or you encounter issues reproducing the results, please include:
+From repo root:
 
-* the script you ran and its full console output,
-* your OS + Excel version,
-* your Dart/Python versions.
+```powershell
+flutter run -d windows -t spreadsheet_data_extractor/lib/main.dart   # debug
+flutter run -d windows -t spreadsheet_data_extractor/lib/main.dart --release
+flutter run -d windows -t spreadsheet_data_extractor/lib/main.dart --profile
+```
 
-Thanks for taking the time to reproduce the experiments!
+Or use the VS Code launch configs:
+
+* **Spreadsheet Data Extractor (Debug / Release / Profile)**
+
+---
+
+## 9) Troubleshooting
+
+* **PowerShell cannot run scripts**
+  Use the `-ExecutionPolicy Bypass` flag or run:
+  `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
+
+* **Dart `excel` package OOM**
+  On the large multi-worksheet scenario, the Dart package often runs out of memory after the first run. This is expected and documented.
+
+* **Python missing packages**
+  Activate the venv and run `pip install -r requirements.txt`.
+
+* **Paths**
+  All scripts assume the checked-in XLSX files remain in their default locations under `/charts/...`.
+
+---
+
+## 10) Paper build
+
+The LaTeX manuscript is in the repo root (`main.tex`).
+It can be build via `latexmk` or `pdflatex`/`lualatex` per your workflow.
+
+---
+
+## 11) Environment reference (used in paper)
+
+* **OS**: Windows 11 Enterprise (build 26100, 64-bit)
+* **CPU**: AMD Ryzen 5 PRO 7535U (6-core, 2.9 GHz)
+* **RAM**: 31.3 GB
+* **Disk**: HDD
+* **Excel**: Microsoft Office 16.0
+
+---
+
+If anything is unclear or a path differs on your machine, the VS Code launch configs are the quickest way to run the exact scripts used in the paper.
