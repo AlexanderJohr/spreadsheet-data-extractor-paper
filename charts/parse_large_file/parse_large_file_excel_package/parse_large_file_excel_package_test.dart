@@ -31,13 +31,13 @@ void main() {
         final a3 = sheet.cell(CellIndex.indexByString('A3')).value.toString();
         expect(a3, 'Jahr');
 
-        final b4 = sheet.cell(CellIndex.indexByString('B4')).value;
+        final b4 = sheet.cell(CellIndex.indexByString('B4')).value.toString();
         expect(b4, 'Insgesamt');
 
-        final a6 = sheet.cell(CellIndex.indexByString('A6')).value;
+        final a6 = sheet.cell(CellIndex.indexByString('A6')).value.toString();
         expect(a6, '2021');
 
-        final b6 = sheet.cell(CellIndex.indexByString('B6')).value;
+        final b6 = sheet.cell(CellIndex.indexByString('B6')).value.toString();
         expect(b6, '286710');
       }
 
