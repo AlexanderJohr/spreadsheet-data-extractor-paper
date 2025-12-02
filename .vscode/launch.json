@@ -4,27 +4,24 @@
             "name": "Spreadsheet Data Extractor (Debug)",
             "type": "dart",
             "request": "launch",
-            "program": "${workspaceFolder}/spreadsheet_data_extractor/lib/main.dart"
+            "program": "${workspaceFolder}/spreadsheet_data_extractor/lib/main.dart",
+            "preLaunchTask": "pub-get:app"
         },
         {
             "name": "Spreadsheet Data Extractor (Release)",
             "type": "dart",
             "request": "launch",
             "program": "${workspaceFolder}/spreadsheet_data_extractor/lib/main.dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "preLaunchTask": "pub-get:app"
         },
         {
             "name": "Spreadsheet Data Extractor (Profile)",
             "type": "dart",
             "request": "launch",
             "program": "${workspaceFolder}/spreadsheet_data_extractor/lib/main.dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "Run Tests for Parse Large Sheet with SDE",
-            "type": "dart",
-            "request": "launch",
-            "program": "${workspaceFolder}/charts/parse_large_sheet/parse_large_sheet_sde/parse_large_sheet_sde_test.dart",
+            "flutterMode": "profile",
+            "preLaunchTask": "pub-get:app"
         },
         {
             "name": "Run Microsoft Excel to Parse Large Workbook (PowerShell)",
@@ -49,18 +46,28 @@
             "type": "dart",
             "request": "launch",
             "program": "${workspaceFolder}/charts/parse_large_sheet/parse_large_sheet_excel_package/parse_large_sheet_excel_package_test.dart",
+            "preLaunchTask": "pub-get:parse-large-sheet-excel-package"
         },
         {
-            "name": "Run Tests for Parse Large File with SDE",
-            "type": "dart",
-            "request": "launch",
-            "program": "${workspaceFolder}/charts/parse_large_file/parse_large_file_sde/parse_large_file_sde_test.dart",
-        },
-        {
-            "name": "Run Tests for Parse Large File with Excel Package",
+            "name": "Run Test for Parse Large File with Excel Package",
             "type": "dart",
             "request": "launch",
             "program": "${workspaceFolder}/charts/parse_large_file/parse_large_file_excel_package/parse_large_file_excel_package_test.dart",
+            "preLaunchTask": "pub-get:parse-large-file-excel-package"
+        },
+        {
+            "name": "Run Tests for Parse Large Sheet with SDE",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/charts/parse_large_sheet/parse_large_sheet_sde/parse_large_sheet_sde_test.dart",
+            "preLaunchTask": "bootstrap:sde-large-sheet-test"
+        },
+        {
+            "name": "Run Test for Parse Large File with SDE",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/charts/parse_large_file/parse_large_file_sde/parse_large_file_sde_test.dart",
+            "preLaunchTask": "bootstrap:sde-large-file-test"
         },
         {
             "name": "Generate Boxplot Run Times to Open Large Worksheet",
@@ -68,6 +75,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/charts/parse_large_sheet/generate_boxplot_run_times_to_open_large_sheet.py",
             "python": "${workspaceFolder}/.venv/Scripts/python",
+            "preLaunchTask": "py:bootstrap"
         },
         {
             "name": "Generate Boxplot Run Times to Open Worksheet from Large Workbook",
@@ -75,6 +83,7 @@
             "request": "launch",
             "program": "charts/parse_large_file/generate_boxplot_run_times_to_open_worksheet_from_large_workbook.py",
             "python": "${workspaceFolder}/.venv/Scripts/python",
+            "preLaunchTask": "py:bootstrap"
         }
     ]
 }

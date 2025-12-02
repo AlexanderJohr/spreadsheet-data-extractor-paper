@@ -1,0 +1,152 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "pub-get:app",
+            "type": "process",
+            "command": "flutter",
+            "args": [
+                "pub",
+                "get"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/spreadsheet_data_extractor"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "pub-get:parse-large-sheet-sde",
+            "type": "process",
+            "command": "dart",
+            "args": [
+                "pub",
+                "get"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/charts/parse_large_sheet/parse_large_sheet_sde"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "pub-get:parse-large-file-sde",
+            "type": "process",
+            "command": "dart",
+            "args": [
+                "pub",
+                "get"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/charts/parse_large_file/parse_large_file_sde"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "pub-get:parse-large-sheet-excel-package",
+            "type": "process",
+            "command": "dart",
+            "args": [
+                "pub",
+                "get"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/charts/parse_large_sheet/parse_large_sheet_excel_package"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "pub-get:parse-large-file-excel-package",
+            "type": "process",
+            "command": "dart",
+            "args": [
+                "pub",
+                "get"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/charts/parse_large_file/parse_large_file_excel_package"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "py:create-venv-if-missing",
+            "type": "shell",
+            "windows": {
+                "command": "if (!(Test-Path .venv\\Scripts\\python.exe)) { if (Get-Command py -ErrorAction SilentlyContinue) { py -m venv .venv } else { python -m venv .venv } }"
+            },
+            "linux": {
+                "command": "if [ ! -x .venv/bin/python ]; then (command -v python3 >/dev/null 2>&1 && python3 -m venv .venv) || python -m venv .venv; fi"
+            },
+            "osx": {
+                "command": "if [ ! -x .venv/bin/python ]; then (command -v python3 >/dev/null 2>&1 && python3 -m venv .venv) || python -m venv .venv; fi"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "py:install-reqs",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "windows": {
+                "command": ".\\.venv\\Scripts\\python -m pip install -r requirements.txt"
+            },
+            "linux": {
+                "command": "./.venv/bin/python -m pip install -r requirements.txt"
+            },
+            "osx": {
+                "command": "./.venv/bin/python -m pip install -r requirements.txt"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "py:bootstrap",
+            "dependsOn": [
+                "py:create-venv-if-missing",
+                "py:install-reqs"
+            ],
+            "dependsOrder": "sequence"
+        },
+        {
+            "label": "bootstrap:sde-app",
+            "dependsOn": [
+                "pub-get:app"
+            ],
+            "dependsOrder": "sequence"
+        },
+        {
+            "label": "bootstrap:sde-large-sheet-test",
+            "dependsOn": [
+                "pub-get:app",
+                "pub-get:parse-large-sheet-sde"
+            ],
+            "dependsOrder": "parallel"
+        },
+        {
+            "label": "bootstrap:sde-large-file-test",
+            "dependsOn": [
+                "pub-get:app",
+                "pub-get:parse-large-file-sde"
+            ],
+            "dependsOrder": "parallel"
+        },
+        {
+            "label": "bootstrap:excel-package-tests",
+            "dependsOn": [
+                "pub-get:parse-large-sheet-excel-package",
+                "pub-get:parse-large-file-excel-package"
+            ],
+            "dependsOrder": "parallel"
+        },
+        {
+            "label": "bootstrap:all",
+            "dependsOn": [
+                "pub-get:app",
+                "pub-get:parse-large-sheet-sde",
+                "pub-get:parse-large-file-sde",
+                "pub-get:parse-large-sheet-excel-package",
+                "pub-get:parse-large-file-excel-package",
+                "py:bootstrap"
+            ],
+            "dependsOrder": "sequence"
+        }
+    ]
+}
