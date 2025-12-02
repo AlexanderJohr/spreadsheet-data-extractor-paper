@@ -1,0 +1,23 @@
+% In the tagged PDF, mark as a text section (no alt text required)
+% Tag algorithm2e algorithms as a text Section in the PDF structure tree
+\makeatletter
+% The real body is in 'algocf', not 'algorithm'
+\AddToHook{env/algocf/begin}{\par\tagstructbegin{tag=Sect}}
+\AddToHook{env/algocf/end}{\tagstructend\par}
+
+% (Optional) keep the outer 'algorithm' wrapper clean wrt paragraphs
+\AddToHook{env/algorithm/begin}{\par}
+\AddToHook{env/algorithm/end}{\par}
+\makeatother
+
+% Tagging for algorithm2e
+\makeatletter
+\AddToHook{env/algocf/begin}{%
+  \tagpdfsetup{paratagging=false}%
+  \tagstructbegin{tag=Sect}%
+}
+\AddToHook{env/algocf/end}{%
+  \tagstructend
+  \tagpdfsetup{paratagging=true}%
+}
+\makeatother

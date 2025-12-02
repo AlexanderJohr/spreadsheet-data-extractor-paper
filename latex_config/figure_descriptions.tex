@@ -1,0 +1,25 @@
+
+% --- Collect all figure captions + \Description{} into a single text file
+\makeatletter
+\newwrite\desc@file
+\AtBeginDocument{\immediate\openout\desc@file=\jobname-figure-descriptions.txt}
+\AtEndDocument{\immediate\closeout\desc@file}
+
+% Remember the last caption text (full)
+\let\orig@caption\caption
+\renewcommand{\caption}[2][]{%
+  \gdef\last@caption{#2}%
+  \orig@caption[#1]{#2}%
+}
+
+% For every \Description{}, write to the file
+\let\orig@Description\Description
+\renewcommand{\Description}[1]{%
+  \orig@Description{#1}% keep normal behavior
+  \begingroup
+    % Write to file: figure number + caption + description
+    \immediate\write\desc@file{Figure \number\value{figure}: "\detokenize{#1}"}%
+    \immediate\write\desc@file{}% blank line
+  \endgroup
+}
+\makeatother
