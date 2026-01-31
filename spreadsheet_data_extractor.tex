@@ -4,9 +4,24 @@
     pdfversion=2.0,
     pdfstandard=ua-2,
     testphase={phase-III,math,title,table,firstaid},
-  }
-% for initial submissions
-\documentclass[manuscript,review,anonymous]{acmart}
+  }%
+\documentclass[sigconf, nonacm]{acmart}
+
+%% The following content must be adapted for the final version
+% paper-specific
+\newcommand\vldbdoi{XX.XX/XXX.XX}
+\newcommand\vldbpages{XXX-XXX}
+% issue-specific
+\newcommand\vldbvolume{14}
+\newcommand\vldbissue{1}
+\newcommand\vldbyear{2020}
+% should be fine as it is
+\newcommand\vldbauthors{\authors}
+\newcommand\vldbtitle{\shorttitle} 
+% leave empty if no availability url should be set
+\newcommand\vldbavailabilityurl{URL_TO_YOUR_ARTIFACTS}
+% whether page numbers should be shown or not, use 'plain' for review versions, 'empty' for camera ready
+\newcommand\vldbpagestyle{plain} 
 
 
 \input{latex_config/algorithm2e_config.tex}
@@ -44,6 +59,7 @@
 
 \acmSubmissionID{ }
 
+
 \begin{document}
 
 \title[Spreadsheet Data Extractor (SDE)]{Spreadsheet Data Extractor (SDE): A Performance-Optimized, User-Centric Tool for Transforming Semi-Structured Excel Spreadsheets into Relational Data}
@@ -51,7 +67,7 @@
 \begin{abstract}
 Spreadsheets are widely used across domains, yet their human-oriented layouts (merged cells, hierarchical headers, multiple tables) hinder automated extraction. We present the Spreadsheet Data Extractor (SDE), a user-in-the-loop system that converts semi-structured sheets into structured outputs without programming. Users declare the structure they perceive; the engine broadcasts selections deterministically and renders results immediately. Under the hood, SDE employs incremental loading, byte-level XML streaming (avoiding DOM materialisation), and viewport-bounded rendering.
 
-Optimised for time-to-first-visual, SDE delivers about \textbf{70$\times$} speedup over Microsoft Excel when opening a selected sheet in a large real-world workbook; under workload-equivalent conditions (single worksheet, full parse) it remains about \textbf{10$\times$} faster, while preserving layout fidelity. These results indicate SDE's potential for reliable, scalable extraction across diverse spreadsheet formats.
+Optimised for time-to-first-visual, SDE delivers about \textbf{70\,$\times$} ~speedup over Microsoft Excel when opening a selected sheet in a large real-world workbook; under workload-equivalent conditions (single worksheet, full parse) it remains about \textbf{10$\times$} faster, while preserving layout fidelity. These results indicate SDE's potential for reliable, scalable extraction across diverse spreadsheet formats.
 \end{abstract}
 
 %%
@@ -122,16 +138,6 @@ Prior work introduced a tool for extracting data from Excel files~\cite{aue2024c
 
 This paper presents the \emph{Spreadsheet Data Extractor (SDE)}, which transforms data from semi-structured spreadsheets into machine-readable form. Users declare structure directly via cell selections—no programming is required. The design addresses the above limitations and supports large, irregular spreadsheets with predictable, interactive performance.
 
-\subsection{Contributions}
-
-\begin{enumerate}
-  \item \textbf{Unified interaction.} SDE integrates the selection hierarchy, worksheet view, and output preview into a single interface, reducing context switching and interaction count.
-  \item \textbf{DOM-free, byte-level worksheet parsing.} SDE implements a custom parser that operates directly on XLSX worksheet bytes, avoiding DOM construction and regular-expression passes over decoded strings; this substantially reduces memory footprint, parsing time, and improves robustness on large (“bloated”) sheets.
-  \item \textbf{Incremental loading.} Worksheets are loaded and parsed on demand from the XLSX archive, enabling near-instant open times and interactive latency on large files (quantified in \ref{sec:evaluation}. \nameref{sec:evaluation}).
-  \item \textbf{Excel-faithful rendering.} Row heights, column widths, and merged regions are recovered from the XML to render worksheets faithfully to Excel, improving user orientation.
-  \item \textbf{Viewport-bounded rendering.} The renderer draws only cells intersecting the viewport; selection queries are pruned with cached axis-aligned bounding boxes. Together these keep per-frame work proportional to what is visible rather than to sheet size.
-\end{enumerate}
-
 \begin{table*}[ht]
   \centering
   \begin{tabular}{|c|c|c|c|c|}
@@ -149,22 +155,32 @@ This paper presents the \emph{Spreadsheet Data Extractor (SDE)}, which transform
       XLindy        & AI                    & relational data    & no access              & discontinued          \\ \hline
       TableSense    & AI                    & diagrams        & proprietary,           & last commit        \\
                     &                       &                 & no access              & 2021               \\ \hline
-      Aue et\,al.~(converter)     & User-centric Selection-Workflow                     & relational data        & no public repository           & last publication        \\
-                    &                       &                 &               & 2024               \\ \hline
+%      Aue et\,al.~(converter)     & User-centric Selection-Workflow                     & relational data        & no public repository           & last publication        \\
+%                    &                       &                 &               & 2024               \\ \hline
   \end{tabular}
   \caption{Spreadsheet Data Extractor counterparts}
 
   \label{tab:approaches}
 \end{table*}
+\subsection{Contributions}
+
+\begin{enumerate}
+  \item \textbf{Unified interaction.} SDE integrates the selection hierarchy, worksheet view, and output preview into a single interface, reducing context switching and interaction count.
+  \item \textbf{DOM-free, byte-level worksheet parsing.} SDE implements a custom parser that operates directly on XLSX worksheet bytes, avoiding DOM construction and regular-expression passes over decoded strings; this substantially reduces memory footprint, parsing time, and improves robustness on large (“bloated”) sheets.
+  \item \textbf{Incremental loading.} Worksheets are loaded and parsed on demand from the XLSX archive, enabling near-instant open times and interactive latency on large files (quantified in \ref{sec:evaluation}. \nameref{sec:evaluation}).
+  \item \textbf{Excel-faithful rendering.} Row heights, column widths, and merged regions are recovered from the XML to render worksheets faithfully to Excel, improving user orientation.
+  \item \textbf{Viewport-bounded rendering.} The renderer draws only cells intersecting the viewport; selection queries are pruned with cached axis-aligned bounding boxes. Together these keep per-frame work proportional to what is visible rather than to sheet size.
+\end{enumerate}
+
 \section{Related Work}
 
 The extraction of relational data from semi-structured documents, particularly spreadsheets, has garnered significant attention due to their ubiquitous use across domains such as business, government, and scientific research. Several frameworks and tools have been developed to address the challenges of converting flexible spreadsheet formats into normalized relational forms suitable for data analysis and integration as summarized in Table~\ref{tab:approaches}.
 
-\subsection{Aue et al.'s Converter}
+%\subsection{Aue et al.'s Converter}
 
-Aue et al.~\cite{aue2024converting} developed a tool to facilitate data extraction from Excel spreadsheets by leveraging the Dart \textit{excel} package~\cite{excelPackage} to process .xlsx files. This tool allows users to define data hierarchies by selecting relevant cells containing data and metadata. However, the approach faced significant performance bottlenecks due to the \textit{excel} package's requirement to load the entire .xlsx file into memory, resulting in slow response times, particularly for large files.
+%Aue et al.~\cite{aue2024converting} developed a tool to facilitate data extraction from Excel spreadsheets by leveraging the Dart \textit{excel} package~\cite{excelPackage} to process .xlsx files. This tool allows users to define data hierarchies by selecting relevant cells containing data and metadata. However, the approach faced significant performance bottlenecks due to the \textit{excel} package's requirement to load the entire .xlsx file into memory, resulting in slow response times, particularly for large files.
 
-In addition to memory issues, the tool calculated row heights and column widths based solely on cell content, ignoring the dimensions specified in the original Excel file. This led to rendering discrepancies between the tool and the original spreadsheet. Furthermore, the tool rendered all cells, regardless of their visibility within the viewport, significantly degrading performance when handling worksheets with large numbers of cells.
+%In addition to memory issues, the tool calculated row heights and column widths based solely on cell content, ignoring the dimensions specified in the original Excel file. This led to rendering discrepancies between the tool and the original spreadsheet. Furthermore, the tool rendered all cells, regardless of their visibility within the viewport, significantly degrading performance when handling worksheets with large numbers of cells.
 
 \subsection{DeExcelerator}
 
@@ -179,6 +195,8 @@ Koci et al.~\cite{koci2019xlindy} developed \textbf{XLIndy}, an interactive Exce
 Barowy et al.~\cite{barowy2015flashrelate} presented \textbf{FLASHRELATE}, an approach that empowers users to extract structured relational data from semi-structured spreadsheets without requiring programming expertise. FLASHRELATE introduces a domain-specific language, \textbf{FLARE}, which extends traditional regular expressions with spatial constraints to capture the geometric relationships inherent in spreadsheet layouts. Additionally, FLASHRELATE employs an algorithm that synthesizes FLARE programs from a small number of user-provided positive and negative examples, significantly simplifying the automated data extraction process.
 
 FLASHRELATE distinguishes itself from both DeExcelerator and XLIndy by leveraging programming-by-example (PBE) techniques. While DeExcelerator relies on predefined heuristic rules and XLIndy incorporates machine learning models requiring user interaction for fine-tuning, FLASHRELATE allows non-expert users to define extraction patterns through intuitive examples. This approach lowers the barrier to entry for extracting relational data from complex spreadsheet encodings, making the tool accessible to a broader range of users.
+
+
 
 \subsection{Senbazuru}
 
@@ -220,7 +238,51 @@ Moreover, unlike the aforementioned tools that rely on heuristics, machine learn
 
 By combining the strengths of manual control with enhanced user interface features and performance optimizations, our tool offers a robust and accessible solution for extracting relational data from complex and visually intricate spreadsheets. These enhancements not only improve performance and accuracy but also elevate the overall user experience, making our tool a valuable asset for efficient and reliable data extraction from diverse spreadsheet formats.
 
+
+
+\begin{figure*}[ht] % ht
+  \centering
+ 
+
+
+\begin{subfigure}{0.98\textwidth}
+  \centering
+  \includegraphics[width=\textwidth, alt={Screenshot of the Spreadsheet Data Extractor. The interface has two panes. On the left, a navigation panel lists one imported workbook
+  with a single visible worksheet entry “12421-05”. On the right, the
+  main pane shows a rendered preview of that sheet, titled “Supply of Nursing Staff (Trend Variant) in Germany up to 2049, in 1000”. The header includes
+  “Age from … to under … Years” and “Year” with columns for 2024-2049; the first row “Total” shows values 1673, 1710, 1738, 1790, 1839, and 1867. Below the table,
+  a row of sheet tabs (12421-01 … 12421-05) indicates that “12421-05” is selected. A status bar at the bottom displays a timestamp and the workbook path.}]{images/spreadsheet_data_extractor/selection/nothing.png}
+  \caption{The SDE Interface Overview.}
+  \Description{Screenshot of the Spreadsheet Data Extractor. The interface has two panes. On the left, a navigation panel lists one imported workbook
+  with a single visible worksheet entry “12421-05”. On the right, the
+  main pane shows a rendered preview of that sheet, titled “Supply of Nursing Staff (Trend Variant) in Germany up to 2049, in 1000”. The header includes
+  “Age from … to under … Years” and “Year” with columns for 2024-2049; the first row “Total” shows values 1673, 1710, 1738, 1790, 1839, and 1867. Below the table,
+  a row of sheet tabs (12421-01 … 12421-05) indicates that “12421-05” is selected. A status bar at the bottom displays a timestamp and the workbook path.}
+  \label{fig:nothing}
+\end{subfigure}
+  \vspace{0.6em}
+
+\begin{subfigure}{0.98\textwidth}
+    \centering
+  \includegraphics[width=\linewidth, alt={Screenshot of the SDE while selecting first-column metadata. The left pane shows a hierarchical selection list with entries such as “B3 Nursing Staff”, “A6 Total”, the range “A6:A17 Total, 15--20, 20--25”, and “B5 2024” and “B6:B17 1673, 53, 154, …”, each with link, lock, and delete controls. The right pane renders the worksheet “Supply of Nursing Staff (Trend Variant) in Germany up to 2049, in 1000” with coloured outlines around the first column: header “Nursing Staff” and row labels “Total”, “15--20”, “20--25”; the year “2024” is highlighted in the first data column. At the bottom, a preview table lists extracted records including the sheet “12421-05”, column “Nursing Staff”, row labels, cell addresses B6/B7/B8, and values 1673, 53, and 154. The figure illustrates how first-column labels are selected and bound to the output.}]{images/spreadsheet_data_extractor/selection/first_column.png}
+  \caption{Selection of the First Column Metadata}
+  \Description{Screenshot of the SDE while selecting first-column metadata. The left pane shows a hierarchical selection list with entries such as “B3 Nursing Staff”, “A6 Total”, the range “A6:A17 Total, 15--20, 20--25”, and “B5 2024” and “B6:B17 1673, 53, 154, …”, each with link, lock, and delete controls. The right pane renders the worksheet “Supply of Nursing Staff (Trend Variant) in Germany up to 2049, in 1000” with coloured outlines around the first column: header “Nursing Staff” and row labels “Total”, “15--20”, “20--25”; the year “2024” is highlighted in the first data column. At the bottom, a preview table lists extracted records including the sheet “12421-05”, column “Nursing Staff”, row labels, cell addresses B6/B7/B8, and values 1673, 53, and 154. The figure illustrates how first-column labels are selected and bound to the output.}
+  \label{fig:first_column}
+\end{subfigure}
+
+  \caption{Time-to-first-visual vs. full-parse costs across tools. (a) shows the practical benefit of initialising only the selected sheet in a multi-worksheet file; (b) isolates algorithmic differences under identical workload. Both plots aggregate 10 runs on a logarithmic time axis.}
+  \label{fig:eval-combined}
+\end{figure*}
+
+
 \section{Design Philosophy}
+
+
+
+
+
+
+
 \label{sec:design-philosophy}
 Spreadsheet tables are heterogeneous, noisy, and locally structured in ways that are hard to infer reliably with fully automatic extraction. Our goal is not to replace the analyst with an opaque model, but to \emph{amplify} their judgment: the user points to the structure they already perceive (regions, labels, value columns), and the system guarantees a faithful, auditable transformation into a relational view. 
 Instead of automatically extracting and then searching for mistakes, we invert the workflow: \emph{select first, broadcast deterministically, render immediately}. This keeps discrepancies visible at the point of selection, where they can be corrected with minimal context switches.
@@ -246,21 +308,6 @@ To reduce repetitive work on sheets with repeated layouts, users can duplicate a
 \label{sec:example-workflow}
 
 Consider a spreadsheet containing statistical forecasts of future nursing staff availability in Germany \cite{destatis2024pflegekraefte}. Figure~\ref{fig:nothing} shows the SDE interface, which consists of three main components:
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=\textwidth, alt={Screenshot of the Spreadsheet Data Extractor. The interface has two panes. On the left, a navigation panel lists one imported workbook
-  with a single visible worksheet entry “12421-05”. On the right, the
-  main pane shows a rendered preview of that sheet, titled “Supply of Nursing Staff (Trend Variant) in Germany up to 2049, in 1000”. The header includes
-  “Age from … to under … Years” and “Year” with columns for 2024-2049; the first row “Total” shows values 1673, 1710, 1738, 1790, 1839, and 1867. Below the table,
-  a row of sheet tabs (12421-01 … 12421-05) indicates that “12421-05” is selected. A status bar at the bottom displays a timestamp and the workbook path.}]{images/spreadsheet_data_extractor/selection/nothing.png}
-  \caption{The SDE Interface Overview.}
-  \Description{Screenshot of the Spreadsheet Data Extractor. The interface has two panes. On the left, a navigation panel lists one imported workbook
-  with a single visible worksheet entry “12421-05”. On the right, the
-  main pane shows a rendered preview of that sheet, titled “Supply of Nursing Staff (Trend Variant) in Germany up to 2049, in 1000”. The header includes
-  “Age from … to under … Years” and “Year” with columns for 2024-2049; the first row “Total” shows values 1673, 1710, 1738, 1790, 1839, and 1867. Below the table,
-  a row of sheet tabs (12421-01 … 12421-05) indicates that “12421-05” is selected. A status bar at the bottom displays a timestamp and the workbook path.}
-  \label{fig:nothing}
-\end{figure*}
 
 \textbf{Hierarchy Panel (Top Left):} Displays the hierarchy of cell selections, initially empty.
 
@@ -268,13 +315,6 @@ Consider a spreadsheet containing statistical forecasts of future nursing staff 
 
 \textbf{Output Preview (Bottom):} Provides immediate feedback on the data extraction based on current selections.
 
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=\linewidth, alt={Screenshot of the SDE while selecting first-column metadata. The left pane shows a hierarchical selection list with entries such as “B3 Nursing Staff”, “A6 Total”, the range “A6:A17 Total, 15--20, 20--25”, and “B5 2024” and “B6:B17 1673, 53, 154, …”, each with link, lock, and delete controls. The right pane renders the worksheet “Supply of Nursing Staff (Trend Variant) in Germany up to 2049, in 1000” with coloured outlines around the first column: header “Nursing Staff” and row labels “Total”, “15--20”, “20--25”; the year “2024” is highlighted in the first data column. At the bottom, a preview table lists extracted records including the sheet “12421-05”, column “Nursing Staff”, row labels, cell addresses B6/B7/B8, and values 1673, 53, and 154. The figure illustrates how first-column labels are selected and bound to the output.}]{images/spreadsheet_data_extractor/selection/first_column.png}
-  \caption{Selection of the First Column Metadata}
-  \Description{Screenshot of the SDE while selecting first-column metadata. The left pane shows a hierarchical selection list with entries such as “B3 Nursing Staff”, “A6 Total”, the range “A6:A17 Total, 15--20, 20--25”, and “B5 2024” and “B6:B17 1673, 53, 154, …”, each with link, lock, and delete controls. The right pane renders the worksheet “Supply of Nursing Staff (Trend Variant) in Germany up to 2049, in 1000” with coloured outlines around the first column: header “Nursing Staff” and row labels “Total”, “15--20”, “20--25”; the year “2024” is highlighted in the first data column. At the bottom, a preview table lists extracted records including the sheet “12421-05”, column “Nursing Staff”, row labels, cell addresses B6/B7/B8, and values 1673, 53, and 154. The figure illustrates how first-column labels are selected and bound to the output.}
-  \label{fig:first_column}
-\end{figure*}
 
 \subsection{Selection of the First Column} 
 
@@ -308,7 +348,7 @@ To do this, the user selects the node of the first column "2024" and right-click
   \label{fig:5_repetitions}
 \end{figure}
 
-\begin{figure*}[b] % ht for two column layout
+\begin{figure*}[ht] % ht for two column layout
   \centering
   \includegraphics[width=\linewidth, alt={Screenshot of SDE after applying “move and duplicate” and confirming (Accept). The left pane shows the hierarchical selection list (e.g., “B3 Nursing Staff”, “A6 Total”, the range “A6:A17 …”, “B5 2024”, and “B6:B17 1673, 53, 154, …”). The right pane renders the worksheet “Supply of Nursing Staff …” with the header “Nursing Staff” highlighted and six year columns 2024-2049 boxed in distinct colours, indicating the replicated column selections across years. At the bottom, the preview table lists extracted records for sheet “12421-05” with column “Nursing Staff”, row labels (Total, 15-20, 20-25), cell addresses (B6, B7, B8), and values (1673, 53, 154). A green check button in the lower right confirms the operation.}]{images/spreadsheet_data_extractor/move_and_duplicate/move_accept.png}
   \caption{Resulting Hierarchy using the “Move and Duplicate” Function to Replicate the Column Selection Across Years}
@@ -317,7 +357,7 @@ To do this, the user selects the node of the first column "2024" and right-click
   \label{fig:move_accept}
 \end{figure*}
 
-\begin{figure}[b] 
+\begin{figure}[ht] 
   \centering 
   \includegraphics[width=\linewidth, alt={Screenshot of SDE after duplicating the first table's selection to all subtables. A top toolbar shows “move and duplicate” with the counter set to “repeat 2”. In the worksheet view, six year columns (2024, 2029, 2034, 2039, 2044, 2049) are outlined in distinct colours. The cells in the top table are overlaid with lighter, less-saturated tints indicating the origin selections; the corresponding cells in the lower subtables are overlaid with stronger, more-saturated tints indicating the duplicated (destination) selections. Header cells display padlock icons for locked ranges. Row labels such as “Total”, “Male”, and “Female” with age bands (e.g., 15-20, 20-25, …) are visible, and every cell within the highlighted columns is selected across subtables. The figure demonstrates how duplicating the first table's hierarchy propagates the selection to subsequent tables, with saturation differentiating origin and destination.}]{images/spreadsheet_data_extractor/move_and_duplicate/duplicate_tables_cropped_to_one_column.png} 
   \caption{Selection of All Cells in the Subtables by Duplicating the Hierarchy of the First Table} 
@@ -346,7 +386,7 @@ Figure~\ref{fig:crossBefore} shows the selection hierarchy that users create on
 the spreadsheet. For readability, the example restricts itself to the first
 three columns and rows of the leftmost sub-table.
 
-\begin{figure}[h]
+\begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth, alt={Diagram of the selection hierarchy before path-wise broadcasting. From left to right, rectangular nodes show the current chain of selections: “Nursing Staff” → “Total” → a stacked block with “Total”, “15-20”, and “20-25”. From that block the flow splits into three separate year nodes—“2024”, “2029”, and “2034”—each pointing to its corresponding three data cells on the right (e.g., for 2024 the values 1673, 154, 53; for 2029 the values 1710, 55, 152; for 2034 the values 1738, 59, 155). Colours match the worksheet highlights; black arrows indicate the direction of propagation. The figure illustrates the structure prior to broadcasting the selection along all paths.}]{images/spreadsheet_data_extractor/broadcast/cross_before.pdf}
   \caption{Selection hierarchy before path-wise broadcasting.}
@@ -377,7 +417,7 @@ Figure~\ref{fig:cross_after}: upstream labels are repeated or aligned so that
 each numeric cell is paired with its full context, yielding one relational row
 per cell.
 
-\begin{figure}[h]
+\begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth, alt={Diagram of the selection hierarchy after path-wise broadcasting. Each output cell now has its full upstream context replicated on its own row. From left to right, the blocks “Nursing Staff” and “Total” are repeated three times vertically, followed by a stacked block “Total / 15-20 / 20-25”, also repeated. Each row then carries one year node—2024, 2029, or 2034—aligned with the corresponding value on the far right (e.g., 1673, 154, 53 for 2024; 1710, 55, 152 for 2029; 1738, 59, 155 for 2034). Colours match the worksheet highlights and black arrows indicate the flow. The figure shows that broadcasting duplicates and aligns upstream labels so that every value cell is paired with its context, yielding one record per cell.}]{images/spreadsheet_data_extractor/broadcast/cross_after.pdf}
   \caption{Selection hierarchy after path-wise broadcasting. Each value cell is
@@ -406,7 +446,7 @@ In Excel, column widths and row heights are defined in units that do not directl
 
 Cell formatting plays a crucial role in accurately representing the appearance of worksheets. Formatting information is stored in the \texttt{styles.xml} file, where styles are defined and later referenced in the \texttt{sheetX.xml} files as shown in Figure \ref{fig:formatting}.
 
-\begin{figure}[h]
+\begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth, alt={Collage of two XML excerpts with arrows showing how worksheet cells reference central style definitions. The upper panel shows parts of “xl/styles.xml”: a “fonts” list, a “fills” list (including a solid fill with colour FFD7E1F0), a “borders” list (thin border with theme colours), and a “cellXfs” section containing an “<xf>” record with “fontId="2"”, “fillId="2"”, “borderId="1"”, and “alignment” set to centre with wrap. Arrows link these lists to the “<xf>” that combines them. A further arrow points to the lower panel from “xl/worksheets/sheetX.xml”, which shows a row “r="3"” and a cell “B3” with “s="10"” (style index) and a string value. The figure conveys that worksheet cells use a numeric style index (“s”) to select a composed style (“xf”) defined in “styles.xml”, which in turn references specific font, fill, and border entries by ID.}]{images/xml_collage/collage.pdf}
   \caption{Illustration of the relationship between style definitions in xl/styles.xml (fonts, fills, borders, and cellXfs) and their application in a worksheet file (xl/worksheets/sheetX.xml).}
@@ -419,23 +459,23 @@ Each cell in the worksheet references a style index through the \textit{s} attri
 
 Through meticulous parsing and application of these formatting details, we ensure that the rendered worksheet closely mirrors the original Excel file, preserving the visual cues and aesthetics that users expect.
 
-\subsubsection{Handling Text Overflow}
-
-In Excel, when the content of a cell exceeds its width, the text may overflow into adjacent empty cells, provided those cells do not contain any data. If adjacent cells are occupied, Excel truncates the overflowing text at the cell boundary. Replicating this behavior is essential for accurate rendering and user familiarity.
-
-We implemented text overflow handling by checking if the adjacent cell to the right is empty before allowing text to overflow. If the adjacent cell is empty, we extend the text rendering. If the adjacent cell contains data, we truncate the text at the boundary of the original cell.
-
-Figure \ref{fig:nothing} illustrates this behavior. The text "Supply of Nursing Staff ..." extends into the neighboring cell because it is empty. If not for this handling, the text would be truncated at the cell boundary, leading to incomplete data display as shown in Figure \ref{fig:overflow}.
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth, alt={Screenshot illustrating a rendering bug: long text in a cell is clipped at the cell boundary instead of overflowing into neighbouring empty cells. The page shows a link “To the table of …” and a truncated heading “Supply of Nurs…”. Below, a table header reads “Age from … to under … Years” and “Nursing Staff / Year” with columns for 2024, 2029, 2034, 2039, 2044, and 2049; the first data row “Total” shows 1673, 1710, 1738, 1790, 1839, and 1867. The figure demonstrates the missing text overflow across adjacent blank cells.}]{images/spreadsheet_data_extractor/overflow/overflow.png}
-  \caption{Incorrect rendering without overflow for cells adjacent to empty cells.}
-  \Description{Screenshot illustrating a rendering bug: long text in a cell is clipped at the cell boundary instead of overflowing into neighbouring empty cells. The page shows a link “To the table of …” and a truncated heading “Supply of Nurs…”. Below, a table header reads “Age from … to under … Years” and “Nursing Staff / Year” with columns for 2024, 2029, 2034, 2039, 2044, and 2049; the first data row “Total” shows 1673, 1710, 1738, 1790, 1839, and 1867. The figure demonstrates the missing text overflow across adjacent blank cells.}
-  \label{fig:overflow}
-\end{figure}
-
-By accurately handling text overflow, we improve readability and maintain consistency with Excel's user interface, which is crucial for users transitioning between Excel and our tool.
+%\subsubsection{Handling Text Overflow}
+%
+%In Excel, when the content of a cell exceeds its width, the text may overflow into adjacent empty cells, provided those cells do not contain any data. If adjacent cells are occupied, Excel truncates the overflowing text at the cell boundary. Replicating this behavior is essential for accurate rendering and user familiarity.
+%
+%We implemented text overflow handling by checking if the adjacent cell to the right is empty before allowing text to overflow. If the adjacent cell is empty, we extend the text rendering. If the adjacent cell contains data, we truncate the text at the boundary of the original cell.
+%
+%Figure \ref{fig:nothing} illustrates this behavior. The text "Supply of Nursing Staff ..." extends into the neighboring cell because it is empty. If not for this handling, the text would be truncated at the cell boundary, leading to incomplete data display as shown in Figure \ref{fig:overflow}.
+%
+%\begin{figure}[t]
+%  \centering
+%  \includegraphics[width=\linewidth, alt={Screenshot illustrating a rendering bug: long text in a cell is clipped at the cell boundary instead of overflowing into neighbouring empty cells. The page shows a link “To the table of …” and a truncated heading “Supply of Nurs…”. Below, a table header reads “Age from … to under … Years” and “Nursing Staff / Year” with columns for 2024, 2029, 2034, 2039, 2044, and 2049; the first data row “Total” shows 1673, 1710, 1738, 1790, 1839, and 1867. The figure demonstrates the missing text overflow across adjacent blank cells.}]{images/spreadsheet_data_extractor/overflow/overflow.png}
+%  \caption{Incorrect rendering without overflow for cells adjacent to empty cells.}
+%  \Description{Screenshot illustrating a rendering bug: long text in a cell is clipped at the cell boundary instead of overflowing into neighbouring empty cells. The page shows a link “To the table of …” and a truncated heading “Supply of Nurs…”. Below, a table header reads “Age from … to under … Years” and “Nursing Staff / Year” with columns for 2024, 2029, 2034, 2039, 2044, and 2049; the first data row “Total” shows 1673, 1710, 1738, 1790, 1839, and 1867. The figure demonstrates the missing text overflow across adjacent blank cells.}
+%  \label{fig:overflow}
+%\end{figure}
+%
+%By accurately handling text overflow, we improve readability and maintain consistency with Excel's user interface, which is crucial for users transitioning between Excel and our tool.
 
 \section{Scalable Parsing, Indexing, and Rendering}
 
@@ -688,65 +728,65 @@ byte-level parser. Our goal is \emph{frame-local} work proportional to the numbe
 of \emph{visible} rows/columns, independent of sheet size. Algorithm~\ref{alg:viewport_layout}
 summarizes the procedure. Throughout, index intervals are half-open $[a,b)$.
 
-\begin{algorithm}[t]
-\footnotesize
-\caption{Viewport layout with merge-aware origin-first placement}
-\label{alg:viewport_layout}
-\DontPrintSemicolon
-\KwIn{$x_0,y_0$; $W_{\mathrm{vp}},H_{\mathrm{vp}}$; cache $\Delta$;
-      sheet accessors $\mathrm{rowIndexAt},\mathrm{colIndexAt},\mathrm{off},\mathrm{colOff},h,w$;
-      merge index $\mathrm{spanAt},\mathrm{isOrigin}$}
-\KwOut{positioned tiles for current frame}
-
-\tcp{Visible indices}
-$r_\ell \gets \lfloor \mathrm{rowIndexAt}(y_0)\rfloor$, $r_u \gets \lceil \mathrm{rowIndexAt}(y_0+H_{\mathrm{vp}}+\Delta)\rceil$\;
-$c_\ell \gets \lfloor \mathrm{colIndexAt}(x_0)\rfloor$, $c_u \gets \lceil \mathrm{colIndexAt}(x_0+W_{\mathrm{vp}}+\Delta)\rceil$\;
-$B \gets \varnothing$ \tcp{burned merged spans}\;
-
-\tcp{Pass 1: top border probes}
-\For{$c \gets c_\ell$ \KwTo $c_u$}{
-  $S \gets \mathrm{spanAt}(r_\ell,c)$\;
-  \If{$S \ne \bot$ \textbf{and} $S \notin B$ \textbf{and} $r_S < r_\ell$}{
-    place tile for $S$ at $(\mathrm{colOff}(c_S)-x_0,\ \mathrm{off}(r_S)-y_0)$\;
-    $B \gets B \cup \{S\}$\;
-  }
-}
-
-\tcp{Pass 2: left border probes}
-\For{$r \gets r_\ell$ \KwTo $r_u$}{
-  $S \gets \mathrm{spanAt}(r,c_\ell)$\;
-  \If{$S \ne \bot$ \textbf{and} $S \notin B$ \textbf{and} $c_S < c_\ell$}{
-    place tile for $S$ at $(\mathrm{colOff}(c_S)-x_0,\ \mathrm{off}(r_S)-y_0)$\;
-    $B \gets B \cup \{S\}$\;
-  }
-}
-
-\tcp{Pass 3: interior tiles}
-\For{$c \gets c_\ell$ \KwTo $c_u$}{
-  $x \gets \mathrm{colOff}(c) - x_0$\;
-  \For{$r \gets r_\ell$ \KwTo $r_u$}{
-    $y \gets \mathrm{off}(r) - y_0$\;
-    $S \gets \mathrm{spanAt}(r,c)$\;
-    \If{$S = \bot$ \textbf{or} $\mathrm{isOrigin}(S,(r,c))$}{
-      place tile at $(x,y)$\;
-    }
-  }
-}
-
-\BlankLine
-\tcp{$\mathrm{ub}(A,x)=\min\{i\mid A[i]>x\}$, $\mathrm{lb}(A,x)=\min\{i\mid A[i]\ge x\}$.}
-\SetKwProg{Fn}{Function}{:}{}
-\Fn{$\mathrm{spanAt}(r,c)$}{
-  $hi \gets \mathrm{ub}(\textsf{R}_1, r)$\; \If{$hi=0$}{\Return $\bot$}
-  $lo \gets \mathrm{lb}(\textsf{PM}[0{:}hi), r)$\; \If{$lo \ge hi$}{\Return $\bot$}
-  $k \gets \mathrm{ub}(\textsf{C}_1[lo{:}hi), c) - 1$\; \If{$k < lo$}{\Return $\bot$}
-  \For{$i \gets k$ \KwDownTo $lo$}{
-    \If{$\textsf{C}_1[i] > c$}{\textbf{break}}
-    \If{$r \le \textsf{R}_2[i]$ \textbf{and} $c \le \textsf{C}_2[i]$}{\Return span $i$}
-  }
-  \Return $\bot$
-}
-\end{algorithm}
+%begin{algorithm}[t]
+%footnotesize
+%caption{Viewport layout with merge-aware origin-first placement}
+%label{alg:viewport_layout}
+%DontPrintSemicolon
+%KwIn{$x_0,y_0$; $W_{\mathrm{vp}},H_{\mathrm{vp}}$; cache $\Delta$;
+%     sheet accessors $\mathrm{rowIndexAt},\mathrm{colIndexAt},\mathrm{off},\mathrm{colOff},h,w$;
+%     merge index $\mathrm{spanAt},\mathrm{isOrigin}$}
+%KwOut{positioned tiles for current frame}
+%
+%tcp{Visible indices}
+%r_\ell \gets \lfloor \mathrm{rowIndexAt}(y_0)\rfloor$, $r_u \gets \lceil \mathrm{rowIndexAt}(y_0+H_{\mathrm{vp}}+\Delta)\rceil$\;
+%c_\ell \gets \lfloor \mathrm{colIndexAt}(x_0)\rfloor$, $c_u \gets \lceil \mathrm{colIndexAt}(x_0+W_{\mathrm{vp}}+\Delta)\rceil$\;
+%B \gets \varnothing$ \tcp{burned merged spans}\;
+%
+%tcp{Pass 1: top border probes}
+%For{$c \gets c_\ell$ \KwTo $c_u$}{
+% $S \gets \mathrm{spanAt}(r_\ell,c)$\;
+% \If{$S \ne \bot$ \textbf{and} $S \notin B$ \textbf{and} $r_S < r_\ell$}{
+%   place tile for $S$ at $(\mathrm{colOff}(c_S)-x_0,\ \mathrm{off}(r_S)-y_0)$\;
+%   $B \gets B \cup \{S\}$\;
+% }
+%
+%
+%tcp{Pass 2: left border probes}
+%For{$r \gets r_\ell$ \KwTo $r_u$}{
+% $S \gets \mathrm{spanAt}(r,c_\ell)$\;
+% \If{$S \ne \bot$ \textbf{and} $S \notin B$ \textbf{and} $c_S < c_\ell$}{
+%   place tile for $S$ at $(\mathrm{colOff}(c_S)-x_0,\ \mathrm{off}(r_S)-y_0)$\;
+%   $B \gets B \cup \{S\}$\;
+% }
+%
+%
+%tcp{Pass 3: interior tiles}
+%For{$c \gets c_\ell$ \KwTo $c_u$}{
+% $x \gets \mathrm{colOff}(c) - x_0$\;
+% \For{$r \gets r_\ell$ \KwTo $r_u$}{
+%   $y \gets \mathrm{off}(r) - y_0$\;
+%   $S \gets \mathrm{spanAt}(r,c)$\;
+%   \If{$S = \bot$ \textbf{or} $\mathrm{isOrigin}(S,(r,c))$}{
+%     place tile at $(x,y)$\;
+%   }
+% }
+%
+%
+%BlankLine
+%tcp{$\mathrm{ub}(A,x)=\min\{i\mid A[i]>x\}$, $\mathrm{lb}(A,x)=\min\{i\mid A[i]\ge x\}$.}
+%SetKwProg{Fn}{Function}{:}{}
+%Fn{$\mathrm{spanAt}(r,c)$}{
+% $hi \gets \mathrm{ub}(\textsf{R}_1, r)$\; \If{$hi=0$}{\Return $\bot$}
+% $lo \gets \mathrm{lb}(\textsf{PM}[0{:}hi), r)$\; \If{$lo \ge hi$}{\Return $\bot$}
+% $k \gets \mathrm{ub}(\textsf{C}_1[lo{:}hi), c) - 1$\; \If{$k < lo$}{\Return $\bot$}
+% \For{$i \gets k$ \KwDownTo $lo$}{
+%   \If{$\textsf{C}_1[i] > c$}{\textbf{break}}
+%   \If{$r \le \textsf{R}_2[i]$ \textbf{and} $c \le \textsf{C}_2[i]$}{\Return span $i$}
+% }
+% \Return $\bot$
+%
+%\end{algorithm}
 
 \paragraph{Inputs.}
 Let $x_0,y_0$ be the horizontal/vertical scroll offsets (device pixels) and
@@ -842,76 +882,76 @@ $O(R_{\mathrm{vis}}\,C_{\mathrm{vis}})$ and does no work outside the visible
 rectangle. The burned set is updated at most once per span per frame.
 
 
-\subsection{AABB-Indexed Selection Lookup}
-\label{sec:aabb-index}
-
-\begin{algorithm}[t]
-\footnotesize
-\caption{AABB-indexed selection lookup over visible grids}
-\label{alg:aabb-index}
-\DontPrintSemicolon
-
-\KwIn{point $(x,y)$; arrays $L,R,T,B$; permutation $\sigma$ sorting by $T$; prefix max $\mathrm{PM}$ over $B_{\sigma(\cdot)}$; original-order $O$; accessor $\mathrm{findCell}_i(x,y)$}
-\KwOut{either $\langle i,\textit{cell}\rangle$ or $\bot$}
-
-\tcp{Binary-search helpers: $\mathrm{ub}(A,z)=\min\{i\mid A[i]>z\}$,\ \ $\mathrm{lb}(A,z)=\min\{i\mid A[i]\ge z\}$.}
-
-\BlankLine
-\tcp{1) Y-narrowing: window of candidates whose top $\le y$ and bottom $\ge y$}
-$h \gets \mathrm{ub}(T_{\sigma},y)$ \tcp*{first index with $T_{\sigma(h)}>y$}
-\If{$h=0$}{\Return $\bot$} % no top edge $\le y$
-$\ell \gets \mathrm{lb}(\mathrm{PM}[0{:}h),y)$ \tcp*{first prefix with bottom $\ge y$}
-\If{$\ell \ge h$}{\Return $\bot$}
-
-\BlankLine
-\tcp{2) X-pruning: keep only boxes covering $x$}
-$\mathcal{C} \gets \emptyset$\;
-\For{$j \gets \ell$ \KwTo $h-1$}{
-  $i \gets \sigma(j)$\;
-  \If{$L_i \le x \le R_i$}{append $i$ to $\mathcal{C}$}
-}
-\If{$\mathcal{C}=\emptyset$}{\Return $\bot$}
-
-\BlankLine
-\tcp{3) Stable tie-break and confirmation}
-$\mathcal{C} \gets$ \textbf{sort} $\mathcal{C}$ by increasing $O_i$ \tcp*{preserve UI order/colors}
-\ForEach{$i \in \mathcal{C}$}{
-  $ans \gets \mathrm{findCell}_i(x,y)$\;
-  \If{$ans \ne \bot$}{\Return $\langle i, ans\rangle$}
-}
-\Return $\bot$
-\end{algorithm}
-
-
-Each selection source (a task or composed group) maintains a lazily computed, cached \emph{axis-aligned bounding box} (AABB) that is invalidated on updates and recomputed on demand (Algorithm~\ref{alg:aabb-index}). When many such selection sources (grids) intersect the viewport, a linear scan over their bounding boxes can dominate latency. We therefore maintain a lightweight index over axis-aligned bounding boxes (AABBs) to answer point queries $(x,y)$ in $O(\log G + \alpha)$ time, where $G$ is the number of visible grids and $\alpha$ is the size of a narrow candidate window.
-their bounding boxes can dominate latency. We therefore maintain a lightweight
-index over axis-aligned bounding boxes (AABBs) to answer point queries
-$(x,y)$ in $O(\log G + \alpha)$ time, where $G$ is the number of visible
-grids and $\alpha$ is the size of a narrow candidate window.
-
-Each grid $i$ exposes a bounding rectangle
-$[L_i,R_i]\times[T_i,B_i]$ in grid coordinates and a point predicate
-$\mathrm{findCell}_i(x,y)$ that returns the cell at $(x,y)$ or $\bot$.
-We build parallel arrays $L,R,T,B$ (left, right, top, bottom) and a stable
-original-order index $O$ (used to break ties consistently with the UI).
-Let $\sigma$ be the permutation that sorts grids by nondecreasing $T$
-(top edge). In that order we form a prefix-maximum array
-$\mathrm{PM}[j] = \max_{0 \le i \le j} B_{\sigma(i)}$.
-For a query row $y$, the candidate window is the tightest interval
-$[\ell,h)$ such that all boxes whose top $\le y$ and bottom $\ge y$
-lie in that interval; we obtain $h=\mathrm{ub}(T_{\sigma},y)$ and
-$\ell=\mathrm{lb}(\mathrm{PM}[0{:}h),y)$ by binary search
-($\mathrm{ub}$: strict upper bound; $\mathrm{lb}$: lower bound).
-We then prune by the $x$-interval condition $L\le x \le R$.
-Among the surviving candidates we test $\mathrm{findCell}$ in increasing
-$O$ (original) order and return the first hit; if none match, the answer is $\bot$.
+%\subsection{AABB-Indexed Selection Lookup}
+%\label{sec:aabb-index}
+%
+%\begin{algorithm}[t]
+%\footnotesize
+%\caption{AABB-indexed selection lookup over visible grids}
+%\label{alg:aabb-index}
+%\DontPrintSemicolon
+%
+%\KwIn{point $(x,y)$; arrays $L,R,T,B$; permutation $\sigma$ sorting by $T$; %prefix max $\mathrm{PM}$ over $B_{\sigma(\cdot)}$; original-order $O$; accessor %$\mathrm{findCell}_i(x,y)$}
+%\KwOut{either $\langle i,\textit{cell}\rangle$ or $\bot$}
+%
+%\tcp{Binary-search helpers: $\mathrm{ub}(A,z)=\min\{i\mid A[i]>z\}$,\ \ $\mathrm%{lb}(A,z)=\min\{i\mid A[i]\ge z\}$.}
+%
+%\BlankLine
+%\tcp{1) Y-narrowing: window of candidates whose top $\le y$ and bottom $\ge y$}
+%$h \gets \mathrm{ub}(T_{\sigma},y)$ \tcp*{first index with $T_{\sigma(h)}>y$}
+%\If{$h=0$}{\Return $\bot$} % no top edge $\le y$
+%$\ell \gets \mathrm{lb}(\mathrm{PM}[0{:}h),y)$ \tcp*{first prefix with bottom %$\ge y$}
+%\If{$\ell \ge h$}{\Return $\bot$}
+%
+%\BlankLine
+%\tcp{2) X-pruning: keep only boxes covering $x$}
+%$\mathcal{C} \gets \emptyset$\;
+%\For{$j \gets \ell$ \KwTo $h-1$}{
+%  $i \gets \sigma(j)$\;
+%  \If{$L_i \le x \le R_i$}{append $i$ to $\mathcal{C}$}
+%}
+%\If{$\mathcal{C}=\emptyset$}{\Return $\bot$}
+%
+%\BlankLine
+%\tcp{3) Stable tie-break and confirmation}
+%$\mathcal{C} \gets$ \textbf{sort} $\mathcal{C}$ by increasing $O_i$ \tcp*%{preserve UI order/colors}
+%\ForEach{$i \in \mathcal{C}$}{
+%  $ans \gets \mathrm{findCell}_i(x,y)$\;
+%  \If{$ans \ne \bot$}{\Return $\langle i, ans\rangle$}
+%}
+%\Return $\bot$
+%\end{algorithm}
 
 
-The index builds in $O(G \log G)$ time and consists of six integer arrays
-plus the permutation $\pi$. It is invalidated on any structural change to the
-set of grids (move, resize, insert/delete) and rebuilt lazily on the next
-query. For small $G$ (e.g., $G \le 32$) we fall back to a linear scan;
-the cutover can be tuned empirically.
+%Each selection source (a task or composed group) maintains a lazily computed, %cached \emph{axis-aligned bounding box} (AABB) that is invalidated on updates %and recomputed on demand (Algorithm~\ref{alg:aabb-index}). When many such %selection sources (grids) intersect the viewport, a linear scan over their %bounding boxes can dominate latency. We therefore maintain a lightweight index %over axis-aligned bounding boxes (AABBs) to answer point queries $(x,y)$ in $O%(\log G + \alpha)$ time, where $G$ is the number of visible grids and $\alpha$ %is the size of a narrow candidate window.
+%their bounding boxes can dominate latency. We therefore maintain a lightweight
+%index over axis-aligned bounding boxes (AABBs) to answer point queries
+%$(x,y)$ in $O(\log G + \alpha)$ time, where $G$ is the number of visible
+%grids and $\alpha$ is the size of a narrow candidate window.
+%
+%Each grid $i$ exposes a bounding rectangle
+%$[L_i,R_i]\times[T_i,B_i]$ in grid coordinates and a point predicate
+%$\mathrm{findCell}_i(x,y)$ that returns the cell at $(x,y)$ or $\bot$.
+%We build parallel arrays $L,R,T,B$ (left, right, top, bottom) and a stable
+%original-order index $O$ (used to break ties consistently with the UI).
+%Let $\sigma$ be the permutation that sorts grids by nondecreasing $T$
+%(top edge). In that order we form a prefix-maximum array
+%$\mathrm{PM}[j] = \max_{0 \le i \le j} B_{\sigma(i)}$.
+%For a query row $y$, the candidate window is the tightest interval
+%$[\ell,h)$ such that all boxes whose top $\le y$ and bottom $\ge y$
+%lie in that interval; we obtain $h=\mathrm{ub}(T_{\sigma},y)$ and
+%$\ell=\mathrm{lb}(\mathrm{PM}[0{:}h),y)$ by binary search
+%($\mathrm{ub}$: strict upper bound; $\mathrm{lb}$: lower bound).
+%We then prune by the $x$-interval condition $L\le x \le R$.
+%Among the surviving candidates we test $\mathrm{findCell}$ in increasing
+%$O$ (original) order and return the first hit; if none match, the answer is %$\bot$.
+
+
+%The index builds in $O(G \log G)$ time and consists of six integer arrays
+%plus the permutation $\pi$. It is invalidated on any structural change to the
+%set of grids (move, resize, insert/delete) and rebuilt lazily on the next
+%query. For small $G$ (e.g., $G \le 32$) we fall back to a linear scan;
+%the cutover can be tuned empirically.
 
 % position of {alg:aabb-index} for two column layout (ht)
 
@@ -930,7 +970,7 @@ the cutover can be tuned empirically.
 \SetKwFunction{Next}{NextBlock}
 \SetKwFunction{Fill}{FillQueueIfEmpty}
 \SetKwFunction{Prune}{PruneHeadIfNeeded}
-
+ 
 \Fn{\Ensure{$r$}}{
   \While{$builtRows \le r$}{
     $rb \gets$ \Next{}\;
@@ -966,7 +1006,7 @@ return it. If the task has children, we enqueue each child with the extended
 \texttt{path}. This BFS over the selection tree yields a deterministic,
 top-down order that matches the user's mental model.
 
-\begin{algorithm}[h]
+\begin{algorithm}[ht]
 \footnotesize
 \caption{Row block generation (part B): NextBlock}
 \label{alg:lazy-B}
@@ -992,6 +1032,8 @@ top-down order that matches the user's mental model.
   }
 }
 \end{algorithm}
+
+
 
 
 \subsection{Lazy Output Flattening and Row Location}
@@ -1044,7 +1086,7 @@ to form \textsf{RowBlock}s. If a segment has no roots, it is skipped.
 When the last file is exhausted and $Q$ remains empty, the function returns
 \textbf{false} and the stream is complete.
 
-\begin{algorithm}[h]
+\begin{algorithm}[t]
 \footnotesize
 \caption{Traversal feeding (part C): FillQueueIfEmpty}
 \label{alg:lazy-C}
@@ -1078,7 +1120,7 @@ preserving the invariant that \texttt{starts} remains strictly increasing and
 aligned with \texttt{blocks}. In practice we choose small caps that comfortably
 cover one or two viewport heights plus prefetch.
 
-\begin{algorithm}[h]
+\begin{algorithm}[t]
 \footnotesize
 \caption{Cache pruning (part D): PruneHeadIfNeeded}
 \label{alg:lazy-D}
@@ -1099,6 +1141,34 @@ cover one or two viewport heights plus prefetch.
 \end{algorithm}
 
 
+
+
+
+
+\begin{figure*}[ht] % ht
+  \centering
+
+\begin{subfigure}{0.98\textwidth}
+    \centering
+    \includegraphics[width=\linewidth, alt={Horizontal box plot with three rows labelled Spreadsheet Data Extractor, Microsoft Excel, and Dart Excel package. The x-axis is time in seconds on a logarithmic scale. SDE is near 0.6-1.1s, Excel around 44-51s, Dart around 340s for its single run.}]{charts/parse_large_file/generate_boxplot_run_times_to_open_large_sheet.pdf}
+    \caption{Large multi-worksheet workbook: opening one selected sheet (user-centred latency).}
+    \Description{Horizontal box plot with three rows labelled Spreadsheet Data Extractor, Microsoft Excel, and Dart Excel package. The x-axis is time in seconds on a logarithmic scale. SDE is near 0.6-1.1s, Excel around 44-51s, Dart around 340s for its single run.}
+    \label{fig:one-sheet-sub}
+  \end{subfigure}
+
+  \vspace{0.6em}
+
+\begin{subfigure}{0.98\textwidth}
+    \centering
+    \includegraphics[width=\linewidth, alt={Grouped horizontal box plot with six rows: for each of SDE, Microsoft Excel, and a Dart Excel package, the first box shows time to parse the first rows and the second box shows time to parse the last row. SDE first-rows median ~1.23s vs. Excel ~52.76s; SDE last-row median ~5.52s vs. Excel ~52.23s.}]{charts/parse_large_sheet/generate_boxplot_run_times_to_open_large_sheet.pdf}
+    \caption{Single-worksheet benchmark (1{,}048{,}548 rows): first vs.\ last row per programme.}
+    \Description{Grouped horizontal box plot with six rows: for each of SDE, Microsoft Excel, and a Dart Excel package, the first box shows time to parse the first rows and the second box shows time to parse the last row. SDE first-rows median ~1.23s vs. Excel ~52.76s; SDE last-row median ~5.52s vs. Excel ~52.23s.}
+    \label{fig:first-vs-last-sub}
+  \end{subfigure}
+
+  \caption{Time-to-first-visual vs. full-parse costs across tools. (a) shows the practical benefit of initialising only the selected sheet in a multi-worksheet file; (b) isolates algorithmic differences under identical workload. Both plots aggregate 10 runs on a logarithmic time axis.}
+  \label{fig:eval-combined}
+\end{figure*}
 
 
 
@@ -1169,39 +1239,12 @@ We evaluate three programmes: the \emph{SDE}, Microsoft Excel (automated via Pow
 Opening a selected worksheet from a large real-world workbook~\cite{destatis_rechnungsergebnis_2024}, SDE initialises only the requested sheet and achieves a median of \textbf{0.657\,s}, compared to \textbf{45.843\,s} for Excel—a \textbf{69.8\(\times\)} speedup (Fig.~\ref{fig:one-sheet-sub}). The Dart \textit{excel} package completed only the first run at 343.568\,s; runs~2-10 terminated with out-of-memory on our test machine (\(n{=}1\)). Based on that single run, SDE is \textbf{522.9\(\times\)} faster in this scenario.
 
 
-\begin{figure*}[b] % ht
-  \centering
-  \begin{subfigure}{0.98\textwidth}
-    \centering
-    \includegraphics[width=\linewidth, alt={Horizontal box plot with three rows labelled Spreadsheet Data Extractor, Microsoft Excel, and Dart Excel package. The x-axis is time in seconds on a logarithmic scale. SDE is near 0.6-1.1s, Excel around 44-51s, Dart around 340s for its single run.}]{charts/parse_large_file/generate_boxplot_run_times_to_open_large_sheet.pdf}
-    \caption{Large multi-worksheet workbook: opening one selected sheet (user-centred latency).}
-    \Description{Horizontal box plot with three rows labelled Spreadsheet Data Extractor, Microsoft Excel, and Dart Excel package. The x-axis is time in seconds on a logarithmic scale. SDE is near 0.6-1.1s, Excel around 44-51s, Dart around 340s for its single run.}
-    \label{fig:one-sheet-sub}
-  \end{subfigure}
-
-  \vspace{0.6em}
-
-  \begin{subfigure}{0.98\textwidth}
-    \centering
-    \includegraphics[width=\linewidth, alt={Grouped horizontal box plot with six rows: for each of SDE, Microsoft Excel, and a Dart Excel package, the first box shows time to parse the first rows and the second box shows time to parse the last row. SDE first-rows median ~1.23s vs. Excel ~52.76s; SDE last-row median ~5.52s vs. Excel ~52.23s.}]{charts/parse_large_sheet/generate_boxplot_run_times_to_open_large_sheet.pdf}
-    \caption{Single-worksheet benchmark (1{,}048{,}548 rows): first vs.\ last row per programme.}
-    \Description{Grouped horizontal box plot with six rows: for each of SDE, Microsoft Excel, and a Dart Excel package, the first box shows time to parse the first rows and the second box shows time to parse the last row. SDE first-rows median ~1.23s vs. Excel ~52.76s; SDE last-row median ~5.52s vs. Excel ~52.23s.}
-    \label{fig:first-vs-last-sub}
-  \end{subfigure}
-
-  \caption{Time-to-first-visual vs. full-parse costs across tools. (a) shows the practical benefit of initialising only the selected sheet in a multi-worksheet file; (b) isolates algorithmic differences under identical workload. Both plots aggregate 10 runs on a logarithmic time axis.}
-  \label{fig:eval-combined}
-\end{figure*}
 
 
+  
 
 \paragraph{Controlling for workload comparability.}
-The multi-worksheet experiment reflects an important user scenario (time-to-first-visual for a selected sheet), but it is not a like-for-like comparison: SDE initialises only the requested worksheet, whereas the baselines initialise the entire workbook. To control for this confound and establish workload equivalence, we construct a \emph{single-worksheet} benchmark from the example in Section~\ref{sec:design-philosophy} (\nameref{sec:design-philosophy}) by pruning the workbook to one sheet and duplicating the table vertically until no additional table fits, yielding 1{,}048{,}548 rows of real data. The resulting file is \(\sim 35\)\,MB on disk (XLSX ZIP container) and \(\sim 282\)\,MB uncompressed. We then report two cases—\emph{first rows} (time-to-first-visual) and \emph{last row} (forces a full parse)—to align SDE's measured cost with eager parsers. Under these identical I/O and parsing conditions, SDE achieves \textbf{1.229\,s} vs.\ \textbf{52.756\,s} for Excel on first rows (\textbf{42.9\(\times\)}), and \textbf{5.515\,s} vs.\ \textbf{52.228\,s} on the last row (\textbf{9.47\(\times\)}).
-
-
-
-\paragraph{Results (overview).}
-Initialising only the selected sheet yields much lower time-to-first-visual (Fig.~\ref{fig:one-sheet-sub}); under identical workload SDE remains \(\sim\!10\times\) faster even when a full parse is enforced (Fig.~\ref{fig:first-vs-last-sub}).
+The multi-worksheet experiment reflects an important user scenario (time-to-first-visual for a selected sheet), but it is not a like-for-like comparison: SDE initialises only the requested worksheet, whereas the baselines initialise the entire workbook. To control for this confound and establish workload equivalence, we construct a \emph{single-worksheet} benchmark from the example in Section~\ref{sec:design-philosophy} (\nameref{sec:design-philosophy}) by pruning the workbook to one sheet and duplicating the table vertically until no additional table fits, yielding 1{,}048{,}548 rows of real data. The resulting file is \(\sim 35\)\,MB on disk (XLSX ZIP container) and \(\sim 282\)\,MB uncompressed. We then report two cases—\emph{first rows} (time-to-first-visual) and \emph{last row} (forces a full parse)—to align SDE's measured cost with eager parsers. Under these identical I/O and parsing conditions, SDE achieves \textbf{1.229\,s} vs.\ \textbf{52.756\,s} for Excel on first rows (\textbf{42.9\(\times\)}), and \textbf{5.515\,s} vs.\ \textbf{52.228\,s} on the last row (\textbf{9.47\(\times\)})(Fig.~\ref{fig:first-vs-last-sub}).
 
 
 
@@ -1236,7 +1279,9 @@ Together these changes bound per-interaction work to the visible area rather tha
 the sheet size.
 
 On a sheet with $10^6$ rows and a selection covering all cells, the UI remained
-smooth during scrolling, sustaining $\approx 2$\,ms per frame (Fig.~\ref{fig:sde_profiling_scrolling}),
+smooth during scrolling, sustaining $\approx 2$\,ms per frame
+%(Fig.~\ref{fig:sde_profiling_scrolling})
+,
 which corresponds to $\approx 500$\,FPS. When dragging the scrollbar—filling the
 entire viewport at once with new content—frame times rose to about $60$-$80$\,ms
 ($\approx 12$-$17$\,FPS), which remained acceptable for rapid navigation at that scale.
@@ -1244,13 +1289,13 @@ entire viewport at once with new content—frame times rose to about $60$-$80$\,
 
 
 
-\begin{figure*}[t] % ht
-  \centering
-  \includegraphics[width=\linewidth, alt={Screenshot of SDE's performance timeline while scrolling a large worksheet. Two horizontal tracks are shown: a top “Raster” band and a lower “UI” band. Each track consists of dense blue vertical bars encoding per-frame time; most bars are short with occasional taller clusters. Track labels report average and maximum frame costs; the raster band shows the higher values, the UI band remains low. Two bright green vertical markers indicate the current cursor positions. The figure illustrates smooth scrolling with low per-frame times; numeric averages and peaks are given in the caption.}]{images/spreadsheet_data_extractor/performance/fps_scrolling.png}
-  \caption{SDE performance profiling during scrolling. Timeline shows per-frame rendering costs (blue); average ~18ms/frame and peak 54ms/frame.}
-  \Description{Screenshot of SDE's performance timeline while scrolling a large worksheet. Two horizontal tracks are shown: a top “Raster” band and a lower “UI” band. Each track consists of dense blue vertical bars encoding per-frame time; most bars are short with occasional taller clusters. Track labels report average and maximum frame costs; the raster band shows the higher values, the UI band remains low. Two bright green vertical markers indicate the current cursor positions. The figure illustrates smooth scrolling with low per-frame times; numeric averages and peaks are given in the caption.}
-  \label{fig:sde_profiling_scrolling}
-\end{figure*}
+%\begin{figure*}[t] % ht
+%  \centering
+%  \includegraphics[width=\linewidth, alt={Screenshot of SDE's performance timeline while scrolling a large worksheet. Two horizontal tracks are shown: a top “Raster” band and a lower “UI” band. Each track consists of dense blue vertical bars encoding per-frame time; most bars are short with occasional taller clusters. Track labels report average and maximum frame costs; the raster band shows the higher values, the UI band remains low. Two bright green vertical markers indicate the current cursor positions. The figure illustrates smooth scrolling with low per-frame times; numeric averages and peaks are given in the caption.}]{images/spreadsheet_data_extractor/performance/fps_scrolling.png}
+%  \caption{SDE performance profiling during scrolling. Timeline shows per-frame rendering costs (blue); average ~18ms/frame and peak 54ms/frame.}
+%  \Description{Screenshot of SDE's performance timeline while scrolling a large worksheet. Two horizontal tracks are shown: a top “Raster” band and a lower “UI” band. Each track consists of dense blue vertical bars encoding per-frame time; most bars are short with occasional taller clusters. Track labels report average and maximum frame costs; the raster band shows the higher values, the UI band remains low. Two bright green vertical markers indicate the current cursor positions. The figure illustrates smooth scrolling with low per-frame times; numeric averages and peaks are given in the caption.}
+%  \label{fig:sde_profiling_scrolling}
+%\end{figure*}
 
 
 \paragraph{Benchmarking environment.}
