@@ -36,9 +36,6 @@ Each CSV represents repeated measurements of the time required to open a
 
 The script produces a publication-ready [PDF Chart](generate_boxplot_run_times_to_open_large_sheet.pdf).
 
-![The Chart](generate_boxplot_run_times_to_open_large_sheet.pdf)
-
-
 This figure is included directly in the paper to illustrate user-centred latency
 when opening a selected worksheet from a large real-world Excel workbook.
 

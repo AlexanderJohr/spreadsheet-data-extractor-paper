@@ -50,11 +50,6 @@ The plot is ordered (and labelled) as:
 
 The script produces a publication-ready [PDF Chart](generate_boxplot_run_times_to_open_large_sheet.pdf).
 
-![The Chart](generate_boxplot_run_times_to_open_large_sheet.pdf)
-
-
-
-
 ## Re-running Measurements
 
 This script **does not re-run performance measurements**.
