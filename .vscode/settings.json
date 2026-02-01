@@ -1,43 +1,27 @@
 {
     "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
     "latex-workshop.latex.outDir": "./latex-out",
+    "latex-workshop.latex.autoBuild.run": "onFileChange",
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "latexmk (LuaLaTeX)",
+            "tools": [
+                "latexmk-lualatex"
+            ]
+        }
+    ],
     "latex-workshop.latex.tools": [
         {
-            "name": "latexmk",
+            "name": "latexmk-lualatex",
             "command": "latexmk",
             "args": [
-                "-synctex=1",
-                "-interaction=nonstopmode",
-                "-file-line-error",
-                "-pdf",
-                "-outdir=latex-out",
-                "%DOC%"
-            ],
-            "env": {}
-        },
-        {
-            "name": "lualatexmk",
-            "command": "latexmk",
-            "args": [
-                "-synctex=1",
-                "-interaction=nonstopmode",
-                "-file-line-error",
                 "-lualatex",
-                "-outdir=latex-out",
-                "%DOC%"
-            ],
-            "env": {}
-        },
-        {
-            "name": "pdflatex",
-            "command": "pdflatex",
-            "args": [
-                "-synctex=1",
                 "-interaction=nonstopmode",
-                "-file-line-error",
+                "-synctex=1",
+                "-outdir=%OUTDIR%",
                 "%DOC%"
-            ],
-            "env": {}
+            ]
         }
-    ]
+    ],
+    "latex-workshop.latex.recipe.default": "latexmk (LuaLaTeX)"
 }

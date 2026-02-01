@@ -2,11 +2,14 @@
 
 ## Table of Contents
 
-- [Introduction](#introduction)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [License](#license)
+- [Spreadsheet Data Extractor (SDE)](#spreadsheet-data-extractor-sde)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Features](#features)
+  - [Installation](#installation)
+    - [Prerequisites](#prerequisites)
+    - [Steps](#steps)
+  - [Usage](#usage)
 
 ## Introduction
 
@@ -74,8 +77,3 @@ The **Spreadsheet Data Extractor (SDE)** is a performance-optimized, user-centri
 
    - **Output Preview:** View the extracted relational data in real-time in the bottom panel.
    - **Export Data:** Click on the "Export" button to save the structured data as a CSV file.
-
-## License
-
-This project is licensed under the [GNU General Public License v3.0](LICENSE).
-
