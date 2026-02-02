@@ -19,7 +19,7 @@
 \newcommand\vldbauthors{\authors}
 \newcommand\vldbtitle{\shorttitle} 
 % leave empty if no availability url should be set
-\newcommand\vldbavailabilityurl{URL_TO_YOUR_ARTIFACTS}
+\newcommand\vldbavailabilityurl{https://github.com/AlexanderJohr/spreadsheet-data-extractor-paper}
 % whether page numbers should be shown or not, use 'plain' for review versions, 'empty' for camera ready
 \newcommand\vldbpagestyle{plain} 
 
@@ -27,6 +27,7 @@
 \input{latex_config/algorithm2e_config.tex}
 \input{latex_config/figure_descriptions.tex}
 
+\usepackage{balance}
 
 \usepackage{subcaption} 
 
@@ -59,13 +60,20 @@
 
 \acmSubmissionID{ }
 
+\pagestyle{empty}
+\usepackage{microtype}
+\usepackage{xurl}
+\emergencystretch=2em
 
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
 \begin{document}
 
-\title[Spreadsheet Data Extractor (SDE)]{Spreadsheet Data Extractor (SDE): A Performance-Optimized, User-Centric Tool for Transforming Semi-Structured Excel Spreadsheets into Relational Data}
+\title[]{Spreadsheet Data Extractor (SDE): A Performance-Optimized, User-Centric Tool for Transforming Semi-Structured Excel Spreadsheets into Relational Data}
 
 
-\author{Alexander Aue-Johr}
+\author[]{Alexander Aue-Johr}
 \orcid{0009-0001-8683-3630}
 \affiliation{%
   \institution{Thünen-Institute}
@@ -73,7 +81,8 @@
   \country{Germany}
 }
 \email{alexander.aue@thuenen.de}
-
+\settopmatter{printacmref=false}
+\renewcommand{\shortauthors}{}
 \begin{abstract}
 Spreadsheets are widely used across domains, yet their human-oriented layouts (e.g., merged cells, hierarchical headers, and multiple tables) hinder automated extraction. We present the \emph{Spreadsheet Data Extractor (SDE)}, a user-in-the-loop system that converts semi-structured spreadsheets into structured outputs without requiring programming. Users declare the structure they perceive; the engine deterministically propagates selections and renders results immediately.
 
@@ -127,9 +136,7 @@ Under the hood, SDE employs incremental loading, byte-level XML streaming that a
 \section{Introduction}
 
 Spreadsheets underpin workflows across healthcare~\cite{berndt2001healthcare}, nonprofit organizations~\cite{singh2009numeric,west2008because}, finance, commerce, academia, and government~\cite{dunn2010spreadsheets}. Despite their ubiquity, reliably analysing and reusing their contents remains difficult for automated systems.
- In practice, many real-world spreadsheets are organized for human consumption~\cite{tang2023efficient} and therefore exhibit  layouts with empty cells, merged regions, hierarchical headers, and multiple stacked tables. While such conventions aid human reading~\cite{rahman2021noah}, they hinder machine readability and complicate extraction, integration, and downstream analytics.
-
-The reliance on spreadsheets as ad-hoc solutions poses several limitations:
+ In practice, many real-world spreadsheets are organized for human consumption~\cite{tang2023efficient} and therefore exhibit  layouts with empty cells, merged regions, hierarchical headers, and multiple stacked tables. While such conventions aid human reading~\cite{rahman2021noah}, they hinder machine readability and complicate extraction, integration, and downstream analytics. The reliance on spreadsheets as ad-hoc solutions poses several limitations:
 \begin{itemize}
     \item \textbf{Data Integrity and Consistency:} Spreadsheets are prone to errors, such as duplicate entries, inconsistent data formats, and inadvertent modifications, which can compromise data integrity.~\cite{cunha2012smellsheet, abreu2014faultysheet}
     \item \textbf{Scalability Issues:} As datasets grow in size and complexity, spreadsheets become less efficient for data storage and retrieval, leading to performance bottlenecks.~\cite{swidan2016improving, mack2018characterizing}
@@ -149,9 +156,11 @@ This paper presents the \emph{Spreadsheet Data Extractor (SDE)}~\cite{aue2026sde
 
 
 \begin{table*}[ht]
+  \caption{Spreadsheet Data Extractor counterparts}
+  \label{tab:approaches}
   \centering
   \begin{tabular}{|c|c|c|c|c|}
-      \hline
+    \hline
       \textbf{Name} & \textbf{Technologies} & \textbf{Output} & \textbf{Accessibility} & \textbf{Frequency} \\ \hline
       DeExcelerator & heuristics            & relational data    & partially open source  & last publication   \\
                     &                       &                 & no access to GUI code               & 2015               \\ \hline
@@ -168,9 +177,7 @@ This paper presents the \emph{Spreadsheet Data Extractor (SDE)}~\cite{aue2026sde
 %      Aue et\,al.~(converter)     & User-centric Selection-Workflow                     & relational data        & no public repository           & last publication        \\
 %                    &                       &                 &               & 2024               \\ \hline
   \end{tabular}
-  \caption{Spreadsheet Data Extractor counterparts}
 
-  \label{tab:approaches}
 \end{table*}
 \subsection{Contributions}
 
@@ -1372,6 +1379,8 @@ The multi-worksheet experiment reflects an important user scenario (time-to-firs
 All tests were conducted on a machine with an AMD Ryzen 5 PRO 7535U with Radeon Graphics (6-core CPU at 2.9~GHz), 31.3~GB RAM, running Microsoft Windows 11 Enterprise
 %(build~26100, 64-bit)
 . The version of Microsoft Excel used was version~16.0.
+
+\balance
 
 \section{Conclusion}
 We presented the \emph{Spreadsheet Data Extractor (SDE)}~\cite{aue2026sde}, a system for extracting
